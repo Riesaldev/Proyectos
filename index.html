@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Timeline</title>
+        <link rel="stylesheet" href="CSS/style.css" />
+        <script src="JS/main.js" defer></script>
+    </head>
+    <body>
+        <header>
+            <h1>The Legend of Zelda</h1>
+        </header>
+        <main>
+            <!-- Contenedor de la línea temporal -->
+            <section id="timeline-container" class="timeline">
+                <!-- Las tarjetas de eventos serán generadas dinámicamente -->
+            </section>
+        </main>
+        <!-- Formulario para añadir nuevos eventos -->
+        <section id="form-section">
+            <form id="eventForm" class="event-form">
+                <label for="year">Year:</label>
+                <input type="number" id="year" name="year" required />
+
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required />
+
+                <label for="image">Image:</label>
+                <input type="file" id="image" name="image" accept="image/*" />
+
+                <label for="text">Description:</label>
+                <textarea id="text" name="text" rows="4" required></textarea>
+
+                <button type="submit">Add Event</button>
+            </form>
+        </section>
+
+        <footer>
+            <p>&copy; 2024 Timeline Project</p>
+        </footer>
+    </body>
+</html>
