@@ -7,7 +7,7 @@ let events = []; // Declarar la variable events en el ámbito global para almace
 // Función asíncrona para obtener los eventos desde un archivo JSON
 async function fetchEvents() {
     try {
-        const response = await fetch("../Js/zelda-timeline.json"); // Realiza una solicitud para obtener el archivo JSON
+        const response = await fetch("./js/zelda-timeline.json"); // Realiza una solicitud para obtener el archivo JSON
         events = await response.json(); // Convierte la respuesta en un objeto JSON y lo asigna a la variable events
         return events; // Devuelve los eventos
     } catch (error) {
