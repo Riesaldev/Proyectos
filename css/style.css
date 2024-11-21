@@ -72,6 +72,7 @@
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     margin: 20px 0;
     width: 45%;
+    height: 650px;
     overflow: hidden;
     position: relative;
     transition: transform 0.3s, box-shadow 0.3s;
@@ -101,9 +102,10 @@
   .event img {
     width: 100%;               /* La imagen ocupa todo el ancho del contenedor */
     height: 100%;             /* Altura fija para las imágenes */
-    object-fit:cover;         /* Ajusta la imagen para que llene el espacio sin deformarse */
+    object-fit:cover;          /* Ajusta la imagen para que llene el espacio sin deformarse */
     display: block;            /* Asegura que se comporte como un bloque */
     border-radius: 5px;
+    max-height: 324px;
   }
   
   
