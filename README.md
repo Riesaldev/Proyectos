@@ -1,3 +1,4 @@
+
 # timeline-grupo3
 
 # Línea Temporal
@@ -58,3 +59,4 @@ Aplicación en JavaScript que transforma un JSON con eventos en una línea tempo
 ### Ver el historial de commits:
 
     git log
+
