@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Estrella minimalista -->
+    <path d="M50 15 L60 40 H85 L65 55 L72 80 L50 65 L28 80 L35 55 L15 40 H40 Z" 
+          stroke="#e5f7ff" stroke-width="4" fill="none" stroke-linejoin="round"/>
+</svg>
