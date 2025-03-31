@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Línea Temporal</title>
+    <link rel="stylesheet" href="css/stiles.css">
+    <script src="Js/main.js" defer></script>
+</head>
+
+<body>
+    <h1>Línea Temporal de Juegos de Zelda</h1>
+    <div class="container">
+        <div class="timeline-container">
+            <div class="timeline"></div>
+        </div>
+        <form id="eventForm">
+            <h2>Añadir Nuevo Evento</h2>
+            <label for="year">Año:</label>
+            <input type="number" id="year" name="year" required>
+            <label for="title">Título:</label>
+            <input type="text" id="title" name="title" required>
+            <label for="image">Seleccionar Imagen:</label>
+            <input type="file" id="image" name="image" accept="image/*">
+            <label for="text">Descripción:</label>
+            <textarea id="text" name="text" required></textarea>
+            <button type="submit">Añadir Evento</button>
+        </form>
+    </div>
+</body>
+
+</html>
