@@ -5,7 +5,9 @@ Este repositorio contiene diferentes proyectos de práctica y estudio. Cada proy
 ## Ramas del Repositorio
 
 - **main**: Contiene la estructura básica del repositorio y este archivo README.
-- **Time-Line-Zelda-p**: Proyecto de línea temporal en JavaScript.
+- **Timeline-Zelda**: Proyecto de línea temporal en JavaScript, mi propia version de un proyecto hecho en el bootcamp de Hack a Boss.
+- **Browser-Extensions-Manager-ui**:Proyecto propio UI de una app de extensiones (en curso).
+- **Netflix-Clone**:Proyecto propio, creacion de un clone de Netflix probando algunas tecnologias desconocidas (en curso).
 - **[Nombre de la rama del proyecto]**: Descripción breve del proyecto.
 
 ## Cómo Navegar por el Repositorio
