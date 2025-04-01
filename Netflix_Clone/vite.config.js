@@ -1,15 +1,16 @@
-import { fileURLToPath } from "url";
-import path from "path";
-import react from "@vitejs/plugin-react";
+import path from "path"
+import { fileURLToPath } from "url"
+import tailwindcss from "@tailwindcss/vite"
+import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
 
-// Definir __dirname manualmente
-const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
+const __dirname = path.dirname( fileURLToPath( import.meta.url ) )
 
-export default {
-  plugins: [ react() ],
+export default defineConfig( {
+  plugins: [ react(), tailwindcss() ],
   resolve: {
     alias: {
       "@": path.resolve( __dirname, "./src" ),
     },
   },
-};
+} )
