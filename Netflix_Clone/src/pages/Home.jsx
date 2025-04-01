@@ -1,11 +1,11 @@
 import React from "react";
-import { Button } from "../components/ui/button";
+import Navbar from "../components/Navbar/Navbar.jsx";
 
 export default function PageHome () {
     return (
         <>
-            <div className="flex flex-col items-center justify-center min-h-svh bg-zinc-900">
-                <Button>Click me</Button>
+            <div className="relative bg-zinc-900">
+                <Navbar />
             </div>
         </>
     );
