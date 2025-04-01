@@ -1,16 +1,19 @@
-import './App.css'
-import { Button } from './components/ui/button'
+import './App.css';
+import Movie from './pages/Movie';
+import Home from './pages/Home';
+import { Toaster } from 'react-hot-toast';
+import { Route, Routes } from 'react-router-dom';
 
 function App () {
-
-
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-svh bg-zinc-900">
-        <Button>Click me</Button>
-      </div>
+      <Toaster position="top-center" />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/movie" element={<Movie />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
