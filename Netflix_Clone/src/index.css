@@ -110,3 +110,13 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
+
+.bg-gradient-video {
+  background-image: linear-gradient(180deg,
+      hsla(0, 0%, 10%, 0) 0%,
+      hsla(0, 0%, 10%, 0.15) 19%,
+      hsla(0, 0%, 10%, 0.35) 29%,
+      hsla(0, 0%, 10%, 0.58) 35%,
+      #171717 50%,
+      #171717 100%);
+}

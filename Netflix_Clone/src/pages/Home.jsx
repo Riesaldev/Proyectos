@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "@/components/Navbar/Navbar.jsx";
 import SliderVideo from "@/components/Home/SliderVideo.jsx";
 
-export default function PageHome () {
+function HomePage () {
     return (
         <>
             <div className="relative bg-zinc-900">
@@ -12,3 +12,5 @@ export default function PageHome () {
         </>
     );
 }
+
+export default HomePage;
