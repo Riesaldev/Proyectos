@@ -1,18 +1,27 @@
-import React from 'react';
+import { Checkbox } from "@/components/ui/checkbox"
+import Terms from "@/components/Login/Terms";
+import LoginForm from "./LoginForm";
 
 function LoginLayout () {
     return (
         <div>
-            <h1 className="text-3xl font-bold mb-4">Iniciar sesión</h1>
-            <p className="text-gray-300 mb-6">Bienvenido de nuevo. Inicia sesión para continuar.</p>
-            {/* Aquí iría el formulario de inicio de sesión */}
-            <form className="space-y-4">
-                <input type="email" placeholder="Correo electrónico" className="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500" required />
-                <input type="password" placeholder="Contraseña" className="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500" required />
-                <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded">Iniciar sesión</button>
-            </form>
-            <div className="mt-4">
-                <a href="#" className="text-blue-400 hover:underline">¿Olvidaste tu contraseña?</a>
+            <h1 className="text-3xl font-bold text-left mb-7">Iniciar Sesión</h1>
+            <LoginForm />
+
+            <div className="mt-5 text-center">
+                <a href="/" className="hover:underline hover:opacity-70">¿Has olvidado tu contraseña?</a>
+            </div>
+
+            <div className="flex items-center space-x-2 mt-4">
+                <Checkbox id="Terms" className="border-white" />
+                <label className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Recuerdame</label>
+            </div>
+            <div className="mt-4 flex gap-1">
+                <p className="text-white opacity-70">¿Aun sin Netflix?</p>
+                <a href="/register" className="opacity-100 text-white">Suscríbete ya</a>
+            </div>
+            <div>
+                <Terms />
             </div>
         </div>
     );

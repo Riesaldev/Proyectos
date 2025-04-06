@@ -1,9 +1,8 @@
-import React from "react";
 import Logo from "../components/Logo";
 import LoginLayout from "../components/Login/LoginLayout";
 
 
-export default function PageLogin () {
+const LoginPage = () => {
     return (
         <div className="h-full">
             <div className="bg-[url(/img/login-bg.jpg)] bg-cover bg-center min-h-screen opacity-60 -z-10">
@@ -19,3 +18,5 @@ export default function PageLogin () {
         </div>
     );
 }
+
+export default LoginPage;
