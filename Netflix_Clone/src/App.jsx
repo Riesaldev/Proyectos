@@ -1,5 +1,5 @@
 import './App.css';
-import Movie from './pages/Movie';
+import Movie from './pages/Movies';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import MyList from './pages/MyList';
@@ -17,7 +17,7 @@ function App () {
         <Route path="/" element={<Home />} />
         <Route path="/movies" element={<Movie />} />
         <Route path="/series" element={<Series />} />
-        <Route path="/mylist" element={<MyList />} />
+        <Route path="/my-list" element={<MyList />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/more-views" element={<MoreViews />} />

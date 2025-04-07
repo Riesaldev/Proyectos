@@ -3,7 +3,7 @@ import React from "react";
 export default function PageMovie () {
     return (
         <div>
-            <h1>Movie...</h1>
+            <h1>Movies...</h1>
         </div>
     );
 }

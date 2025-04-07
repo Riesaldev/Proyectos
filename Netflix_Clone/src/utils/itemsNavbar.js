@@ -21,7 +21,7 @@ const itemsNavbar = [
         label: "Novedades más vistas"
     },
     {
-        href: "/mylist",
+        href: "/my-list",
         className: "hover:text-gray-300 transition-all duration-300",
         label: "Mi lista"
     }
