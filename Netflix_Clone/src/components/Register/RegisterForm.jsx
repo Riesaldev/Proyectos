@@ -12,7 +12,6 @@ import {
     FormMessage,
 } from '../ui/form';
 
-import { useState } from 'react';
 import FormError from '../FormError';
 
 const FormSchema = z.object( {
@@ -22,22 +21,26 @@ const FormSchema = z.object( {
     password: z.string().min( 6, {
         message: "Password is too short",
     } ),
-} )
+    repeatPassword: z.string(),
+} ).refine( ( data ) => data.password === data.repeatPassword, {
+    message: "Passwords don't match",
+    path: [ 'repeatPassword' ],
+} );
 
-const LoginForm = () => {
-    const [ error, setError ] = useState( "" );
+const RegisterForm = () => {
     const form = useForm( {
         resolver: zodResolver( FormSchema ),
         defaultValues: {
             email: '',
             password: '',
+            repeatPassword: '',
         },
     } );
 
     const onSubmit = ( e ) => {
-        //TODO: Implement login logic and put setError
+        //TODO: Implement register logic and put setError
         console.log( e );
-    }
+    };
 
     return (
         <Form {...form}>
@@ -67,11 +70,24 @@ const LoginForm = () => {
                         </FormItem>
                     )}
                 />
-                <FormError message={error} />
-                <Button type="submit" className="w-full bg-[#E50914]">Iniciar sesión</Button>
+
+                <FormField
+                    control={form.control}
+                    name="repeatPassword"
+                    render={( { field } ) => (
+                        <FormItem>
+                            <FormControl>
+                                <Input placeholder="RepeatPassword" {...field} className="h-14 text-white" />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormError />
+                <Button type="submit" className="w-full bg-[#E50914]">Regístrate</Button>
             </form>
         </Form>
     )
 };
 
-export default LoginForm;
+export default RegisterForm;

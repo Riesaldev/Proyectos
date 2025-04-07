@@ -1,10 +1,12 @@
-import React from 'react';
+import RegistreLayout from "../components/Register/RegisterLayout";
+import Layout from "@/components/Layout";
 
 const RegisterPage = () => {
     return (
-        <div>
-            <h1>Register...</h1>
-
+        <div className="h-full">
+            <Layout>
+                <RegistreLayout />
+            </Layout>
         </div>
     );
 }
