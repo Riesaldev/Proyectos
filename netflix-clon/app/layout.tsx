@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Netfli_Clone by RiesalDev",
-  description: "A Netflix clone built with Next.js, Tailwind CSS, and TypeScript.",
+  title: "Netflix Clone by RiesalDev",
+  description: "This is a Netflix clone built with Next.js and Tailwind CSS.",
 };
 
 export default function RootLayout({
