@@ -1,26 +1,23 @@
+
 export const itemsNavbar = [
     {
         name: "Inicio",
-        href: "/",
+        link: "/",
     },
     {
         name: "Películas",
-        href: "/movies",
+        link: "/movies",
     },
     {
         name: "Series",
-        href: "/series",
+        link: "/series",
     },
     {
         name: "Mi Lista",
-        href: "/my-list",
+        link: "/my-list",
     },
     {
         name: "Novedades más vistas",
-        href: "/More-viewed",
-    },
-    {
-        name: "Mi Lista",
-        href: "/my-list",
+        link: "/More-viewed",
     },
 ];
