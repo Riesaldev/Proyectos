@@ -4,6 +4,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import axios from 'axios';
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -28,7 +29,15 @@ const RegisterForm = () => {
         },
     });
 
-    const onSubmit = (data: z.infer<typeof formSchema>) => {
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+        try {
+            await axios.post('/api/auth/register', data);
+
+        } catch (error) {
+            console.error("Error during registration:", error);
+
+        }
+
         console.log(data);
     };
 
