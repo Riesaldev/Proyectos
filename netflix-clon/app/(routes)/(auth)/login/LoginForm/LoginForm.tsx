@@ -21,6 +21,7 @@ import FormError from './FormError/FormError';
 
 const LoginForm = () => {
     const [error, setError] = useState<string | undefined>("");
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

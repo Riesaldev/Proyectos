@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
-import Terms from './Terms/Terms';
+import Terms from '../components/Terms/Terms';
 import LoginForm from './LoginForm/LoginForm';
 
 const LoginPage = () => {
