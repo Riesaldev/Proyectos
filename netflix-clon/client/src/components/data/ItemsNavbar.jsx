@@ -9,7 +9,7 @@ const ItemsNavbar = () => {
 
     return (
         <nav >
-            <ul className="flex ml-10 gap-8 text-white">
+            <ul className="flex ml-10 gap-8">
                 {items.map( ( item, index ) => (
                     <li key={index}>
                         <a href={item.Link}>{item.name}</a>

@@ -1,12 +1,11 @@
+import SliderVideo from "@/components/SliderVideo"
 
 
 const HomePage = () => {
     return (
-        <>
-
-            <h1>Welcome to the Home Page</h1>
-            <p>This is the main page of the application.</p>
-        </>
+        <div className="bg-[#171717] w-full h-screen ">
+            <SliderVideo />
+        </div>
     )
 }
 
