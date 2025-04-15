@@ -3,15 +3,15 @@ import { Button } from "./ui/button";
 
 const SliderVideo = () => {
     return (
-        <div className="relative w-full h-[70vh] md:h-[66.25vw] lg:h-[45vw] ">
+        <div className="relative w-full h-[80vh] md:h-[60vw] lg:h-[55vw] ">
             <video
                 src="/videos/video-trailer-test.mp4"
-                className="brightness-50 object-fill h-[80vw] w-full md:h-[56.25vw] lg:h-[45vw]"
+                className="brightness-50 object-fill h-full w-full md:h-[56.25vw] lg:h-[45vw]"
                 autoPlay
                 muted
                 loop
             />
-            <div className="flex flex-col justify-end absolute w-full md:w-[36%] px-4 md:px-0 md:left-[4%] z-20 top-0 -bottom-7 md:bottom-[36%] ">
+            <div className="flex flex-col justify-end absolute w-full md:w-[36%] px-4 md:px-0 md:left-[4%] z-20 top-0 bottom-0 md:bottom-[36%] ">
                 <div className="pt-24 md:pt-0">
                     <h2 className="text-2xl md:text-5xl lg:text-8xl font-bold drop-shadow-xl"> RiesalDev</h2>
                     <br />
@@ -28,6 +28,11 @@ const SliderVideo = () => {
                         </Button>
                     </div>
                 </div>
+            </div>
+            <div
+                className="absolute bg-transparent bg-no-repeat bg-contain w-full opacity-100 top-auto md:-bottom-10 lg:bottom-25 h-[30vw] bg-linear-to-b from-transparent
+                to-[#171717]"
+            >
             </div>
         </div>
     );
