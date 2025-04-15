@@ -13,11 +13,11 @@ const NavbarDesktop = () => {
             )}
         >
             <div className="px-[4%] mx-auto h-full flex items-center justify-center">
-                <div className="flex gap-4 justify-between items-center h-full w-[90%]">
+                <div className="flex gap-4 justify-between items-center h-full w-[98%] ">
                     <div className="flex items-center justify-between w-full">
                         <Logo />
                         <ItemsNavbar />
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-4 text-white">
                             <Search className="cursor-pointer" />
                             <BellRing className="cursor-pointer" />
                             <p>Username</p>
