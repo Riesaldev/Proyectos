@@ -1,5 +1,5 @@
 
-import { Menu } from "lucide-react";
+import { BellRing, Search, Menu } from "lucide-react";
 import Logo from "../Logo";
 import {
     Sheet,
@@ -23,6 +23,13 @@ const NavbarMobile = () => {
                     <lu className=" text-white ml-5 mt-16 list-none gap-6 flex flex-col ">
                         <ItemsNavbar />
                     </lu>
+                    <div className="border-[1px] border-white/70 m-5" />
+                    <div className="flex justify-between gap-6 mt-4 mx-15">
+                        <Search className="cursor-pointer hover:text-gray-400 transition-all duration-300" />
+                        <BellRing className="cursor-pointer hover:text-gray-400 transition-all duration-300" />
+                        <p>User</p>
+                        {/*TODO: Add user profile*/}
+                    </div>
                 </SheetContent>
             </Sheet>
 
