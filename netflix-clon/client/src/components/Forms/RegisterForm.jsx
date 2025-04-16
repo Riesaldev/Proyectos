@@ -16,17 +16,28 @@ import FormError from './FormError';
 
 
 const formSchema = z.object( {
-    email: z.string().email( { message: 'Invalid email address' } ),
-    password: z.string().min( 6, { message: 'Password must be at least 6 characters long' } ),
+    email: z.string().email( {
+        message: 'Please enter a valid email address'
+    } ),
+    password: z.string().min( 6, {
+        message: 'Your password must contain at least 6 characters'
+    } ),
+    repeatPassword: z.string().min( 6, {
+        message: 'Password must be at least 6 characters long'
+    } )
+} ).refine( ( data ) => data.password === data.repeatPassword, {
+    message: "Passwords don't match",
+    path: [ 'repeatPassword' ]
 } );
 
-const LoginForm = () => {
+const RegisterForm = () => {
     const [ error, setError ] = useState( "" );
     const form = useForm( {
         resolver: zodResolver( formSchema ),
         defaultValues: {
             email: '',
             password: '',
+            repeatPassword: '',
         },
     } );
 
@@ -70,11 +81,28 @@ const LoginForm = () => {
                         </FormItem>
                     )}
                 />
+
+                <FormField
+                    control={form.control}
+                    name="repeatPassword"
+                    render={( { field } ) => (
+                        <FormItem>
+                            <FormControl>
+                                <Input
+                                    type="password"
+                                    placeholder="Repite la contraseña" {...field}
+                                    className="h-14 text-white"
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormError message={error} />
-                <Button type="submit" className="w-full bg-[#E50914]">Iniciar sesión</Button>
+                <Button type="submit" className="w-full bg-[#E50914]">Regístrate</Button>
             </form>
         </Form>
     );
 }
 
-export default LoginForm;
+export default RegisterForm;
