@@ -1,22 +1,25 @@
+
+
 const ItemsNavbar = () => {
-    const items = [
-        { name: "Inicio", Link: "/" },
-        { name: "Series", Link: "/series" },
-        { name: "Películas", Link: "/movies" },
-        { name: "Novedades más vistas", Link: "/trending" },
-        { name: "Mi lista", Link: "/mylist" },
-    ];
 
     return (
-        <nav >
-            <ul className="flex ml-10 gap-8">
-                {items.map( ( item, index ) => (
-                    <li key={index}>
-                        <a href={item.Link}>{item.name}</a>
-                    </li>
-                ) )}
-            </ul>
-        </nav>
+        <>
+            <li>
+                <a className="hover:text-gray-400 transition-all duration-300" href="/">Inicio</a>
+            </li>
+            <li>
+                <a className="hover:text-gray-400 transition-all duration-300" href="/series">Series</a>
+            </li>
+            <li>
+                <a className="hover:text-gray-400 transition-all duration-300" href="/movies">Películas</a>
+            </li>
+            <li>
+                <a className="hover:text-gray-400 transition-all duration-300" href="/trending">Novedades mas vistas</a>
+            </li>
+            <li>
+                <a className="hover:text-gray-400 transition-all duration-300" href="/mylist">Mi lista</a>
+            </li>
+        </>
     );
 };
 

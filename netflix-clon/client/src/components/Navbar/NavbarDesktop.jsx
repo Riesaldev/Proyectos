@@ -3,8 +3,6 @@ import { BellRing, Search } from "lucide-react";
 import Logo from "../Logo";
 import ItemsNavbar from "../data/itemsNavbar";
 
-
-
 const NavbarDesktop = () => {
     return (
         <div
@@ -16,7 +14,9 @@ const NavbarDesktop = () => {
                 <div className="flex gap-4 justify-between items-center h-full w-[98%] ">
                     <div className="flex items-center justify-between w-full">
                         <Logo />
-                        <ItemsNavbar />
+                        <lu className="flex flex-row items-center gap-6 list-none">
+                            <ItemsNavbar />
+                        </lu>
                         <div className="flex items-center gap-4">
                             <Search className="cursor-pointer" />
                             <BellRing className="cursor-pointer" />
@@ -26,8 +26,7 @@ const NavbarDesktop = () => {
                 </div>
             </div>
         </div>
-
     );
-}
+};
 
 export default NavbarDesktop;
