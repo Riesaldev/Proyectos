@@ -4,6 +4,11 @@ import insertUserModel from "../../models/users/insertUserModel.js";
 const registerUserController = async ( req, res, next ) => {
     try
     {
+        if ( !req.body )
+        {
+            throw generateErrorUtil( 'El cuerpo de la solicitud está vacío.', 400 );
+        }
+
         const { email, password } = req.body;
 
         if ( !email || !password )
