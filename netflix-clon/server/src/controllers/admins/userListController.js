@@ -1,7 +1,7 @@
-import selectAllUsersModel from "../../models/admin/selectAllUsersModel.js";
+import selectAllUsersModel from "../../models/admins/selectAllUsersModel.js";
 import generateErrorUtil from "../../utils/generateErrorUtil.js";
 
-const usersListController = async ( req, res, next ) => {
+const userListController = async ( req, res, next ) => {
     try
     {
         if ( req.user.role !== "admin" )
@@ -30,4 +30,4 @@ const usersListController = async ( req, res, next ) => {
     }
 };
 
-export default usersListController;
+export default userListController;

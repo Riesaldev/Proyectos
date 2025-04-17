@@ -1,8 +1,8 @@
-import selectUserByIdModel from "../../models/selectUserByIdModel.js";
-import updateUserAvatarModel from "../../models/updateUserAvatarModel.js";
+import selectUserByIdModel from "../../models/users/selectUserByIdModel.js";
+import updateUserAvatarModel from "../../models/users/updateUserAvatarModel.js";
 import saveImgUtil from "../../utils/saveImgUtil.js";
 import removeImgUtil from "../../utils/removeImgUtil.js";
-import generateErrorUtil from "../utils/generateErrorUtil.js";
+import generateErrorUtil from "../../utils/generateErrorUtil.js";
 
 const userAvatarController = async ( req, res, next ) => {
     try

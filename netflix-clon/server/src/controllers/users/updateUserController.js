@@ -1,5 +1,5 @@
-import updateUserModel from '../models/users/updateUserModel.js';
-import generateErrorUtil from '../utils/generateErrorUtil.js';
+import updateUserModel from '../../models/users/updateUserModel.js';
+import generateErrorUtil from '../../utils/generateErrorUtil.js';
 
 const updateUserController = async ( req, res, next ) => {
     try

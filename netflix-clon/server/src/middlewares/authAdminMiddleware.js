@@ -1,4 +1,4 @@
-import generateErrorUtil from "../utils/generateErrorsUtils";
+import generateErrorUtil from "../utils/generateErrorUtil.js";
 
 const authAdminMiddleware = ( req, res, next ) => {
     if ( req.user.role !== "admin" )

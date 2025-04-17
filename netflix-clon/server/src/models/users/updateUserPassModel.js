@@ -1,5 +1,5 @@
-import { getPool } from "../../db/getPool";
-import generateErrorUtil from "../utils/generateErrorUtil";
+import { getPool } from "../../db/getPool.js";
+import generateErrorUtil from "../../utils/generateErrorUtil.js";
 import bcrypt from "bcrypt";
 
 const updateUserPassModel = async ( userId, password, newPassword ) => {

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import generateErrorUtil from '../utils/generateErrorUtil.js';
-import selectUserByEmailModel from '../models/users/selectUserByEmailModel.js';
+import generateErrorUtil from '../../utils/generateErrorUtil.js';
+import selectUserByEmailModel from '../../models/users/selectUserByEmailModel.js';
 import { adminConfig } from '../../db/getPool.js';
 
 const loginUserController = async ( req, res, next ) => {

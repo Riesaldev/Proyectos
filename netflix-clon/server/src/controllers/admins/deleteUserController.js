@@ -1,4 +1,4 @@
-import deleteUserModel from "../../models/admin/deleteUserModel.js";
+import deleteUserModel from "../../models/admins/deleteUserModel.js";
 import generateErrorUtil from "../../utils/generateErrorUtil.js";
 
 const deleteUserController = async ( req, res, next ) => {

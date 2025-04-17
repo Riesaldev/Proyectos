@@ -1,6 +1,6 @@
 
-import updateUserPassModel from "../../models/updateUserPassModel.js";
-import generateErrorUtil from "../../utils/generateErrorsUtils.js";
+import updateUserPassModel from "../../models/users/updateUserPassModel.js";
+import generateErrorUtil from "../../utils/generateErrorUtil.js";
 
 const useRecoveryPassCodeController = async ( req, res, next ) => {
     try

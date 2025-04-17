@@ -1,5 +1,5 @@
-import generateErrorUtil from "../../utils/generateErrorsUtils.js";
-import insertUserModel from "../../models/insertUserModel.js";
+import generateErrorUtil from "../../utils/generateErrorUtil.js";
+import insertUserModel from "../../models/users/insertUserModel.js";
 
 const registerUserController = async ( req, res, next ) => {
     try

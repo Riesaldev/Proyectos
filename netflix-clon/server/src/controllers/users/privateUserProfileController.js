@@ -1,4 +1,4 @@
-import selectUserByIdModel from '../../models/selectUserByIdModel.js';
+import selectUserByIdModel from '../../models/users/selectUserByIdModel.js';
 
 const privateUserProfileController = async ( req, res, next ) => {
     try

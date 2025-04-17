@@ -1,8 +1,8 @@
 import crypto from 'crypto';
-import insertRecoverPassCodeModel from '../../models/insertRecoveryPassCodeModel.js';
-import selectUserByEmailModel from '../../models/selectUserByEmailModel.js';
+import insertRecoverPassCodeModel from '../../models/users/insertRecoveryPassCodeModel.js';
+import selectUserByEmailModel from '../../models/users/selectUserByEmailModel.js';
 import sendEmailUtil from '../../utils/sendEmailUtil.js';
-import generateErrorUtil from '../utils/generateErrorUtil.js';
+import generateErrorUtil from '../../utils/generateErrorUtil.js';
 
 const sendRecoveryPassEmailController = async ( req, res, next ) => {
     try

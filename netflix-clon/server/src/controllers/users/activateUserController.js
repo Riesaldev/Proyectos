@@ -1,4 +1,4 @@
-import activateUserModel from "../../models/activateUserModel";
+import activateUserModel from "../../models/users/activateUserModel.js";
 
 const activateUserController = async ( req, res, next ) => {
     try

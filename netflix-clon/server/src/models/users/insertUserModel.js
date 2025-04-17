@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 
 import { getPool } from '../../db/getPool.js';
 import sendMailUtil from '../../utils/sendEmailUtil.js';
-import generateErrorUtil from '../utils/generateErrorUtil.js';
+import generateErrorUtil from '../../utils/generateErrorUtil.js';
 
 const insertUserModel = async (
     email,

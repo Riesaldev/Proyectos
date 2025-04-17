@@ -1,4 +1,4 @@
-import updateUserStatusModel from "../../models/admin/updateUserStatusModel.js";
+import updateUserStatusModel from "../../models/admins/updateUserStatusModel.js";
 import generateErrorUtil from "../../utils/generateErrorUtil.js";
 
 const updateUserStatusController = async ( req, res, next ) => {

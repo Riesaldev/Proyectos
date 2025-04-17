@@ -1,5 +1,5 @@
-import updateUserPassModel from '../../models/updateUserPassModel.js';
-import generateErrorUtil from '../utils/generateErrorUtil.js';
+import updateUserPassModel from '../../models/users/updateUserPassModel.js';
+import generateErrorUtil from '../../utils/generateErrorUtil.js';
 
 const updateUserPassController = async ( req, res, next ) => {
     try

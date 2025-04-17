@@ -1,5 +1,5 @@
 import { getPool } from "../../db/getPool.js";
-import generateErrorUtil from "../utils/generateErrorUtil.js";
+import generateErrorUtil from "../../utils/generateErrorUtil.js";
 
 const selectUserByIdModel = async ( userId ) => {
     const pool = await getPool();

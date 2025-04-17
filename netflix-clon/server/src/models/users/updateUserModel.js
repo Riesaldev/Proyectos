@@ -1,5 +1,5 @@
-import { detPool } from '../utils/detPool.js';
-import generateErrorUtil from '../utils/generateErrorUtil.js';
+import { getPool } from '../../db/getPool.js';
+import generateErrorUtil from '../../utils/generateErrorUtil.js';
 
 const updateUserModel = async ( {
     firstName,
@@ -8,7 +8,7 @@ const updateUserModel = async ( {
     email,
     userId,
 } ) => {
-    const pool = await detPool();
+    const pool = await getPool();
 
     try
     {

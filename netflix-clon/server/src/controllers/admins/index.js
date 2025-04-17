@@ -1,9 +1,9 @@
-import { activateUserController } from "../admins/activateUserController.js";
-import { updateUserStatusController } from "../admins/updateUserStatusController.js";
-import { deleteUserController } from "../admins/deleteUserController.js";
+import userListController from "./userListController.js";
+import updateUserStatusController from "./updateUserStatusController.js";
+import deleteUserController from "./deleteUserController.js";
 
 export {
-    activateUserController,
+    userListController,
     updateUserStatusController,
     deleteUserController,
-}
+};

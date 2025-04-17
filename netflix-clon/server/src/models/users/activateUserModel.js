@@ -1,5 +1,5 @@
-import { getPool } from '../db.js';
-import generateErrorUtil from '../utils/generateErrorUtil.js';
+import { getPool } from '../../db/getPool.js';
+import generateErrorUtil from '../../utils/generateErrorUtil.js';
 
 const activateUserModel = async ( regCode ) => {
     const pool = await getPool();
