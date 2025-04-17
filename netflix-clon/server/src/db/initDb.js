@@ -66,8 +66,8 @@ const initDb = async () => {
         const hashedPassword = await bcrypt.hash( `${ MYSQL_ADMIN_PASSWORD }`, 10 );
 
         await pool.query( `
-            INSERT INTO users (email, password, role, active)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO users (name, email, password, role, active)
+            VALUES (?, ?, ?, ?, ?)
         `, [
             `${ MYSQL_ADMIN_USER }`,
             `${ MYSQL_ADMIN_EMAIL }`,
