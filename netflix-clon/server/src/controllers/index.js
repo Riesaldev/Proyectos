@@ -4,7 +4,6 @@ import privateUserProfileController from './privateUserProfileController.js';
 import updateUserPassController from './updateUserPassController.js';
 import activateUserController from './activateUserController.js';
 import sendRecoveryPassEmailController from './sendRecoveryPassEmailController.js';
-//TODO:seguir desde aquí
 import useRecoveryPassCodeController from './useRecoveryPassCodeController.js';
 import userAvatarController from './userAvatarController.js';
 import updateUserController from './updateUserController.js';
