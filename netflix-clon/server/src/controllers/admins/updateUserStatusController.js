@@ -15,7 +15,7 @@ const updateUserStatusController = async ( req, res, next ) => {
 
         res.send( {
             status: "ok",
-            message: "Estado del usuario actualizado con exito.",
+            message: "Estado del usuario actualizado con éxito.",
             active: newStatus,
         } );
     } catch ( err )

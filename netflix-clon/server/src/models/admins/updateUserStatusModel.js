@@ -5,11 +5,11 @@ const updateUserStatusModel = async ( { userId } ) => {
     const pool = await getPool();
 
     const [ users ] = await pool.query(
-        `SELECT userId FROM users WHERE userId = ?`,
+        `SELECT * FROM users WHERE userId = ?`,
         [ userId ],
     );
 
-    if ( users.length < 1 )
+    if ( users.length === 0 )
     {
         generateErrorUtil( 'Usuario no encontrado', 404 );
     }

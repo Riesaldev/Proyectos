@@ -3,18 +3,14 @@ import generateErrorUtil from '../../utils/generateErrorUtil.js';
 
 const selectAllUsersModel = async (
     userId,
-    username,
-    firstName,
-    lastName,
+    userName,
     email,
 ) => {
     const pool = await getPool();
     let query = `
     SELECT 
         userId, 
-        firstName, 
-        lastName, 
-        username, 
+        userName, 
         email, 
         active,
         createdAt
@@ -28,23 +24,12 @@ const selectAllUsersModel = async (
         params.push( userId );
     }
 
-    if ( username )
+    if ( userName )
     {
-        conditions.push( 'username LIKE ?' );
-        params.push( `%${ username }%` );
+        conditions.push( 'userName LIKE ?' );
+        params.push( `%${ userName }%` );
     }
 
-    if ( firstName )
-    {
-        conditions.push( 'firstName LIKE ?' );
-        params.push( `%${ firstName }%` );
-    }
-
-    if ( lastName )
-    {
-        conditions.push( 'lastName LIKE ?' );
-        params.push( `%${ lastName }%` );
-    }
 
     if ( email )
     {
