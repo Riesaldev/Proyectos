@@ -1,10 +1,9 @@
 import { getPool } from '../../db/getPool.js';
 import generateErrorUtil from '../../utils/generateErrorUtil.js';
 
+// Inicializamos el modelo.
 const updateUserModel = async ( {
-    firstName,
-    lastName,
-    username,
+    userName,
     email,
     userId,
 } ) => {
@@ -12,15 +11,18 @@ const updateUserModel = async ( {
 
     try
     {
-        // Verificar si el username ya está en uso por otro usuario
-        if ( username && username.trim() !== '' )
+
+        if (
+            userName && userName.trim() !== '' )
         {
-            const [ usersWithUsername ] = await pool.query(
-                `SELECT userId FROM users WHERE username = ? AND userId != ?`,
-                [ username.trim(), userId ],
+            const [ usersWithName ] = await pool.query(
+                `SELECT userId FROM users WHERE 
+                userName = ? AND userId != ?`,
+                [
+                    userName.trim(), userId ],
             );
 
-            if ( usersWithUsername.length > 0 )
+            if ( usersWithName.length > 0 )
             {
                 throw generateErrorUtil( 'Nombre de usuario no disponible', 409 );
             }
@@ -40,25 +42,17 @@ const updateUserModel = async ( {
             }
         }
 
+        // Construir la consulta dinámica para actualizar los campos proporcionados
         const updates = [];
         const params = [];
 
-        if ( firstName && firstName.trim() !== '' )
+        if (
+            userName &&
+            userName.trim() !== '' )
         {
-            updates.push( 'firstName = ?' );
-            params.push( firstName.trim() );
-        }
-
-        if ( lastName && lastName.trim() !== '' )
-        {
-            updates.push( 'lastName = ?' );
-            params.push( lastName.trim() );
-        }
-
-        if ( username && username.trim() !== '' )
-        {
-            updates.push( 'username = ?' );
-            params.push( username.trim() );
+            updates.push( 'userName = ? ' );
+            params.push(
+                userName.trim() );
         }
 
         if ( email && email.trim() !== '' )
@@ -67,26 +61,28 @@ const updateUserModel = async ( {
             params.push( email.trim() );
         }
 
+        // Si no hay campos para actualizar, lanzar un error
         if ( updates.length === 0 )
         {
-            throw generateErrorUtil( 'No se proporcionaron campos para actualizar.', 400 );
+            throw generateErrorUtil( 'No se proporcionaron campos para actualizar', 400 );
         }
 
-        updates.push( 'updatedAt = ?' );
+        // Agregar el campo modifiedAt y el userId a los parámetros
+        updates.push( 'modifiedAt = ?' );
         params.push( new Date() );
         params.push( userId );
 
+        // Construir y ejecutar la consulta
         const query = `UPDATE users SET ${ updates.join( ', ' ) } WHERE userId = ?`;
-
-        console.log( 'Consulta SQL:', query );
-        console.log( 'Parámetros:', params );
+        console.log( 'Consulta SQL:', query ); // Log de la consulta SQL
+        console.log( 'Parámetros:', params ); // Log de los parámetros
 
         const [ result ] = await pool.query( query, params );
-        console.log( 'Resultado de la consulta:', result );
+        console.log( 'Resultado de la consulta:', result ); // Log del resultado
 
-    } catch ( error )
+    } catch ( err )
     {
-        console.error( 'Error al actualizar el usuario:', error );
+        console.error( 'Error en updateUserModel:', err ); // Log del error para depuración
         throw generateErrorUtil( 'Error al actualizar el usuario', 500 );
     }
 };

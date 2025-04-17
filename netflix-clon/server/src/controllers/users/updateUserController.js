@@ -4,9 +4,9 @@ import generateErrorUtil from '../../utils/generateErrorUtil.js';
 const updateUserController = async ( req, res, next ) => {
     try
     {
-        const { firstName, lastName, username, email } = req.body;
+        const { userName, email } = req.body;
 
-        if ( !firstName && !lastName && !username && !email )
+        if ( !userName && !email )
         {
             throw generateErrorUtil( 'No se proporcionaron campos para actualizar.', 400 );
         }
@@ -17,9 +17,7 @@ const updateUserController = async ( req, res, next ) => {
             throw generateErrorUtil( 'Usuario no autenticado o ID de usuario no proporcionado.', 401 );
         }
         await updateUserModel( {
-            firstName,
-            lastName,
-            username,
+            userName,
             email,
             userId,
         } );
