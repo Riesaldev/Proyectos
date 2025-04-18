@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios'; // Added axios import
-import { toast } from 'react-hot-toast'; // Added toast import
+import toast from 'react-hot-toast'; // Modified toast import
 
 import { Button } from "@/components/ui/button"
 import {

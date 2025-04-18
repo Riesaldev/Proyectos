@@ -13,8 +13,11 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import FormError from './FormError';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import useAuthContext from '@/hooks/useAuthContext.js';
+import { Navigate } from 'react-router-dom';
 
+const { VITE_API_URL } = import.meta.env;
 
 const formSchema = z.object( {
     email: z.string().email( { message: 'Invalid email address' } ),
@@ -22,7 +25,16 @@ const formSchema = z.object( {
 } );
 
 const LoginForm = () => {
-    const [ error, setError ] = useState( "" );
+    const [ formInputs, setFormInputs ] = useState( {
+        email: '',
+        password: '',
+    } )
+    const [ loading, setLoading ] = useState( false );
+
+    // Example usage: Display a loading indicator
+    const LoadingIndicator = () => loading ? <p>Loading...</p> : null;
+    const { authUser, authLoginState, authLogoutState } = useAuthContext();
+    const [ error, setError ] = useState( null );
     const form = useForm( {
         resolver: zodResolver( formSchema ),
         defaultValues: {
@@ -31,27 +43,65 @@ const LoginForm = () => {
         },
     } );
 
-    const onSubmit = ( data ) => {
+    const handleLogin = async ( e ) => {
+        try
+        {
+            e.preventDefault();
+            setLoading( true );
 
-        setError( toast.loading( 'Cargando...', {
-            id: 'login',
-        } ) );
-        setError( toast.dismiss( 'login' ) );
-        setError( toast.success( 'Login successful', {
-            id: 'login',
-        } ) );
-        setError( toast.error( 'Login failed', {
-            id: 'login',
-        } ) );
-        setError( "" );
+            const res = await fetch( `${ VITE_API_URL }/api/users/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify( formInputs ),
+            } );
 
-        console.log( data );
+            const body = await res.json();
 
+            if ( body.status === 'error' )
+            {
+                throw new Error( body.message );
+            }
+
+            authLoginState( body.data.token );
+
+            // Usa el userName de la respuesta del backend
+            toast.success( `Bienvenid@ ${ body.data.userName }!!`, {
+                id: 'login-success',
+            } );
+
+        } catch ( err )
+        {
+            toast.error( err.message, {
+                id: 'login',
+            } );
+        } finally
+        {
+            setLoading( false );
+        }
+    }
+
+    const handleLogout = () => {
+        authLogoutState();
+        toast.success( 'Sesión cerrada' );
     };
 
+    if ( authUser )
+    {
+        return (
+            <>
+                <Navigate to="/login" />
+                <Button type="button" className="w-full bg-[#E50914]" onClick={handleLogout}>Cerrar sesión</Button>
+            </>
+        );
+    }
+    <form onSubmit={handleLogin} className="w-full gap-4 flex flex-col">
+        <LoadingIndicator />
+    </form>
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit( onSubmit )} className="w-full gap-4 flex flex-col">
+            <form onSubmit={handleLogin} className="w-full gap-4 flex flex-col">
                 <FormField
                     control={form.control}
                     name="email"
@@ -61,6 +111,11 @@ const LoginForm = () => {
                                 <Input
                                     placeholder="Correo electrónico" {...field}
                                     className="h-14 text-white"
+                                    type="email"
+                                    id="email"
+                                    onChange={( e ) => setFormInputs( { ...formInputs, email: e.target.value } )}
+                                    value={formInputs.email}
+                                    autoFocus
                                 />
                             </FormControl>
                             <FormMessage />
@@ -75,8 +130,11 @@ const LoginForm = () => {
                             <FormControl>
                                 <Input
                                     type="password"
+                                    id="password"
                                     placeholder="Contraseña" {...field}
                                     className="h-14 text-white"
+                                    onChange={( e ) => setFormInputs( { ...formInputs, password: e.target.value } )}
+                                    value={formInputs.password}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -84,15 +142,11 @@ const LoginForm = () => {
                     )}
                 />
                 <FormError message={error} />
-                <Button type="submit" className="w-full bg-[#E50914]">Iniciar sesión</Button>
-                <Toaster toastOptions="
-                    {
-                        style: {
-                            background: '#1F2937',
-                            color: '#FFFFFF',
-                        },
-                    },
-                "/>
+                <Button type="submit"
+                    onClick={() => {
+                        setError( null );
+                    }}
+                    className="w-full bg-[#E50914]">Iniciar sesión</Button>
             </form>
         </Form>
     );

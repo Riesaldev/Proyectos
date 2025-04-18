@@ -50,6 +50,7 @@ const loginUserController = async ( req, res, next ) => {
             status: 'ok',
             data: {
                 token,
+                userName: user.userName, // Incluye el userName en la respuesta
             },
         } );
 

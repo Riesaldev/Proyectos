@@ -9,7 +9,7 @@ import { Toaster } from 'react-hot-toast'
 function App () {
   return (
     <div className='text-white'>
-      <Toaster position='bottom-rigth' />
+      <Toaster position='bottom-right' />
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='/login' element={<LoginPage />} />
