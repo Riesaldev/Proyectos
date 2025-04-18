@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import FormError from './FormError';
+import toast, { Toaster } from 'react-hot-toast';
 
 
 const formSchema = z.object( {
@@ -31,7 +32,19 @@ const LoginForm = () => {
     } );
 
     const onSubmit = ( data ) => {
-        //TODO: Put setError("") here to reset the error message => setError( "" );
+
+        setError( toast.loading( 'Cargando...', {
+            id: 'login',
+        } ) );
+        setError( toast.dismiss( 'login' ) );
+        setError( toast.success( 'Login successful', {
+            id: 'login',
+        } ) );
+        setError( toast.error( 'Login failed', {
+            id: 'login',
+        } ) );
+        setError( "" );
+
         console.log( data );
 
     };
@@ -72,6 +85,14 @@ const LoginForm = () => {
                 />
                 <FormError message={error} />
                 <Button type="submit" className="w-full bg-[#E50914]">Iniciar sesión</Button>
+                <Toaster toastOptions="
+                    {
+                        style: {
+                            background: '#1F2937',
+                            color: '#FFFFFF',
+                        },
+                    },
+                "/>
             </form>
         </Form>
     );

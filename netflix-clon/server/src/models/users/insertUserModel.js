@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 
 import { getPool } from '../../db/getPool.js';
+
 import sendMailUtil from '../../utils/sendEmailUtil.js';
 import generateErrorUtil from '../../utils/generateErrorUtil.js';
 
@@ -40,6 +41,7 @@ const insertUserModel = async (
         ${ process.env.CLIENT_URL }/validate/${ regCode }
     `;
 
+    console.log( 'Enviando correo a:', email ); // Log para confirmar ejecución
     await sendMailUtil( email, emailSubject, emailBody );
 
 };

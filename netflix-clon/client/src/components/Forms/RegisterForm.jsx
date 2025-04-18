@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios'; // Added axios import
+import { toast } from 'react-hot-toast'; // Added toast import
 
 import { Button } from "@/components/ui/button"
 import {
@@ -13,6 +15,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import FormError from './FormError';
+
+const { VITE_API_URL } = import.meta.env;
 
 
 const formSchema = z.object( {
@@ -30,8 +34,8 @@ const formSchema = z.object( {
     path: [ 'repeatPassword' ]
 } );
 
-const RegisterForm = () => {
-    const [ error, setError ] = useState( "" );
+export function RegisterForm () {
+    const [ error, setError ] = useState( "" ); // Corrected usage of setError
     const form = useForm( {
         resolver: zodResolver( formSchema ),
         defaultValues: {
@@ -41,10 +45,60 @@ const RegisterForm = () => {
         },
     } );
 
-    const onSubmit = ( data ) => {
-        //TODO: Put setError("") here to reset the error message => setError( "" );
-        console.log( data );
+    const onSubmit = async ( data ) => {
+        try
+        {
+            if ( !VITE_API_URL )
+            {
+                throw new Error( "API URL is not defined. Please check your environment variables." );
+            }
 
+            await axios.post( `${ VITE_API_URL }/api/users/register`, data )
+
+            toast.success( 'User registered successfully', {
+                id: 'register',
+                icon: '✅',
+                type: 'success',
+            } );
+        } catch ( error )
+        {
+            console.error( error );
+
+            if ( error.response )
+            {
+                // Server responded with a status code outside the 2xx range
+                setError( `Error ${ error.response.status }: ${ error.response.statusText }` );
+                toast.error( `Error ${ error.response.status }: ${ error.response.data || 'Something went wrong' }`, {
+                    id: 'register',
+                    icon: '❌',
+                    type: 'error',
+                    background: '#f44336',
+                    color: '#fff',
+                } );
+            } else if ( error.request )
+            {
+                // Request was made but no response received
+                setError( 'No response received from the server' );
+                toast.error( 'No response received from the server', {
+                    id: 'register',
+                    icon: '❌',
+                    type: 'error',
+                    background: '#f44336',
+                    color: '#fff',
+                } );
+            } else
+            {
+                // Something else happened
+                setError( error.message );
+                toast.error( error.message, {
+                    id: 'register',
+                    icon: '❌',
+                    type: 'error',
+                    background: '#f44336',
+                    color: '#fff',
+                } );
+            }
+        }
     };
 
     return (
@@ -106,3 +160,4 @@ const RegisterForm = () => {
 }
 
 export default RegisterForm;
+
