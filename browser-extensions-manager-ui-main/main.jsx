@@ -3,7 +3,8 @@ import App from './App.jsx';
 import { StrictMode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext.jsx';
-import './index.css';
+import './src/styles.css';
+
 
 createRoot( document.getElementById( 'root' ) ).render(
     <StrictMode>
