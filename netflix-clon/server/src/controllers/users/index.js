@@ -7,8 +7,10 @@ import sendRecoveryPassEmailController from './sendRecoveryPassEmailController.j
 import useRecoveryPassCodeController from './useRecoveryPassCodeController.js';
 import userAvatarController from './userAvatarController.js';
 import updateUserController from './updateUserController.js';
+import userProfilesController from './userProfilesController.js';
 
 export {
+    userProfilesController,
     registerUserController,
     loginUserController,
     privateUserProfileController,

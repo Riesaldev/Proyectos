@@ -17,7 +17,7 @@ const initDb = async () => {
         console.log( 'Borrando base de datos...' );
 
         await pool.query(
-            'DROP TABLE IF EXISTS users, films, watchlist'
+            'DROP TABLE IF EXISTS users, profiles, films, watchlist'
         );
         console.log( 'Base de datos borrada correctamente' );
 
@@ -29,13 +29,25 @@ const initDb = async () => {
                 userName VARCHAR(40) DEFAULT 'User' ,
                 email VARCHAR(50) NOT NULL,
                 password VARCHAR(100) NOT NULL,
-                avatar VARCHAR(100) DEFAULT NULL,
+                profiles TEXT DEFAULT NULL,
                 regCode CHAR(30),
                 recoverPassCode CHAR(30),
                 role ENUM('admin', 'normal') DEFAULT 'normal' NOT NULL,
                 active BOOLEAN DEFAULT FALSE,
                 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
                 modifiedAt DATETIME ON UPDATE CURRENT_TIMESTAMP 
+            )
+        `);
+
+        await pool.query( `
+            CREATE TABLE IF NOT EXISTS profiles(
+                profileId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                profileName VARCHAR(40) NOT NULL,
+                userId INT UNSIGNED NOT NULL, -- Agrega la columna userId
+                avatar VARCHAR(100) DEFAULT NULL,
+                createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                modifiedAt DATETIME ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (userId) REFERENCES users(userId) -- Ajusta la relación con users
             )
         `);
 
