@@ -3,7 +3,7 @@ import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import useAuthContext from '@/hooks/useAuthContext.js';
 import toast from 'react-hot-toast';
-import ProfileLayout from '@/components/ui/ProfileLayout';
+import ProfileLayout from '@/components/ProfileLayout';
 import FormLayout from '@/components/FormLayout';
 
 const ProfilePage = () => {
@@ -17,7 +17,7 @@ const ProfilePage = () => {
     };
 
     const handleToHome = () => {
-        window.location.href = '/login';
+        window.location.href = '/';
     };
 
 

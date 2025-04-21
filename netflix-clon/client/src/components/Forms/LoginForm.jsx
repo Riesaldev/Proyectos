@@ -31,7 +31,7 @@ const LoginForm = () => {
     } )
     const [ loading, setLoading ] = useState( false );
 
-
+    // Example usage: Display a loading indicator
     const LoadingIndicator = () => loading ? <p>Loading...</p> : null;
     const { authUser, authLoginState } = useAuthContext();
     const [ error, setError ] = useState( null );
@@ -64,7 +64,7 @@ const LoginForm = () => {
                 throw new Error( body.message );
             }
 
-            authLoginState( body.data.token );
+            await authLoginState( body.data.token );
 
             toast.success( `Bienvenid@ ${ body.data.userName }!!`, {
                 id: 'login-success',
@@ -82,20 +82,16 @@ const LoginForm = () => {
     }
 
 
-
     if ( authUser )
     {
-        return (
-            <>
-                <Navigate to={`/profile/${ authUser?.userId }`} />
-            </>
-        );
+        return <Navigate to={`/profile/${ authUser?.userId }`} />;
     }
+    <form onSubmit={handleLogin} className="w-full gap-4 flex flex-col">
+        <LoadingIndicator />
+    </form>
     return (
         <Form {...form}>
             <form onSubmit={handleLogin} className="w-full gap-4 flex flex-col">
-                {/* Mueve el LoadingIndicator dentro del formulario */}
-                {loading && <p>Loading...</p>}
                 <FormField
                     control={form.control}
                     name="email"
