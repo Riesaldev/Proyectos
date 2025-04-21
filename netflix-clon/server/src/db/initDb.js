@@ -26,16 +26,15 @@ const initDb = async () => {
         await pool.query( `
             CREATE TABLE IF NOT EXISTS users(
                 userId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                userName VARCHAR(40) DEFAULT 'User' ,
+                userName VARCHAR(40) DEFAULT 'User',
                 email VARCHAR(50) NOT NULL,
                 password VARCHAR(100) NOT NULL,
-                profiles TEXT DEFAULT NULL,
                 regCode CHAR(30),
                 recoverPassCode CHAR(30),
                 role ENUM('admin', 'normal') DEFAULT 'normal' NOT NULL,
                 active BOOLEAN DEFAULT FALSE,
                 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-                modifiedAt DATETIME ON UPDATE CURRENT_TIMESTAMP 
+                modifiedAt DATETIME ON UPDATE CURRENT_TIMESTAMP
             )
         `);
 

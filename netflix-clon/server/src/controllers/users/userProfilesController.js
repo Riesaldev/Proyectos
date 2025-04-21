@@ -11,7 +11,7 @@ const userProfilesController = async ( req, res, next ) => {
         res.send( {
             status: "ok",
             data: {
-                profiles,
+                profiles, // Devuelve una lista vacía si no hay perfiles
             },
         } );
     } catch ( err )

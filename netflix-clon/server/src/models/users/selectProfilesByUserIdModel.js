@@ -16,14 +16,8 @@ const selectProfilesByUserIdModel = async ( userId ) => {
             [ userId ],
         );
 
-        if ( profiles.length < 1 )
-        {
-            console.log( "No profiles found for userId:", userId ); // Debug log
-            throw generateErrorUtil( 'No se encontraron perfiles.', 404 );
-        }
-
         console.log( "Profiles fetched successfully:", profiles ); // Debug log
-        return profiles;
+        return profiles; // Devuelve una lista vacía si no hay perfiles
     } catch ( error )
     {
         console.error( "Error in selectProfilesByUserIdModel:", error ); // Debug log

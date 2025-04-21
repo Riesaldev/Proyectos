@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios'; // Added axios import
-import toast from 'react-hot-toast'; // Modified toast import
+import toast from 'react-hot-toast';
 
 import { Button } from "@/components/ui/button"
 import {
@@ -35,7 +34,12 @@ const formSchema = z.object( {
 } );
 
 export function RegisterForm () {
-    const [ error, setError ] = useState( "" ); // Corrected usage of setError
+    const [ error, setError ] = useState( "" );
+    const [ formInputs, setFormInputs ] = useState( {
+        email: '',
+        password: '',
+        repeatPassword: '',
+    } );
     const form = useForm( {
         resolver: zodResolver( formSchema ),
         defaultValues: {
@@ -45,15 +49,24 @@ export function RegisterForm () {
         },
     } );
 
-    const onSubmit = async ( data ) => {
+    const handleRegister = async ( e ) => {
         try
         {
-            if ( !VITE_API_URL )
-            {
-                throw new Error( "API URL is not defined. Please check your environment variables." );
-            }
+            e.preventDefault();
 
-            await axios.post( `${ VITE_API_URL }/api/users/register`, data )
+            const res = await fetch( `${ VITE_API_URL }/api/users/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify( formInputs ),
+            } );
+
+            const body = await res.json();
+            if ( !res.ok )
+            {
+                throw new Error( body.message || 'Something went wrong' );
+            }
 
             toast.success( 'User registered successfully', {
                 id: 'register',
@@ -66,7 +79,6 @@ export function RegisterForm () {
 
             if ( error.response )
             {
-                // Server responded with a status code outside the 2xx range
                 setError( `Error ${ error.response.status }: ${ error.response.statusText }` );
                 toast.error( `Error ${ error.response.status }: ${ error.response.data || 'Something went wrong' }`, {
                     id: 'register',
@@ -77,7 +89,6 @@ export function RegisterForm () {
                 } );
             } else if ( error.request )
             {
-                // Request was made but no response received
                 setError( 'No response received from the server' );
                 toast.error( 'No response received from the server', {
                     id: 'register',
@@ -88,7 +99,6 @@ export function RegisterForm () {
                 } );
             } else
             {
-                // Something else happened
                 setError( error.message );
                 toast.error( error.message, {
                     id: 'register',
@@ -103,7 +113,7 @@ export function RegisterForm () {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit( onSubmit )} className="w-full gap-4 flex flex-col">
+            <form onSubmit={handleRegister} className="w-full gap-4 flex flex-col">
                 <FormField
                     control={form.control}
                     name="email"
@@ -113,6 +123,11 @@ export function RegisterForm () {
                                 <Input
                                     placeholder="Correo electrónico" {...field}
                                     className="h-14 text-white"
+                                    type="email"
+                                    id="email"
+                                    onChange={( e ) => setFormInputs( { ...formInputs, email: e.target.value } )}
+                                    value={formInputs.email}
+                                    autoFocus
                                 />
                             </FormControl>
                             <FormMessage />
@@ -129,6 +144,9 @@ export function RegisterForm () {
                                     type="password"
                                     placeholder="Contraseña" {...field}
                                     className="h-14 text-white"
+                                    id="password"
+                                    onChange={( e ) => setFormInputs( { ...formInputs, password: e.target.value } )}
+                                    value={formInputs.password}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -146,6 +164,9 @@ export function RegisterForm () {
                                     type="password"
                                     placeholder="Repite la contraseña" {...field}
                                     className="h-14 text-white"
+                                    id="repeatPassword"
+                                    onChange={( e ) => setFormInputs( { ...formInputs, repeatPassword: e.target.value } )}
+                                    value={formInputs.repeatPassword}
                                 />
                             </FormControl>
                             <FormMessage />

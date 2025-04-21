@@ -6,11 +6,7 @@ import { getPool } from '../../db/getPool.js';
 import sendMailUtil from '../../utils/sendEmailUtil.js';
 import generateErrorUtil from '../../utils/generateErrorUtil.js';
 
-const insertUserModel = async (
-    email,
-    password,
-) => {
-
+const insertUserModel = async ( email, password ) => {
     const pool = await getPool();
 
     let [ users ] = await pool.query(
@@ -27,7 +23,7 @@ const insertUserModel = async (
     const hashedPass = await bcrypt.hash( password, 10 );
     const now = new Date();
 
-    await pool.query(
+    const [ result ] = await pool.query(
         `INSERT INTO users (email, password, regCode, createdAt) VALUES (?, ?, ?, ?)`,
         [ email, hashedPass, regCode, now ],
     );
@@ -44,7 +40,7 @@ const insertUserModel = async (
     console.log( 'Enviando correo a:', email ); // Log para confirmar ejecución
     await sendMailUtil( email, emailSubject, emailBody );
 
+    return result.insertId; // Devolver el ID del usuario recién creado
 };
-
 
 export default insertUserModel;

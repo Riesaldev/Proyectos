@@ -93,7 +93,7 @@ const ProfileLayout = () => {
             console.error( err );
             toast.error( 'Error al eliminar el perfil' );
         }
-    }
+    };
 
     useEffect( () => {
         if ( authUser )
@@ -110,7 +110,15 @@ const ProfileLayout = () => {
                     <div key={profile.profileId}>
                         <a href=''>Avatar: {profile.avatar}</a>
                         <h2>{profile.profileName}</h2>
-                        <Button type="button" onClick={handleDeleteProfile} className="w-full bg-[#E50914]">Eliminar</Button>
+                        {!profile.isDefault && ( // Only show delete button if the profile is not default
+                            <Button
+                                type="button"
+                                onClick={() => handleDeleteProfile( profile.profileId )}
+                                className="w-full bg-[#E50914]"
+                            >
+                                Eliminar
+                            </Button>
+                        )}
                     </div>
                 ) )}
             </div>

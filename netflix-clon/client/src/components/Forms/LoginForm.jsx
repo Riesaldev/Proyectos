@@ -84,7 +84,7 @@ const LoginForm = () => {
 
     if ( authUser )
     {
-        return <Navigate to={`/profile/${ authUser?.userId }`} />;
+        return <Navigate to={`/profile/${ authUser.userId }`} />;
     }
     <form onSubmit={handleLogin} className="w-full gap-4 flex flex-col">
         <LoadingIndicator />
