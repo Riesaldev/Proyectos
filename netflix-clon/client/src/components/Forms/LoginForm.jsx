@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,8 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import FormError from './FormError';
 import toast from 'react-hot-toast';
-import useAuthContext from '@/hooks/useAuthContext.js';
-import { Navigate } from 'react-router-dom';
+
 
 const { VITE_API_URL } = import.meta.env;
 
@@ -29,8 +29,8 @@ const LoginForm = () => {
         email: '',
         password: '',
     } )
-    const { authLoginState, setAuthUser } = useAuthContext();
     const [ error, setError ] = useState( null );
+    const navigate = useNavigate();
     const form = useForm( {
         resolver: zodResolver( formSchema ),
         defaultValues: {
@@ -59,12 +59,12 @@ const LoginForm = () => {
                 throw new Error( body.message );
             }
 
-            authLoginState( body.data.token );
-            setAuthUser( { userId: body.data.userId, userName: body.data.userName } );
 
             toast.success( `Bienvenid@ ${ body.data.userName }!!`, {
                 id: 'login-success',
             } );
+
+            navigate( '/' );
 
         } catch ( err )
         {

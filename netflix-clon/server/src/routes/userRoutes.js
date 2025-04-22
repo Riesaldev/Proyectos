@@ -24,7 +24,7 @@ const router = express.Router();
 router.post( '/register', registerUserController );
 
 // ruta para activar un usuario
-router.put( '/validate/:regCode', activateUserController );
+router.get( '/validate/:regCode', activateUserController );
 
 // ruta para iniciar sesión
 router.post( '/login', loginUserController );

@@ -18,7 +18,6 @@ const activateUserModel = async ( regCode ) => {
         `UPDATE users SET active = TRUE, regCode = null WHERE regCode = ?`,
         [ regCode ],
     );
-}
-
+};
 
 export default activateUserModel;

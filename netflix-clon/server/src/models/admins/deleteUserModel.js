@@ -14,7 +14,17 @@ const deleteUserModel = async ( userId ) => {
         throw generateErrorUtil( 'Usuario no encontrado.', 404 );
     }
 
-    await pool.query( `DELETE FROM users WHERE userId = ?`, [ userId ] );
+    // Delete associated profiles
+    await pool.query(
+        `DELETE FROM profiles WHERE userId = ?`,
+        [ userId ],
+    );
+
+    // Delete the user
+    await pool.query(
+        `DELETE FROM users WHERE userId = ?`,
+        [ userId ],
+    );
 };
 
 export default deleteUserModel;

@@ -15,12 +15,10 @@ const transport = nodemailer.createTransport( {
         user: SMTP_USER,
         pass: SMTP_PASS,
     },
-    secure: true, // Asegura que se use TLS
     tls: {
-        rejectUnauthorized: false, // Permite certificados autofirmados
+        rejectUnauthorized: false,
+
     },
-    debug: true,
-    logger: true,
 } );
 //Función que envía un email
 const sendEmailUtil = async ( email, subject, body ) => {

@@ -42,11 +42,11 @@ const initDb = async () => {
             CREATE TABLE IF NOT EXISTS profiles(
                 profileId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 profileName VARCHAR(40) NOT NULL,
-                userId INT UNSIGNED NOT NULL, -- Agrega la columna userId
+                userId INT UNSIGNED NOT NULL,
                 avatar VARCHAR(100) DEFAULT NULL,
                 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
                 modifiedAt DATETIME ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (userId) REFERENCES users(userId) -- Ajusta la relación con users
+                FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
             )
         `);
 
