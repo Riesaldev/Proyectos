@@ -38,7 +38,7 @@ const ProfileLayout = () => {
         }
     };
 
-    const fetchProfiles = async () => {
+    const fetchProfiles = React.useCallback( async () => {
         try
         {
             const res = await fetch(
@@ -65,7 +65,7 @@ const ProfileLayout = () => {
             console.error( err );
             toast.error( 'Error al cargar los perfiles...' );
         }
-    };
+    }, [ authUser, authToken ] );
 
     const handleDeleteProfile = async ( profileId ) => {
         try
@@ -100,7 +100,7 @@ const ProfileLayout = () => {
         {
             fetchProfiles();
         }
-    }, [ authUser, authToken ] );
+    }, [ authUser, authToken, fetchProfiles ] );
 
     return (
         <div className='flex flex-col items-center justify-center h-full'>
@@ -110,7 +110,7 @@ const ProfileLayout = () => {
                     <div key={profile.profileId}>
                         <a href=''>Avatar: {profile.avatar}</a>
                         <h2>{profile.profileName}</h2>
-                        {!profile.isDefault && ( // Only show delete button if the profile is not default
+                        {profile.profileId !== 1 && (
                             <Button
                                 type="button"
                                 onClick={() => handleDeleteProfile( profile.profileId )}
