@@ -29,11 +29,7 @@ const LoginForm = () => {
         email: '',
         password: '',
     } )
-    const [ loading, setLoading ] = useState( false );
-
-    // Example usage: Display a loading indicator
-    const LoadingIndicator = () => loading ? <p>Loading...</p> : null;
-    const { authUser, authLoginState } = useAuthContext();
+    const { authLoginState, setAuthUser } = useAuthContext();
     const [ error, setError ] = useState( null );
     const form = useForm( {
         resolver: zodResolver( formSchema ),
@@ -47,7 +43,6 @@ const LoginForm = () => {
         try
         {
             e.preventDefault();
-            setLoading( true );
 
             const res = await fetch( `${ VITE_API_URL }/api/users/login`, {
                 method: 'POST',
@@ -64,7 +59,8 @@ const LoginForm = () => {
                 throw new Error( body.message );
             }
 
-            await authLoginState( body.data.token );
+            authLoginState( body.data.token );
+            setAuthUser( { userId: body.data.userId, userName: body.data.userName } );
 
             toast.success( `Bienvenid@ ${ body.data.userName }!!`, {
                 id: 'login-success',
@@ -75,20 +71,11 @@ const LoginForm = () => {
             toast.error( err.message, {
                 id: 'login',
             } );
-        } finally
-        {
-            setLoading( false );
+
         }
-    }
 
+    };
 
-    if ( authUser )
-    {
-        return <Navigate to={`/profile/${ authUser.userId }`} />;
-    }
-    <form onSubmit={handleLogin} className="w-full gap-4 flex flex-col">
-        <LoadingIndicator />
-    </form>
     return (
         <Form {...form}>
             <form onSubmit={handleLogin} className="w-full gap-4 flex flex-col">
