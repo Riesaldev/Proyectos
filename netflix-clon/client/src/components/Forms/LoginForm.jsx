@@ -53,14 +53,16 @@ const LoginForm = () => {
             } );
 
             const body = await res.json();
+            console.log( body );
 
             if ( body.status === 'error' )
             {
                 throw new Error( body.message );
             }
 
-
-            toast.success( `Bienvenid@ ${ body.data.userName }!!`, {
+            const userName = body.data?.userName || 'Usuario'; // Verifica si userName existe
+            console.log( userName );
+            toast.success( `Bienvenid@ ${ userName }!!`, {
                 id: 'login-success',
             } );
 
@@ -71,9 +73,7 @@ const LoginForm = () => {
             toast.error( err.message, {
                 id: 'login',
             } );
-
         }
-
     };
 
     return (

@@ -48,10 +48,13 @@ const loginUserController = async ( req, res, next ) => {
             expiresIn: '7d',
         } );
 
+        const userName = user.userName
+
         res.send( {
             status: 'ok',
             data: {
                 token,
+                userName,
             },
         } );
     } catch ( err )

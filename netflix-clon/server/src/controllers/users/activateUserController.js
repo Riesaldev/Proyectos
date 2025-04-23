@@ -15,7 +15,16 @@ const activateUserController = async ( req, res, next ) => {
         } );
     } catch ( err )
     {
-        next( err );
+        if ( err.message === 'Codigo de registro invalido' )
+        {
+            res.status( 400 ).send( {
+                status: 'error',
+                message: 'El código ya ha sido utilizado o es inválido.',
+            } );
+        } else
+        {
+            next( err );
+        }
     }
 };
 
