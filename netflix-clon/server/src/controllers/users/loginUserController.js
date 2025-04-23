@@ -32,11 +32,13 @@ const loginUserController = async ( req, res, next ) => {
             throw generateErrorUtil( 'Cuenta en espera de validacion.', 403 );
         }
 
+        // Comprobamos si el usuario es el administrador
         if ( email === adminConfig.email && password === adminConfig.password )
         {
             // Lógica si el usuario es el administrador
             console.log( '¡Administrador autenticado!' );
         }
+
         const tokenInfo = {
             id: user.userId,
             role: user.role,
@@ -50,15 +52,13 @@ const loginUserController = async ( req, res, next ) => {
             status: 'ok',
             data: {
                 token,
-                userName: user.userName, // Incluye el userName en la respuesta
             },
         } );
-
-    }
-    catch ( err )
+    } catch ( err )
     {
         next( err );
     }
+};
 
-}
 export default loginUserController;
+

@@ -65,10 +65,10 @@ export function RegisterForm () {
             const body = await res.json();
             if ( !res.ok )
             {
-                throw new Error( body.message || 'Something went wrong' );
+                throw new Error( body.message );
             }
 
-            toast.success( 'User registered successfully', {
+            toast.success( 'User registered successfully, please check your email for validating your user', {
                 id: 'register',
                 icon: '✅',
                 type: 'success',
@@ -91,16 +91,6 @@ export function RegisterForm () {
             {
                 setError( 'No response received from the server' );
                 toast.error( 'No response received from the server', {
-                    id: 'register',
-                    icon: '❌',
-                    type: 'error',
-                    background: '#f44336',
-                    color: '#fff',
-                } );
-            } else
-            {
-                setError( error.message );
-                toast.error( error.message, {
                     id: 'register',
                     icon: '❌',
                     type: 'error',

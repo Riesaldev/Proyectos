@@ -34,15 +34,16 @@ const insertUserModel = async ( email, password ) => {
 
         Gracias por registrarte en nuestra plataforma. Para activar tu cuenta, por favor haz click en el siguiente enlace:
 
-        ${ process.env.CLIENT_URL }/api/users/validate/${ regCode }
+        ${ process.env.CLIENT_URL }/validate/${ regCode }
 
         Una vez validado, serás redirigido a la página de inicio de sesión.
     `;
 
-    console.log( 'Enviando correo a:', email ); // Log para confirmar ejecución
+    console.log( 'Enviando correo a:', email );
+
     await sendMailUtil( email, emailSubject, emailBody );
 
-    return result.insertId; // Devolver el ID del usuario recién creado
+    return result.insertId;
 };
 
 export default insertUserModel;

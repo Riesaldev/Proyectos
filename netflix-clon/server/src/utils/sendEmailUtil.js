@@ -10,14 +10,14 @@ const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
 //Creamos un transporte (una conexión) para poder enviar un email
 const transport = nodemailer.createTransport( {
     host: SMTP_HOST,
-    port: SMTP_PORT,
+    port: parseInt( SMTP_PORT, 10 ),
+    secure: true,
     auth: {
         user: SMTP_USER,
         pass: SMTP_PASS,
     },
     tls: {
-        rejectUnauthorized: false,
-
+        rejectUnauthorized: false, // Allow self-signed certificates
     },
 } );
 //Función que envía un email
@@ -31,12 +31,12 @@ const sendEmailUtil = async ( email, subject, body ) => {
             subject,
             text: body,
         } );
-    } catch ( err )
+    } catch ( error )
     {
-        console.error( err );
+        console.error( error );
         throw generateErrorUtil( 'Error al enviar el email', 500 );
     }
 };
-
-
+console.log( 'SMTP Configuration:', { SMTP_HOST, SMTP_PORT, SMTP_USER } );
+//exportamos la función
 export default sendEmailUtil;

@@ -9,7 +9,10 @@ const activateUserController = async ( req, res, next ) => {
         //Llamamos la funcion y le damos el codigo de registro.
         await activateUserModel( regCode );
 
-        res.redirect( `${ process.env.CLIENT_URL }/login?activated=true` );
+        res.send( {
+            status: 'ok',
+            message: 'Usuario activado.',
+        } );
     } catch ( err )
     {
         next( err );
