@@ -60,9 +60,8 @@ const LoginForm = () => {
                 throw new Error( body.message );
             }
 
-            const userName = body.data?.userName || 'Usuario'; // Verifica si userName existe
-            console.log( userName );
-            toast.success( `Bienvenid@ ${ userName }!!`, {
+
+            toast.success( `Bienvenid@ ${ body.data.userName }!!`, {
                 id: 'login-success',
             } );
 
@@ -73,7 +72,9 @@ const LoginForm = () => {
             toast.error( err.message, {
                 id: 'login',
             } );
+
         }
+
     };
 
     return (
