@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const { VITE_API_URL } = import.meta.env;
 
 const ValidateAccountPage = () => {
     const { regCode } = useParams();
-    const navigate = useNavigate();
 
     useEffect( () => {
         const validateAccount = async () => {
@@ -17,27 +16,27 @@ const ValidateAccountPage = () => {
 
                 if ( !response.ok )
                 {
-                    if ( data.message === 'El código ya ha sido utilizado o es inválido.' )
-                    {
-                        toast.error( 'El código ya ha sido utilizado. Si tu cuenta ya está activada, inicia sesión.' );
-                    } else
-                    {
-                        throw new Error( data.message || 'Error al validar la cuenta' );
-                    }
-                } else
-                {
-                    toast.success( 'Cuenta activada con éxito. Ahora puedes iniciar sesión.' );
+                    const message = data.message || 'Error al validar la cuenta.';
+                    toast.error( message );
+                    localStorage.setItem( 'account-validation', JSON.stringify( { success: false, message } ) );
+                    return;
                 }
-                navigate( '/login' );
+
+                toast.success( 'Cuenta activada con éxito.' );
+                localStorage.setItem( 'account-validation', JSON.stringify( { success: true, message: 'Cuenta activada con éxito.' } ) );
             } catch ( error )
             {
-                toast.error( error.message || 'Error al validar la cuenta.' );
-                navigate( '/login' );
+                const message = error.message || 'Error al validar la cuenta.';
+                toast.error( message );
+                localStorage.setItem( 'account-validation', JSON.stringify( { success: false, message } ) );
+            } finally
+            {
+                window.close();
             }
         };
 
         validateAccount();
-    }, [ regCode, navigate ] );
+    }, [ regCode ] );
 
     return <div>Validando tu cuenta...</div>;
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,7 +28,7 @@ const LoginForm = () => {
     const [ formInputs, setFormInputs ] = useState( {
         email: '',
         password: '',
-    } )
+    } );
     const [ error, setError ] = useState( null );
     const navigate = useNavigate();
     const form = useForm( {
@@ -38,6 +38,17 @@ const LoginForm = () => {
             password: '',
         },
     } );
+
+    useEffect( () => {
+
+        const storedCredentials = localStorage.getItem( 'login-credentials' );
+        if ( storedCredentials )
+        {
+            const { email, password } = JSON.parse( storedCredentials );
+            setFormInputs( { email, password } );
+            localStorage.removeItem( 'login-credentials' );
+        }
+    }, [] );
 
     const handleLogin = async ( e ) => {
         try
@@ -65,7 +76,7 @@ const LoginForm = () => {
                 id: 'login-success',
             } );
 
-            navigate( '/' );
+            navigate( '/profile' );
 
         } catch ( err )
         {
@@ -128,6 +139,6 @@ const LoginForm = () => {
             </form>
         </Form>
     );
-}
+};
 
 export default LoginForm;

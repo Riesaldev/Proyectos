@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from "@/components/ui/button"
 import {
@@ -33,13 +34,14 @@ const formSchema = z.object( {
     path: [ 'repeatPassword' ]
 } );
 
-export function RegisterForm () {
+const RegisterForm = () => {
     const [ error, setError ] = useState( "" );
     const [ formInputs, setFormInputs ] = useState( {
         email: '',
         password: '',
         repeatPassword: '',
     } );
+    const navigate = useNavigate();
     const form = useForm( {
         resolver: zodResolver( formSchema ),
         defaultValues: {
@@ -68,36 +70,21 @@ export function RegisterForm () {
                 throw new Error( body.message );
             }
 
-            toast.success( 'User registered successfully, please check your email for validating your user', {
+
+            localStorage.setItem( 'login-credentials', JSON.stringify( {
+                email: formInputs.email,
+                password: formInputs.password,
+            } ) );
+
+            toast.success( 'Usuario registrado con éxito. Redirigiendo al inicio de sesión...', {
                 id: 'register',
-                icon: '✅',
-                type: 'success',
             } );
+
+            navigate( '/login' );
         } catch ( error )
         {
             console.error( error );
-
-            if ( error.response )
-            {
-                setError( `Error ${ error.response.status }: ${ error.response.statusText }` );
-                toast.error( `Error ${ error.response.status }: ${ error.response.data || 'Something went wrong' }`, {
-                    id: 'register',
-                    icon: '❌',
-                    type: 'error',
-                    background: '#f44336',
-                    color: '#fff',
-                } );
-            } else if ( error.request )
-            {
-                setError( 'No response received from the server' );
-                toast.error( 'No response received from the server', {
-                    id: 'register',
-                    icon: '❌',
-                    type: 'error',
-                    background: '#f44336',
-                    color: '#fff',
-                } );
-            }
+            setError( error.message || 'Algo salió mal.' );
         }
     };
 
@@ -168,7 +155,7 @@ export function RegisterForm () {
             </form>
         </Form>
     );
-}
+};
 
 export default RegisterForm;
 

@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ValidateAccountPage from './pages/ValidateAccountPage'
 import { Toaster } from 'react-hot-toast'
+import ProfilesPage from './pages/ProfilesPage.jsx'
 
 function App () {
   return (
@@ -16,6 +17,7 @@ function App () {
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/validate/:regCode' element={<ValidateAccountPage />} />
         <Route path='*' element={<NotFoundPage />} />
+        <Route path='/profile' element={<ProfilesPage />} />
 
 
       </Routes>
