@@ -1,24 +1,11 @@
-import React from 'react';
+import UsersItem from '@/components/data/UsersItem';
 
 const ProfileCards = ( { profile } ) => {
-
-    const { avatar, userName } = profile;
-
     return (
-        <div>
-            // avatar
-            <div className="flex flex-col items-center justify-center">
-                <img>
-                    {avatar}
-                </img>
-            </div>
-            //dates
-            <div className="flex flex-col items-center justify-center">
-                <p className="text-lg font-semibold">{userName}</p>
-
-            </div>
+        <div className="flex flex-col items-center">
+            <UsersItem profile={profile} />
         </div>
     );
-}
+};
 
 export default ProfileCards;
