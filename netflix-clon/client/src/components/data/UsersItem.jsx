@@ -5,7 +5,7 @@ const UsersItem = ( { profile } ) => {
 
     if ( !profileId || !profileName )
     {
-        return null; // No renderiza si faltan datos esenciales
+        return null;
     }
 
     return (

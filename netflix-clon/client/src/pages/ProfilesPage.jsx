@@ -1,6 +1,6 @@
 import ProfileCards from '@/components/Cards/ProfileCards';
 import Logo from '@/components/Logo';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
@@ -8,19 +8,18 @@ const { VITE_API_URL } = import.meta.env;
 
 const ProfilesPage = () => {
     const [ profiles, setProfiles ] = useState( [] );
-    const user = JSON.parse( localStorage.getItem( 'user' ) ) || {};
-    const { userId } = user;
 
     useEffect( () => {
         const fetchProfiles = async () => {
             try
             {
-                if ( !userId )
+                const user = JSON.parse( localStorage.getItem( 'user' ) ) || {};
+                if ( !user )
                 {
                     throw new Error( 'Usuario no autenticado.' );
                 }
 
-                const response = await fetch( `${ VITE_API_URL }/api/users/${ userId }/profiles`, {
+                const response = await fetch( `${ VITE_API_URL }/api/users/${ user }/profiles`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -42,7 +41,7 @@ const ProfilesPage = () => {
         };
 
         fetchProfiles();
-    }, [ userId ] );
+    }, [] );
 
     return (
         <div className="h-screen w-screen bg-gray-900">
