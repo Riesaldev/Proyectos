@@ -1,22 +1,25 @@
 import selectProfilesByUserIdModel from "../../models/users/selectProfilesByUserIdModel.js";
+import generateErrorUtil from "../../utils/generateErrorUtil.js";
 
 const userProfilesController = async ( req, res, next ) => {
     try
     {
-        const { userId } = req.params;
-        console.log( "Fetching profiles for userId:", userId ); // Debug log
+        const userId = req.user?.userId; // Obtén el userId del middleware
+        if ( !userId )
+        {
+            throw generateErrorUtil( 'Usuario no autenticado.', 401 );
+        }
 
         const profiles = await selectProfilesByUserIdModel( userId );
 
         res.send( {
-            status: "ok",
+            status: 'ok',
             data: {
-                profiles, // Devuelve una lista vacía si no hay perfiles
+                profiles,
             },
         } );
     } catch ( err )
     {
-        console.error( "Error in userProfilesController:", err ); // Debug log
         next( err );
     }
 };
