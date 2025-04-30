@@ -39,10 +39,10 @@ router.put( '/password/reset', sendRecoveryPassEmailController );
 router.put( '/password/reset/:recoverPassCode', useRecoveryPassCodeController );
 
 // ruta para actualizar el usuario
-router.put( '/profile', authUserMiddleware, updateUserController );
+router.patch( '/profile', authUserMiddleware, updateUserController );
 
 // ruta para actualizar el avatar del usuario
-router.put( '/avatar', authUserMiddleware, userAvatarController );
+router.patch( '/avatar', authUserMiddleware, userAvatarController );
 
 // ruta para obtener los diferentes perfiles del usuario
 router.get( '/:userId/profiles', authUserMiddleware, userProfilesController );

@@ -5,15 +5,16 @@ const authUserMiddleware = ( req, res, next ) => {
     try
     {
         const { authorization } = req.headers;
-        if ( !authorization )
+        if ( !authorization || !authorization.startsWith( 'Bearer ' ) )
         {
-            return next( generateErrorUtil( 'Falta la cabecera de autenticación', 401 ) );
-
+            return next( generateErrorUtil( 'Falta la cabecera de autenticación o formato incorrecto', 401 ) );
         }
+
+        const token = authorization.split( ' ' )[ 1 ]; // Extrae el token después de "Bearer"
 
         try
         {
-            const tokenInfo = jwt.verify( authorization, process.env.SECRET );
+            const tokenInfo = jwt.verify( token, process.env.SECRET );
             req.user = {
                 userId: tokenInfo.id,
                 role: tokenInfo.role,
