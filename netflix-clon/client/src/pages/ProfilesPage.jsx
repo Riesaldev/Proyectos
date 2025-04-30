@@ -3,26 +3,28 @@ import Logo from '@/components/Logo';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+import useAuthContext from '@/hooks/useAuthContext'; // Importamos el hook del contexto de autenticación
 
 const { VITE_API_URL } = import.meta.env;
 
 const ProfilesPage = () => {
     const [ profiles, setProfiles ] = useState( [] );
+    const { authToken, authUser } = useAuthContext(); // Obtenemos el token y el usuario del contexto
 
     useEffect( () => {
         const fetchProfiles = async () => {
             try
             {
-                const user = JSON.parse( localStorage.getItem( 'user' ) ) || {};
-                if ( !user )
+                if ( !authToken || !authUser?.userId )
                 {
                     throw new Error( 'Usuario no autenticado.' );
                 }
 
-                const response = await fetch( `${ VITE_API_URL }/api/users/${ user }/profiles`, {
+                const response = await fetch( `${ VITE_API_URL }/api/users/${ authUser.userId }/profiles`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${ authToken }`,
                     },
                 } );
 
@@ -41,7 +43,7 @@ const ProfilesPage = () => {
         };
 
         fetchProfiles();
-    }, [] );
+    }, [ authToken, authUser ] );
 
     return (
         <div className="h-screen w-screen bg-gray-900">
@@ -54,14 +56,16 @@ const ProfilesPage = () => {
                     {profiles.map( ( profile ) => (
                         <ProfileCards key={profile.profileId} profile={profile} />
                     ) )}
-                    <Link to="/create" className="items-center justify-center flex flex-col">
-                        <Logo />
-                        <p>Añadir perfil</p>
-                    </Link>
+                    <div className="flex flex-col items-center justify-center w-24 h-24 bg-gray-800 rounded-full cursor-pointer hover:bg-gray-700 transition duration-300 ease-in-out">
+                        <Link to="/create" className="items-center justify-center flex flex-col">
+                            <Logo isLink={false} />
+                            <p>Añadir perfil</p>
+                        </Link>
+                    </div>
                 </div>
-                <a href="/" className="border">
+                <Link to="/" className="border">
                     <p className="mx-6 my-2 text-xl">Administrar Perfiles</p>
-                </a>
+                </Link>
             </div>
         </div>
     );
