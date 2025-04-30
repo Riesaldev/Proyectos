@@ -21,25 +21,29 @@ const AuthProvider = ( { children } ) => {
         const fetchUser = async () => {
             try
             {
+                if ( !authToken )
+                {
+                    throw new Error( 'Token no disponible.' );
+                }
+
                 const res = await fetch( `${ VITE_API_URL }/api/users/profile`, {
                     headers: {
-                        Authorization: authToken,
+                        Authorization: `Bearer ${ authToken }`, // Asegúrate de incluir "Bearer"
                     },
                 } );
 
                 const body = await res.json();
 
-                if ( body.status === 'error' )
+                if ( !res.ok )
                 {
-                    throw new Error( body.message );
+                    throw new Error( body.message || 'Error al obtener el usuario.' );
                 }
 
-                setAuthUser( body.data.user );
+                setAuthUser( body.data.user ); // Asegúrate de que el usuario se establece correctamente
             } catch ( err )
             {
                 authLogoutState();
-
-                toast.error( err.message, {
+                toast.error( err.message || 'Error al autenticar.', {
                     id: 'authUser',
                 } );
             } finally
@@ -51,6 +55,9 @@ const AuthProvider = ( { children } ) => {
         if ( authToken )
         {
             fetchUser();
+        } else
+        {
+            setAuthLoading( false );
         }
     }, [ authToken ] );
 
