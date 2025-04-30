@@ -15,6 +15,8 @@ const LoginPage = () => {
         if ( searchParams.get( "activated" ) === "true" )
         {
             toast.success( "Cuenta activada con éxito. Ahora puedes iniciar sesión." );
+            // Clear the search parameter to prevent the toast from reappearing
+            window.history.replaceState( {}, document.title, window.location.pathname );
         }
     }, [ searchParams ] );
 

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
+import useAuthContext from '@/hooks/useAuthContext'; // Importa el hook del contexto de autenticación
 
 import { Button } from "@/components/ui/button"
 import {
@@ -25,6 +26,7 @@ const formSchema = z.object( {
 } );
 
 const LoginForm = () => {
+    const { authLoginState } = useAuthContext(); // Obtén la función para configurar el token
     const [ formInputs, setFormInputs ] = useState( {
         email: '',
         password: '',
@@ -40,13 +42,12 @@ const LoginForm = () => {
     } );
 
     useEffect( () => {
-
         const storedCredentials = localStorage.getItem( 'login-credentials' );
         if ( storedCredentials )
         {
             const { email, password } = JSON.parse( storedCredentials );
             setFormInputs( { email, password } );
-            localStorage.removeItem( 'login-credentials' );
+            localStorage.removeItem( 'login-credentials' ); // Ensure this is cleared
         }
     }, [] );
 
@@ -71,6 +72,7 @@ const LoginForm = () => {
                 throw new Error( body.message );
             }
 
+            authLoginState( body.data.token ); // Configura el token en el contexto de autenticación
 
             toast.success( `Bienvenid@ ${ body.data.userName }!!`, {
                 id: 'login-success',
