@@ -21,7 +21,7 @@ const LoginPage = () => {
     }, [ searchParams ] );
 
     return (
-        <div>
+        <>
             <Layout />
             <div>
                 <FormLayout>
@@ -48,7 +48,7 @@ const LoginPage = () => {
                     </div>
                 </FormLayout>
             </div>
-        </div>
+        </>
     );
 }
 
