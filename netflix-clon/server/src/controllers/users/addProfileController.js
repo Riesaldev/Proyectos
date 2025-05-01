@@ -4,15 +4,16 @@ import generateErrorUtil from "../../utils/generateErrorUtil.js";
 const addProfileController = async ( req, res, next ) => {
     try
     {
-        const { profileName, avatar } = req.body;
-        const userId = req.user?.userId;
+        const { profileName, avatar } = req.body; // Ensure the field name matches the frontend
 
-        if ( !profileName )
+        if ( !profileName || profileName.trim() === '' ) // Validate profileName
         {
             throw generateErrorUtil( "El nombre del perfil es obligatorio.", 400 );
         }
 
-        const profileId = await insertProfileModel( userId, profileName, avatar );
+        const userId = req.user?.userId;
+
+        const profileId = await insertProfileModel( userId, profileName.trim(), avatar );
 
         res.status( 201 ).send( {
             status: "ok",
