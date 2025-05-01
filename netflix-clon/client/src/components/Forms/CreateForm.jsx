@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -21,15 +20,14 @@ import toast from 'react-hot-toast';
 const { VITE_API_URL } = import.meta.env;
 
 const formSchema = z.object( {
-    name: z.string().min( 1, { message: 'Name is required' } ),
-    avatar: z.string().url( { message: 'Invalid URL' } ),
+    profileName: z.string().min( 1, { message: 'Name is required' } ),
+    avatar: z.string().url( { message: 'Invalid URL' } ).optional(),
 } );
 
 const CreateForm = () => {
-
     const { authToken } = useAuthContext();
-    const { formInputs } = useState( {
-        name: '',
+    const [ formInputs, setFormInputs ] = useState( {
+        profileName: '',
         avatar: '',
     } );
     const [ error, setError ] = useState( null );
@@ -37,7 +35,7 @@ const CreateForm = () => {
     const form = useForm( {
         resolver: zodResolver( formSchema ),
         defaultValues: {
-            name: '',
+            profileName: '',
             avatar: '',
         },
     } );
@@ -64,60 +62,57 @@ const CreateForm = () => {
             }
 
             toast.success( 'Perfil creado con éxito.' );
-            navigate( '/profiles' );
+            navigate( '/profile' );
         } catch ( error )
         {
             setError( error.message || 'Error al crear el perfil.' );
         }
-    }
+    };
+
     return (
-
-        <>
-            <Form {...form}>
-                <form onSubmit={handleCreate} className="w-full gap-4 flex flex-col">
-                    <FormField
-                        control={form.control}
-                        name="name"
-                        render={( { field } ) => (
-                            <FormItem>
-                                <FormControl>
-                                    <Input
-                                        placeholder="Nombre" {...field}
-                                        className="h-14 text-white"
-                                        type="text"
-
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="avatar"
-                        render={( { field } ) => (
-                            <FormItem>
-                                <FormControl>
-                                    <Input
-                                        placeholder="URL de la imagen" {...field}
-                                        className="h-14 text-white"
-                                        type="text"
-
-
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    {error && <FormError message={error} />}
-                    <Button type="submit"
-
-                        className="mt-4">Crear Perfil</Button>
-                </form>
-            </Form >
-        </>
+        <Form {...form}>
+            <form onSubmit={handleCreate} className="w-full gap-4 flex flex-col">
+                <FormField
+                    control={form.control}
+                    name="profileName"
+                    render={( { field } ) => (
+                        <FormItem>
+                            <FormControl>
+                                <Input
+                                    placeholder="Nombre" {...field}
+                                    className="h-14 text-white"
+                                    type="text"
+                                    onChange={( e ) => setFormInputs( { ...formInputs, profileName: e.target.value } )}
+                                    value={formInputs.profileName}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="avatar"
+                    render={( { field } ) => (
+                        <FormItem>
+                            <FormControl>
+                                <Input
+                                    placeholder="URL de la imagen (opcional)" {...field}
+                                    className="h-14 text-white"
+                                    type="text"
+                                    onChange={( e ) => setFormInputs( { ...formInputs, avatar: e.target.value } )}
+                                    value={formInputs.avatar}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                {error && <FormError message={error} />}
+                <Button type="submit" className="mt-4">Crear Perfil</Button>
+            </form>
+        </Form>
     );
-}
+};
 
 export default CreateForm;
