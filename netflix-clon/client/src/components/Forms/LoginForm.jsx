@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import useAuthContext from '@/hooks/useAuthContext'; // Importa el hook del contexto de autenticación
+import useAuthContext from '@/hooks/useAuthContext';
 
 import { Button } from "@/components/ui/button"
 import {
