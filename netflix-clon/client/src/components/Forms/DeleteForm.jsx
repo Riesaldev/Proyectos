@@ -42,7 +42,7 @@ const CreateForm = () => {
         },
     } );
 
-    const handleCreate = async ( e ) => {
+    const handleDeleteProfile = async ( e ) => {
         try
         {
             e.preventDefault();
@@ -74,7 +74,7 @@ const CreateForm = () => {
 
         <>
             <Form {...form}>
-                <form onSubmit={handleCreate} className="w-full gap-4 flex flex-col">
+                <form onSubmit={handleDeleteProfile} className="w-full gap-4 flex flex-col">
                     <FormField
                         control={form.control}
                         name="name"
