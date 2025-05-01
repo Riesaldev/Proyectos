@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast'
 import ProfilesPage from './pages/ProfilesPage.jsx'
 import ValidateAccountPage from './pages/ValidateAccountPage.jsx'
 import CreateProfilePage from './pages/CreateProfilePage.jsx'
+import ManageProfilePage from './pages/ManageProfilePage.jsx'
 
 function App () {
   return (
@@ -20,6 +21,8 @@ function App () {
         <Route path='*' element={<NotFoundPage />} />
         <Route path='/profile' element={<ProfilesPage />} />
         <Route path='/create' element={<CreateProfilePage />} />
+        <Route path='/manage' element={<ManageProfilePage />} />
+        <Route path='/manage/:profileId' element={<ManageProfilePage />} />
 
       </Routes>
     </div>

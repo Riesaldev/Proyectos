@@ -63,7 +63,7 @@ const ProfilesPage = () => {
                         </Link>
                     </div>
                 </div>
-                <Link to="/" className="border">
+                <Link to="/manage" className="border">
                     <p className="mx-6 my-2 text-xl">Administrar Perfiles</p>
                 </Link>
             </div>
