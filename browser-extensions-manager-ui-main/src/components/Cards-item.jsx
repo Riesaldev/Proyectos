@@ -1,20 +1,24 @@
+import SwitchButton from "./SwitchButton";
+import RemoveButton from "./RemoveButton";
 
 
 
 const Item = ( { item } ) => {
+
     return (
         <>
-            <div className="flex flex-col rounded-xl bg-white shadow-md p-4 m-4 w-3/4 h-2/3">
-                <div className="justify-center items-center">
+            <div className="rounded-2xl bg-white shadow-md p-4 w-[350px] h-[200px] flex flex-col justify-between">
+
+                <div className="flex items-start">
                     <img src={item.logo} alt={item.name} />
-                    <h2>{item.name}</h2>
-                    <p>{item.description}</p>
+                    <div className="ml-4 flex flex-col">
+                        <h2 className="font-bold">{item.name}</h2>
+                        <p>{item.description}</p>
+                    </div>
                 </div>
-                <div>
-                    <button type="button">Remove</button>
-                    <button className="Active-button" type="button" aria-label="Activate">
-                        Activate
-                    </button>
+                <div className="flex justify-between items-center mt-4">
+                    <RemoveButton />
+                    <SwitchButton />
                 </div>
             </div>
         </>
