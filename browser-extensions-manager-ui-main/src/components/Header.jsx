@@ -2,7 +2,7 @@
 const Header = () => {
     return (
         <div className="flex justify-center h-20 bg-slate-200 shadow-md pt-4">
-            <header className="max-xl:w-1/2 max-xl:min-w-[400px] xl:w-1/2 flex p-4 bg-white shadow-md rounded-lg">
+            <header className="max-xl:w-1/2 max-xl:min-w-[350px] xl:w-1/2 flex p-4 bg-white shadow-md rounded-lg">
                 <div className="flex items-center justify-between w-full">
                     <a href="./index.html">
                         <img src="../../public/img/logo.svg" alt="Logo" className="logo" />
