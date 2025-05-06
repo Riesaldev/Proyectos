@@ -1,3 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Estilos personalizados */
+body {
+    background: linear-gradient(180deg, #EBF2FC 0%, #EEF8F9 100%);
+    color: hsl(227, 75%, 14%);
+}
+
+.dark body {
+    background: linear-gradient(180deg, #040918 0%, #091540 100%);
+    color: hsl(200, 60%, 99%);
+}
+
+h1 {
+    color: hsl(227, 75%, 14%);
+}
+
+.dark h1 {
+    color: hsl(200, 60%, 99%);
+}
+
+button {
+    background-color: hsl(0, 0%, 93%);
+    color: hsl(227, 75%, 14%);
+}
+
+.dark .card {
+    background-color: #000000;
+    color: #ffffff
+}
+
+.dark header {
+    background-color: #000000;
+    color: #ffffff
+}
+
+.dark .cards {
+    background-color: #232837;
+    color: #ffffff
+}
