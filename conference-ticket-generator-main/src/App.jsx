@@ -1,15 +1,16 @@
 
 import './App.css'
-import Layout from './components/Layout'
+import { Route, Routes } from 'react-router-dom'
 
+import FormPage from './pages/FormPage'
 
 
 function App () {
   return (
     <>
-      <Layout>
-
-      </Layout>
+      <Routes>
+        <Route path="/" element={<FormPage />} />
+      </Routes>
     </>
   )
 }
