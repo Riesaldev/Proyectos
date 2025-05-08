@@ -4,20 +4,29 @@ import Form from "../components/Form";
 
 const FormPage = () => {
     return (
-        <div className="bg-[url(../../public/assets/images/background-mobile.png)] bg-no-repeat bg-center w-max-[375px] h-screen flex flex-col items-center justify-start absolute">
-            <div className="w-max-[375px] h-full w-full flex flex-col justify-start bg-[url(../../public/assets/images/pattern-lines.svg)]  bg-no-repeat bg-top-right  bg-[length:260%]">
-                <div className="w-max-[375px] h-40  flex flex-row items-baseline justify-end">
+        <div className="bg-[url(../../public/assets/images/background-mobile.png)] bg-no-repeat bg-center h-screen w-[375px] flex flex-col items-center justify-start absolute">
+
+            <div className="h-full w-auto flex flex-col bg-[url(../../public/assets/images/pattern-lines.svg)]  bg-no-repeat bg-[length:270%] items-center ">
+
+                <div className="flex flex-row w-full items-center align-middle">
+
+                    <img src="../../public/assets/images/pattern-circle.svg" alt="circles-top"
+                        className="h-28 w-auto flex relative -top-8 -left-5" />
+
                     <img src="../../public/assets/images/logo-full.svg" alt="logo"
-                        className=" w-56 h-54" />
-                    <img src="../../public/assets/images/pattern-squiggly-line-top.svg" alt="line-top" className="w-48 h-48" />
+                        className="w-42 h-auto" />
+
+                    <img src="../../public/assets/images/pattern-squiggly-line-top.svg" alt="line-top" className="h-auto w-24" />
+
                 </div>
-                <div className="w-max-[375px] h-40 flex flex-row items-center justify-center">
+
+                <div className="h-auto w-auto flex flex-col items-center justify-center text-center">
 
                     <Form />
                 </div>
             </div>
-            <div className="w-max-[375px] w-[575px] flex items-end">
-                <img src="../../public/assets/images/pattern-squiggly-line-bottom-mobile-tablet.svg" alt="line-bottom" className="h-3/4 self-end" />
+            <div className="w-max-[375px] flex justify-start relative">
+                <img src="../../public/assets/images/pattern-squiggly-line-bottom-mobile-tablet.svg" alt="line-bottom" className="self-end" />
             </div>
         </div>
     );
