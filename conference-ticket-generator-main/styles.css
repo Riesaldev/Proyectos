@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+* {
+    font-family: "inconsolata", monospace;
+    color: rgba(255, 255, 255, 0.87);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
