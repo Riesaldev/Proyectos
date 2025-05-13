@@ -27,13 +27,14 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" />
       </Head>
 
-      <body className="bg-[#f19fca] w-screen h-screen ">
+      <body className="w-screen h-screen bg-[#f19fca] text-white">
 
         <Header />
         <main>
           {children}
         </main>
         <Footer />
+
       </body>
     </html>
   );
