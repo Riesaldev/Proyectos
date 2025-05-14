@@ -4,7 +4,7 @@ import Form from "../components/Form";
 
 const FormPage = () => {
     return (
-        <div className="bg-[url(../../public/assets/images/background-mobile.png)] bg-no-repeat bg-center bg-cover h-screen w-[375px] flex flex-col items-center justify-start absolute text-white z-0">
+        <div className="relative bg-[url(../../public/assets/images/background-mobile.png)] bg-no-repeat bg-center brightness-120 bg-cover h-screen w-[375px] flex flex-col items-center justify-start text-white z-0">
 
             <div className="h-full w-auto flex flex-col bg-[url(../../public/assets/images/pattern-lines.svg)]  bg-no-repeat bg-[length:270%] items-center ">
 
@@ -25,9 +25,7 @@ const FormPage = () => {
                     <Form />
                 </div>
             </div>
-            <div className="w-max-[375px] h-20 flex flex-row gap-2">
-                <img src="../../public/assets/images/pattern-squiggly-line-bottom-mobile-tablet.svg" alt="line-bottom" className="self-end w-3/4" />
-            </div>
+            <img src="../../public/assets/images/pattern-squiggly-line-bottom-mobile-tablet.svg" alt="line-bottom" className="absolute bottom-0 left-0 w-full z-0 pointer-events-none " />
         </div>
     );
 };
