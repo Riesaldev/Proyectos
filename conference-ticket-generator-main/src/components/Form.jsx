@@ -1,9 +1,40 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 const Form = () => {
-    const [ avatar, setAvatar ] = useState( null );
     const [ dragActive, setDragActive ] = useState( false );
     const inputRef = useRef( null );
+
+    const [ name, setName ] = useState( "" );
+    const [ email, setEmail ] = useState( "" );
+    const [ git, setGit ] = useState( "" );
+    const [ avatar, setAvatar ] = useState( "" );
+
+    // Convierte el archivo a base64 y lo guarda en localStorage
+    const saveAvatarToLocalStorage = ( file ) => {
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            localStorage.setItem( "avatar", reader.result );
+            alert( "Ticket generated successfully!" );
+            // Aquí podrías redirigir al ticket si lo deseas
+        };
+        reader.readAsDataURL( file );
+    };
+
+    const handleSubmit = ( e ) => {
+        e.preventDefault();
+        localStorage.setItem( "name", name );
+        localStorage.setItem( "email", email );
+        localStorage.setItem( "git", git );
+
+        if ( avatar && avatar instanceof File )
+        {
+            saveAvatarToLocalStorage( avatar );
+        } else
+        {
+            localStorage.setItem( "avatar", "" );
+            alert( "Ticket generated successfully!" );
+        }
+    };
 
     const handleDrop = ( e ) => {
         e.preventDefault();
@@ -49,7 +80,7 @@ const Form = () => {
                 </div>
             </div>
 
-            <form className="flex flex-col gap-6 ">
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
 
                 {/* Avatar Upload */}
                 <div className="flex flex-col gap-4 w-full items-start">
@@ -71,14 +102,14 @@ const Form = () => {
                             onChange={handleChange}
                         />
                         <div className="flex justify-center items-center w-12 h-12 bg-[#332d53]/60 rounded-lg border border-[#3c385e]">
-                            <img src="../../public/assets/images/icon-upload.svg" alt="upload" className="h-8 w-auto" />
+                            <img src="/assets/images/icon-upload.svg" alt="upload" className="h-8 w-auto" />
                         </div>
                         <p className="text-slate-400 text-sm">
-                            {avatar ? avatar.name : "Drag and drop or click to upload"}
+                            {avatar && avatar.name ? avatar.name : "Drag and drop or click to upload"}
                         </p>
                     </div>
                     <section className="flex flex-row gap-2 items-center text-slate-500">
-                        <img src="../../public/assets/images/icon-info.svg" alt="info" className="w-4 h-4" />
+                        <img src="/assets/images/icon-info.svg" alt="info" className="w-4 h-4" />
                         <p className="text-xs">Upload your photo (JPG or PNG, max size: 500KB).</p>
                     </section>
                 </div>
@@ -91,6 +122,8 @@ const Form = () => {
                         id="name"
                         className="border border-neutral-700/80 rounded-lg p-3 w-full h-12 bg-neutral-700/20 text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-fuchsia-400 transition placeholder:pl-3"
                         placeholder="Your full name"
+                        value={name}
+                        onChange={( e ) => setName( e.target.value )}
                         required
                     />
                 </div>
@@ -103,6 +136,8 @@ const Form = () => {
                         id="email"
                         placeholder="example@email.com"
                         className="border border-neutral-700/80 rounded-lg p-3 w-full h-12 bg-neutral-700/20 text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-fuchsia-400 transition placeholder:pl-3"
+                        value={email}
+                        onChange={( e ) => setEmail( e.target.value )}
                         required
                     />
                 </div>
@@ -115,6 +150,8 @@ const Form = () => {
                         id="git"
                         placeholder="@yourusername"
                         className="border border-neutral-700/80 rounded-lg p-3 w-full h-12 bg-neutral-700/20 text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-fuchsia-400 transition placeholder:pl-3"
+                        value={git}
+                        onChange={( e ) => setGit( e.target.value )}
                         required
                     />
                 </div>
