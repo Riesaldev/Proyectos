@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# La Velada V
 
-First, run the development server:
+Bienvenido/a a **La Velada V**.  
+Este proyecto está dedicado a la gestión, seguimiento o visualización del evento "La Velada del Año V", inspirado por el conocido evento de boxeo y entretenimiento.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Descripción
+
+La Velada V es una aplicación que permite a los usuarios mantenerse informados sobre los combates, participantes, horarios y resultados del evento.  
+El objetivo es ofrecer una experiencia interactiva y centralizada para los fans y organizadores.
+
+## Características
+
+- Listado de combates y participantes.
+- Información actualizada de horarios y resultados.
+- Panel para estadísticas y predicciones.
+- Interfaz amigable y responsiva.
+
+## Tecnologías utilizadas
+
+- Next.js
+- Tailwind
+
+## Instalación
+
+1. Clona este repositorio:
+   ```bash
+   git clone https://github.com/Riesaldev/Proyectos.git
+   ```
+2. Accede a la carpeta del proyecto:
+   ```bash
+   cd Proyectos/La-velada-v
+   ```
+3. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+4. Ejecuta la aplicación:
+   ```bash
+   npm start
+   ```
+
+
+
+---
+
+Desarrollado por [Riesaldev](https://github.com/Riesaldev)
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
