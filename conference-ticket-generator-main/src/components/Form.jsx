@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Form = () => {
     const [ dragActive, setDragActive ] = useState( false );
@@ -161,7 +162,7 @@ const Form = () => {
                     type="submit"
                     className="bg-orange-500 hover:bg-orange-600 text-lg h-12 w-full rounded-xl text-neutral-900 font-extrabold mt-2 transition z-1"
                 >
-                    Generate My Ticket
+                    <Link to="/ticket">Generate My Ticket</Link>
                 </button>
             </form>
         </div>
