@@ -46,8 +46,8 @@ const Ticket = () => {
                   {/*avatar */}
                   <img src="../../public/assets/images/image-avatar.jpg" alt="avatar" className="w-10 h-10 rounded-lg" />
                   {/*user name */}
-                  <div className="flex flex-col items-start">
-                    <h3 className="text-neutral-100 text-md font-light">{name}</h3>
+                  <div className="flex flex-col">
+                    <h3 className="text-neutral-100 text-md font-light text-left">{name}</h3>
                     {/*GitHub username */}
                     <div className="flex flex-row items-center">{avatar}
                       <img src="../../public/assets/images/icon-github.svg" alt="confirmation code" className="w-4 h-3" />
