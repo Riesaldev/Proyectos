@@ -38,5 +38,3 @@ Este proyecto tiene como objetivo proporcionar una línea del tiempo interactiva
 
 Desarrollado por [Riesaldev](https://github.com/Riesaldev)
 ```
-
-¿Te gustaría que lo adapte para un framework específico o agregar alguna sección extra?
