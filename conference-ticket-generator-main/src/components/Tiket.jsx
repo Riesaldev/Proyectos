@@ -19,7 +19,7 @@ const Ticket = () => {
         {/* TicketPage Title */}
         <div className="flex flex-col items-center w-full gap-6">
           <div className="">
-            <h1 className="text-3xl font-bold text-neutral-100">Congrats, <span className="mask-l-from-75%">{name} Jonatan Kristof</span>! Your ticket is ready.</h1>
+            <h1 className="text-3xl font-bold text-neutral-100">Congrats, <span className="text-orange-500">{name} Jonatan Kristof</span>! Your ticket is ready.</h1>
           </div>
           {/* TicketPage Details */}
           <div className=" flex flex-col gap-2 w-3/4">
@@ -36,7 +36,7 @@ const Ticket = () => {
             <div className="absolute top-0 left-4 w-full h-full flex items-center justify-between gap-4 ">
 
               {/*event information*/}
-              <div className="flex flex-col h-3/4 items-center justify-around ">
+              <div className="flex flex-col h-3/4 w-3/5 justify-around ">
                 <div className="flex flex-col h-14 ">
                   <img src="../../public/assets/images/logo-full.svg" alt="logo" className="w-44" />
                   <p className="text-neutral-400 text-xs">{date}Jan 31, 2025 / {localization} Austin, TX</p>
