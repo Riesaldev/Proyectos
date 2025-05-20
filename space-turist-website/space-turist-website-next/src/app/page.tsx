@@ -1,22 +1,28 @@
+"use client";
 
+import ButtonExplore from "@/components/ButtomExplore";
 
 
 export default function Home() {
-  return (
-    <main className="gap-[32px] flex flex-col items-center pt-4">
 
-      <div className="flex flex-col items-center sm:items-center gap-8  border border-amber-700 h-auto w-80 ">
-        <h1 className="text-xl font-extralight text-center">
+
+  return (
+    <main className="flex flex-col items-center pt-4 text-white">
+      <div className="flex flex-col items-center sm:items-center h-full w-full gap-6 mt-4">
+        <h1 className="font-extralight  text-white/60 font-[barlow] uppercase">
           So, you want to travel to
         </h1>
-        <span className="text-7xl font-light text-center uppercase">
+        <span className="text-7xl font-light font-[bellefair] uppercase">
           Space
         </span>
-        <p className="text-sm font-light sm:text-base text-center">
+        <p className="text-base/7 text-center text-balance font-light sm:text-base text-white/60 font-[barlow] px-4 py-4 border border-amber-700 ">
           Let’s face it; if you want to go to space, you might as well genuinely go to
           outer space and not hover kind of on the edge of it. Well sit back, and relax
           because we’ll give you a truly out of this world experience!
         </p>
+        <div className="flex flex-col items-center sm:items-center h-full w-full gap-10 p-8 mt-42">
+          <ButtonExplore onClick={() => alert("Exploring space!")} />
+        </div>
       </div>
     </main>
   );
