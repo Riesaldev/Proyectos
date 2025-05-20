@@ -9,7 +9,7 @@ export default function Header() {
 
   return (
     <header className="flex justify-between m-8 ">
-      <div className="flex items-center gap-4 h-full w-full border border-amber-700">
+      <div className="flex items-center gap-4 h-full w-full">
         <Image
           src="/shared/logo.svg"
           alt="Logo"
@@ -18,7 +18,7 @@ export default function Header() {
 
         />
       </div>
-      <div className="flex items-center justify-end gap-4 border h-full w-full border-amber-700">
+      <div className="flex items-center justify-end gap-4 h-full w-full">
         <button
           title='burger'
           onClick={() => setOpen(!open)}
@@ -33,7 +33,7 @@ export default function Header() {
         </button>
         {/* Mobile */}
         {open && (
-          <nav className="fixed top-0 right-0 h-full w-2/5 bg-black text-white flex flex-col items-end p-8 z-50 sm:hidden">
+          <nav className="fixed top-0 right-0 h-full w-2/5 bg-white/10 backdrop-blur-md text-white flex flex-col items-end p-8 z-50 sm:hidden">
             <button
               title="close"
               onClick={() => setOpen(false)}
@@ -55,7 +55,7 @@ export default function Header() {
           </nav>
         )}
       </div>
-      <nav className="hidden sm:flex flex-row items-center justify-end w-full h-16 bg-black text-white">
+      <nav className="hidden sm:flex flex-row items-center bg-white/10 backdrop-blur-md justify-end w-full h-16 p-5 text-white">
         <ul className="flex flex-row gap-8">
           <li>00 Home</li>
           <li>01 Destination</li>
