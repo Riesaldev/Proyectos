@@ -26,6 +26,7 @@ class App {
     this.loadModel();
     this.animate();
   }
+  
 
   config() {
     //Establecemos el aspecto de la cámara
