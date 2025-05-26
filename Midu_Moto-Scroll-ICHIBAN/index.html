@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moto Scroll Ichiban by Midudev</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    img {
+      width: 100vw;
+      height: 100dvh;
+      object-fit: cover;
+      position: fixed;
+    }
+
+    main {
+      height: 300dvh;
+    }
+
+    header {
+      height: 300px;
+      width: 300px;
+      border-radius: 1000px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      background: linear-gradient(40deg, #ba3816, #a41705 40%);
+      z-index: 1;
+      margin-top: -230px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      transform: translateX(-50%);
+      animation: slideInDown 1.5s ease-out;
+    
+
+      img {
+        width: 130px;
+        height: auto;
+        margin: 0 auto;
+        margin-bottom: 30px;
+      }
+    }
+  
+
+    @keyframes slideInDown {
+      from {
+        transform: translate3d(-50%, -100%, 0);
+        opacity: 0;
+      }
+      to {
+        transform: translate3d(-50%, 0, 0);
+        opacity: 1;
+      }
+    }
+  </style>
+
+  <script type="module">
+    import { images } from './images.js';
+
+    const main = document.querySelector('main');
+    const MAX_FRAMES = 151;
+    let currentFrame = 0;
+
+    function updateImage(frame=0) {
+      const src = images[frame].p;
+      img.src = src;
+    }
+    const img = document.createElement('img');
+    main.appendChild(img);
+    updateImage(currentFrame);
+
+    let maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    });
+
+    let lastFrameUpdate = 0;
+
+    window.addEventListener('scroll', () => {
+      if (Date.now() - lastFrameUpdate < 1) return true;
+      lastFrameUpdate = Date.now();
+      const scrollPosition = window.scrollY;
+      const scrollFraction = scrollPosition / maxScroll;
+      const frame = Math.floor(scrollFraction * MAX_FRAMES);
+      if (currentFrame !== frame) {
+        updateImage(frame);
+        currentFrame = frame;
+      }
+    });
+    </script>
+</head>
+
+<body>
+  <main>
+    <header>
+      <img src="logo.png" alt="Logo Moto Scroll Ichiban">
+    </header>
+  </main>
+</body>
+</html>
