@@ -13,14 +13,6 @@ Ejercicio incluido dentro del repositorio **Proyectos**.
 - Código modular y fácil de mantener.
 - Integración de tecnologías web modernas.
 
-## Tecnologías utilizadas
-
-- JavaScript
-- TypeScript
-- Python
-- HTML
-- CSS.
-
 ## Instalación
 
 1. Clona el repositorio:
