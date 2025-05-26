@@ -32,8 +32,6 @@ const Avatar: React.FC<AvatarProps> = ({
     busy: 'bg-error-500',
   };
   
-  // Calculate blur amount based on blurLevel (1-10)
-  const blurAmount = isBlurred ? `blur(${blurLevel * 0.6}px)` : 'none';
   
   return (
     <div className="relative inline-block">
@@ -44,8 +42,7 @@ const Avatar: React.FC<AvatarProps> = ({
           <img
             src={src}
             alt={alt}
-            className="h-full w-full object-cover blur "
-            style={{ filter: blurAmount }}
+            className={`h-full w-full object-cover ${isBlurred ? `blur-sm blur-[${blurLevel * 0.6}px]` : ''}`}
           />
         ) : (
           <div className="text-gray-500 uppercase font-medium text-center">
