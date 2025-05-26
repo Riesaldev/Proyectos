@@ -67,36 +67,57 @@
   </style>
 
   <script type="module">
+    // images.js
     import { images } from './images.js';
 
+    // rescatamos el elemento main
     const main = document.querySelector('main');
+    // creamos un array de imágenes
     const MAX_FRAMES = 151;
+    // aseguramos que el array empezará en 0
     let currentFrame = 0;
 
+    // función para actualizar la imagen según el frame actual
     function updateImage(frame=0) {
+      // eliminamos la imagen anterior si existe
       const src = images[frame].p;
+      // comprobamos si la imagen ya está cargada
       img.src = src;
     }
+    // creamos un elemento img y lo añadimos al main
     const img = document.createElement('img');
+    //Lo añadimos al main
     main.appendChild(img);
+    //Actualizamos la imagen inicial
     updateImage(currentFrame);
 
+    // calculamos la altura máxima del scroll
     let maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 
+    // actualizamos la altura máxima del scroll al redimensionar la ventana
     window.addEventListener('resize', () => {
       maxScroll = document.documentElement.scrollHeight - window.innerHeight;
     });
 
+    //Establecemos el último frame actualizado
     let lastFrameUpdate = 0;
 
+    // escuchamos el evento de scroll y actualizamos la imagen según la posición del scroll
     window.addEventListener('scroll', () => {
+      // si el tiempo desde la última actualización es menor a 1ms, no hacemos nada
       if (Date.now() - lastFrameUpdate < 1) return true;
+      // si el tiempo desde la última actualización es mayor a 100ms, actualizamos la imagen
       lastFrameUpdate = Date.now();
+      // calculamos la posición del scroll y el frame correspondiente
       const scrollPosition = window.scrollY;
+      // si la posición del scroll es menor a 0, no hacemos nada
       const scrollFraction = scrollPosition / maxScroll;
+      // si la posición del scroll es mayor a 1, no hacemos nada
       const frame = Math.floor(scrollFraction * MAX_FRAMES);
+      // si el frame actual no es el mismo que el frame anterior, actualizamos la imagen
       if (currentFrame !== frame) {
         updateImage(frame);
+        // actualizamos el frame actual
         currentFrame = frame;
       }
     });
