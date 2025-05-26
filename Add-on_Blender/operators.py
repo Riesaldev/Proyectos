@@ -37,7 +37,9 @@ class MotionFX_OT_ApplyEffect(Operator):
             "add_camera_tracking_effect",
             "add_focus_effect",
             "add_path_effect",
-            "add_track_effect"
+            "add_track_effect",
+            "add_follow_object_effect",    # Por si tienes efectos de animación que requieren target
+            "add_follow_path_effect"
         }
 
         if self.effect in effects_with_target:
