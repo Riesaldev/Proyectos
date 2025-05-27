@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Sponsors } from "@/components/Sponsors";
 
 //links
 import X from "@/assets/svg/x.svg"
@@ -19,38 +20,53 @@ export const Footer: React.FC = () => {
         className="relative h-full flex flex-col justify-center items-center text-white gap-2 "
       >
 
-        <div>
+        <div className="flex flex-col justify-center items-center gap-5">
+
           <h1
-            className="text-center text-lg"
+            className="text-center text-lg text-[#2a1f26]"
           >© 2025 La Velada del Año. Todos los derechos reservados.</h1>
+
+
+          <div className=" flex flex-row gap-3 justify-center items-center text-[#2a1f26]">
+
+            <Link href="http://X.com/infoLaVelada" rel="noopener"
+              className="w-8 h-8 flex justify-center items-center hover:scale-125 transition duration-300 hover:cursor-pointer"
+            >
+              <X />
+            </Link>
+
+            <Link href="http://github.com/la-velada-web-oficial" rel="noopener"
+              className="w-8 h-8 flex justify-center items-center hover:scale-125 transition duration-300 hover:cursor-pointer"
+            >
+              <G />
+            </Link>
+
+            <Link href="http://twitch.com/infoLaVelada" rel="noopener"
+              className="w-8 h-8 flex justify-center items-center hover:scale-125 transition duration-300 hover:cursor-pointer"
+            >
+              <Tw />
+            </Link>
+
+            <Link href="http://tiktok.com/infoLaVelada" rel="noopener"
+              className="w-8 h-8 flex justify-center items-center hover:scale-125 transition duration-300 hover:cursor-pointer"
+            >
+              <Ti />
+            </Link>
+
+          </div>
         </div>
-
-        <div className=" flex flex-row gap-3 justify-around items-center ">
-          <Link href="http://X.com/infoLaVelada" rel="noopener"
-            className="w-8 h-8 flex justify-center items-center hover:scale-125 transition duration-300 hover:cursor-pointer"
-          >
-            <X />
-          </Link>
-
-          <Link href="http://github.com/la-velada-web-oficial" rel="noopener"
-            className="w-8 h-8 flex justify-center items-center hover:scale-125 transition duration-300 hover:cursor-pointer"
-          >
-            <G />
-          </Link>
-
-          <Link href="http://twitch.com/infoLaVelada" rel="noopener"
-            className="w-8 h-8 flex justify-center items-center hover:scale-125 transition duration-300 hover:cursor-pointer"
-          >
-            <Tw />
-          </Link>
-
-          <Link href="http://tiktok.com/infoLaVelada" rel="noopener"
-            className="w-8 h-8 flex justify-center items-center hover:scale-125 transition duration-300 hover:cursor-pointer"
-          >
-            <Ti />
-          </Link>
-
-        </div>
+        <div className="flex flex-row justify-around w-full items-center gap-60">
+          <div className="w-auto h-auto">
+            <Sponsors />
+          </div>
+          <div>
+            <div className="w-auto h-auto">
+              <p className="text-center text-sm text-[#2a1f26]">
+                Hecho con ❤️ por la comunidad de La Velada del Año.
+              </p>
+            </div>
+          </div>
+      </div>
       </div>
     </footer >
   );
