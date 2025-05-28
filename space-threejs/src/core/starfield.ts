@@ -5,11 +5,11 @@ export class Starfield {
   private declare scene: Scene;
 
   constructor(scene: Scene,
-    private readonly starQty: number= 20000,
+    private readonly starQty: number= 25000,
     private readonly range: number= 1000,
   ){
     this.scene = scene;
-    this.createStarField()//crea el campo de estrellas
+    this.createStarField()
   }
 
     private createStarField(): void {
@@ -27,7 +27,7 @@ export class Starfield {
 
     const coreMaterial = new PointsMaterial({
       color: 0xfff1a2,
-      size: 1,
+      size: 0.8,
       transparent: true,
       opacity: 0.6,
       depthTest: true,
@@ -38,17 +38,17 @@ export class Starfield {
       color: 0xffa8a2,
       size: 2,
       transparent: true,
-      opacity: 0.2,
-      depthTest: false,
+      opacity: 0.28,
+      depthTest: true,
       map: texture,
-      alphaTest: 0.2,
+      alphaTest: 0.28,
     });
 
-    const coreStars = new Points(geometry, coreMaterial); // núcleo
-    const haloStars = new Points(geometry, haloMaterial); // halo
+    const coreStars = new Points(geometry, coreMaterial);
+    const haloStars = new Points(geometry, haloMaterial); 
 
-    this.scene.add(haloStars); // primero el halo
-    this.scene.add(coreStars); // luego el núcleo
+    this.scene.add(haloStars);
+    this.scene.add(coreStars); 
 
   }
 }
