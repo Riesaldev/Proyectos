@@ -6,7 +6,7 @@ import type InputController from './input.controller.js';
 
 export default class Spaceship {
   private readonly gltfloader = new GLTFLoader();
-  private declare model: Object3D;
+  public declare model: Object3D;
   private readonly speed: number = 0.2;
   private readonly rotationSpeed: number = 0.05;
 
