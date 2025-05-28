@@ -1,4 +1,4 @@
-import { BufferGeometry, Float32BufferAttribute,Points,PointsMaterial,Scene } from "three";
+import { BufferGeometry, Float32BufferAttribute,Points,PointsMaterial,Scene, TextureLoader } from "three";
 
 export class Starfield {
   private declare starField: Points;
@@ -12,27 +12,43 @@ export class Starfield {
     this.createStarField()//crea el campo de estrellas
   }
 
-  private createStarField(): void {
-    const positions = new Float32Array(this.starQty * 3)//posicion de las estrellas
+    private createStarField(): void {
+    const positions = new Float32Array(this.starQty * 3);
     for (let i = 0; i < this.starQty; i++) {
-      positions[i * 3] = Math.random() * this.range - this.range / 2 //x posicion
-      positions[i * 3 + 1] = Math.random() * this.range - this.range / 2 //y posicion
-      positions[i * 3 + 2] = Math.random() * this.range - this.range / 2 //z posicion
+      positions[i * 3] = Math.random() * this.range - this.range / 2;
+      positions[i * 3 + 1] = Math.random() * this.range - this.range / 2;
+      positions[i * 3 + 2] = Math.random() * this.range - this.range / 2;
     }
 
-    const geometry = new BufferGeometry()
-    geometry.setAttribute("position", new Float32BufferAttribute(positions, 3)) //setea la geometria de las estrellas
+    const geometry = new BufferGeometry();
+    geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
 
-    const material = new PointsMaterial({
-      color: 0xcccccc,
+    const texture = new TextureLoader().load("/public/circulo.png");
+
+    const coreMaterial = new PointsMaterial({
+      color: 0xfff1a2,
       size: 1,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.6,
       depthTest: true,
-    })//crea el material de las estrellas
+      map: texture,
+    });
 
-    this.starField = new Points(geometry, material)//crea las estrellas
+    const haloMaterial = new PointsMaterial({
+      color: 0xffa8a2,
+      size: 2,
+      transparent: true,
+      opacity: 0.2,
+      depthTest: false,
+      map: texture,
+      alphaTest: 0.2,
+    });
 
-    this.scene.add(this.starField) //agrega las estrellas a la escena
+    const coreStars = new Points(geometry, coreMaterial); // núcleo
+    const haloStars = new Points(geometry, haloMaterial); // halo
+
+    this.scene.add(haloStars); // primero el halo
+    this.scene.add(coreStars); // luego el núcleo
+
   }
 }
