@@ -4,5 +4,6 @@ import App from './core';
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  new App();
+  App.start();
+  console.log('App initialized');
 });
