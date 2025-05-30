@@ -27,7 +27,7 @@ export default function RootLayout({
           @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap');
         </style>
       </head>
-      <body className="bg-[url(../../public/home/background-home-mobile.jpg)] bg-cover bg-no-repeat bg-center h-screen w-screen  items-center justify-between sm:bg-[url(../../public/home/background-home-tablet.jpg)] md:bg-[url(../../public/home/background-home-desktop.jpg)] ">
+      <body className="bg-[url(../../public/home/background-home-mobile.jpg)] bg-cover bg-no-repeat bg-center  items-center justify-between sm:bg-[url(../../public/home/background-home-tablet.jpg)] md:bg-[url(../../public/home/background-home-desktop.jpg)] ">
         <Header />
         {children}
       </body>
