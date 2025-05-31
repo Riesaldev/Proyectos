@@ -1,347 +1,244 @@
 import bpy
-import random
 
 class VisualEffects:
-    # Visual effects
-
-    def add_black_white_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="BW_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        rgb2bw = nodes.new(type='ShaderNodeRGBToBW')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(rgb2bw.outputs['Val'], principled.inputs['Base Color'])
-
-    def add_bloom_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Bloom_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        glare = nodes.new(type='ShaderNodeGlare')
-        glare.inputs['Size'].default_value = 5.0
-        glare.inputs['Threshold'].default_value = 1.0
-        output = nodes.get('Material Output')
-        tree.links.new(glare.outputs['Image'], output.inputs['Surface'])
-
-    def add_blur_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Blur_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        blur = nodes.new(type='ShaderNodeTexNoise')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(blur.outputs['Color'], principled.inputs['Base Color'])
-
-    def add_chromatic_aberration_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Chromatic_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        separate = nodes.new(type='ShaderNodeSeparateRGB')
-        combine = nodes.new(type='ShaderNodeCombineRGB')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(separate.outputs['R'], combine.inputs['R'])
-            tree.links.new(separate.outputs['G'], combine.inputs['G'])
-            tree.links.new(separate.outputs['B'], combine.inputs['B'])
-            tree.links.new(combine.outputs['Image'], principled.inputs['Base Color'])
-
-    def add_colorize_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Colorize_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        mix = nodes.new(type='ShaderNodeMixRGB')
-        mix.inputs['Fac'].default_value = 0.5
-        mix.inputs['Color2'].default_value = (1.0, 0.5, 0.0, 1.0)
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(mix.outputs['Color'], principled.inputs['Base Color'])
-
-    def add_fisheye_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Fisheye_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        fisheye = nodes.new(type='ShaderNodeTexFisheye')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(fisheye.outputs['Color'], principled.inputs['Base Color'])
+    def add_glow_effect(self, obj):
+        """Añade efecto de brillo al objeto"""
+        try:
+            # Crear material emisivo
+            if not obj.data.materials:
+                mat = bpy.data.materials.new(name=f"{obj.name}_glow_material")
+                mat.use_nodes = True
+                obj.data.materials.append(mat)
+            else:
+                mat = obj.active_material
+                if not mat.use_nodes:
+                    mat.use_nodes = True
+            
+            nodes = mat.node_tree.nodes
+            links = mat.node_tree.links
+            
+            # Verificar nodos existentes
+            principled = nodes.get("Principled BSDF")
+            material_output = nodes.get('Material Output')
+            
+            if not principled:
+                principled = nodes.new(type='ShaderNodeBsdfPrincipled')
+            if not material_output:
+                material_output = nodes.new(type='ShaderNodeOutputMaterial')
+            
+            # Añadir nodo de emisión
+            emission = nodes.new(type='ShaderNodeEmission')
+            emission.inputs['Color'].default_value = (0.8, 0.3, 1.0, 1.0)  # Color púrpura
+            emission.inputs['Strength'].default_value = 2.0
+            
+            # Conectar emisión a la salida
+            links.new(emission.outputs['Emission'], material_output.inputs['Surface'])
+            
+            # Configurar el objeto para que aparezca en el compositor
+            obj['glow_intensity'] = 2.0
+            
+        except Exception as e:
+            print(f"Error adding glow effect: {e}")
 
     def add_glitch_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Glitch_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        text_coord = nodes.new(type='ShaderNodeTexCoord')
-        noise = nodes.new(type='ShaderNodeTexNoise')
-        displacement = nodes.new(type='ShaderNodeDisplacement')
-        material_output = nodes.get('Material Output')
-        links = mat.node_tree.links
-        links.new(text_coord.outputs['UV'], noise.inputs['Vector'])
-        links.new(noise.outputs['Color'], displacement.inputs['Height'])
-        links.new(displacement.outputs['Displacement'], material_output.inputs['Displacement'])
-        noise.inputs['Scale'].default_value = 5.0
-        noise.inputs['Detail'].default_value = 16.0
-        noise.inputs['Distortion'].keyframe_insert(data_path="default_value", frame=bpy.context.scene.frame_current)
-        noise.inputs['Distortion'].default_value = 3.0
-        noise.inputs['Distortion'].keyframe_insert(data_path="default_value", frame=bpy.context.scene.frame_current + 24)
-        obj["glitch_intensity"] = 0.5
-        obj["glitch_speed"] = 1.0
-
-    def add_glow_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Glow_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        emission = nodes.new(type='ShaderNodeEmission')
-        output = nodes.get('Material Output')
-        tree.links.new(emission.outputs['Emission'], output.inputs['Surface'])
-        emission.inputs['Strength'].default_value = 20.0
-
-    def add_grain_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Grain_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        noise = nodes.new(type='ShaderNodeTexNoise')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(noise.outputs['Color'], principled.inputs['Base Color'])
+        """Añade efecto de glitch al material del objeto"""
+        try:
+            if not obj.data.materials:
+                mat = bpy.data.materials.new(name=f"{obj.name}_glitch_material")
+                mat.use_nodes = True
+                obj.data.materials.append(mat)
+            else:
+                mat = obj.active_material
+                if not mat.use_nodes:
+                    mat.use_nodes = True
+            
+            nodes = mat.node_tree.nodes
+            links = mat.node_tree.links
+            
+            principled = nodes.get("Principled BSDF")
+            if not principled:
+                principled = nodes.new(type='ShaderNodeBsdfPrincipled')
+            
+            # Crear textura de ruido para el glitch
+            noise_texture = nodes.new(type='ShaderNodeTexNoise')
+            noise_texture.inputs['Scale'].default_value = 100.0
+            noise_texture.inputs['Detail'].default_value = 15.0
+            
+            # Separar RGB para manipular canales
+            separate_rgb = nodes.new(type='ShaderNodeSeparateRGB')
+            combine_rgb = nodes.new(type='ShaderNodeCombineRGB')
+            
+            # Conectar el ruido
+            links.new(noise_texture.outputs['Color'], separate_rgb.inputs['Image'])
+            links.new(separate_rgb.outputs['R'], combine_rgb.inputs['R'])
+            links.new(separate_rgb.outputs['G'], combine_rgb.inputs['G'])
+            links.new(separate_rgb.outputs['B'], combine_rgb.inputs['B'])
+            links.new(combine_rgb.outputs['Image'], principled.inputs['Base Color'])
+            
+            # Propiedades personalizadas para animar
+            obj["glitch_intensity"] = 1.0
+            obj["glitch_speed"] = 2.0
+            
+        except Exception as e:
+            print(f"Error adding glitch effect: {e}")
 
     def add_hologram_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Hologram_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        emission = nodes.new(type='ShaderNodeEmission')
-        wave = nodes.new(type='ShaderNodeTexWave')
-        output = nodes.get('Material Output')
-        tree.links.new(wave.outputs['Color'], emission.inputs['Color'])
-        tree.links.new(emission.outputs['Emission'], output.inputs['Surface'])
-        emission.inputs['Color'].default_value = (0.0, 1.0, 1.0, 1.0)
-        emission.inputs['Strength'].default_value = 15.0
+        """Añade efecto de holograma al objeto"""
+        try:
+            if not obj.data.materials:
+                mat = bpy.data.materials.new(name=f"{obj.name}_hologram_material")
+                mat.use_nodes = True
+                obj.data.materials.append(mat)
+            else:
+                mat = obj.active_material
+                if not mat.use_nodes:
+                    mat.use_nodes = True
+            
+            nodes = mat.node_tree.nodes
+            links = mat.node_tree.links
+            
+            principled = nodes.get("Principled BSDF")
+            if not principled:
+                principled = nodes.new(type='ShaderNodeBsdfPrincipled')
+            
+            # Configurar material holográfico
+            principled.inputs['Base Color'].default_value = (0.2, 0.8, 1.0, 1.0)  # Azul cian
+            principled.inputs['Metallic'].default_value = 0.0
+            principled.inputs['Roughness'].default_value = 0.1
+            principled.inputs['Transmission'].default_value = 0.8
+            principled.inputs['Alpha'].default_value = 0.3
+            
+            # Configurar transparencia
+            mat.blend_method = 'BLEND'
+            mat.show_transparent_back = False
+            
+            # Añadir textura de ondas para el efecto holográfico
+            wave_texture = nodes.new(type='ShaderNodeTexWave')
+            wave_texture.inputs['Scale'].default_value = 5.0
+            wave_texture.inputs['Distortion'].default_value = 2.0
+            
+            # Mezclar con el color base
+            mix_rgb = nodes.new(type='ShaderNodeMixRGB')
+            mix_rgb.blend_type = 'ADD'
+            mix_rgb.inputs['Fac'].default_value = 0.3
+            
+            links.new(wave_texture.outputs['Color'], mix_rgb.inputs['Color2'])
+            links.new(mix_rgb.outputs['Color'], principled.inputs['Emission'])
+            
+        except Exception as e:
+            print(f"Error adding hologram effect: {e}")
 
-    def add_kirby_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Kirby_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            principled.inputs['Base Color'].default_value = (1.0, 0.6, 0.8, 1.0)
-            principled.inputs['Subsurface'].default_value = 0.3
+    def setup_compositor_for_post_effects(self):
+        """Configura el compositor para efectos de post-procesamiento"""
+        try:
+            scene = bpy.context.scene
+            scene.use_nodes = True
+            tree = scene.node_tree
+            
+            # Limpiar nodos existentes
+            tree.nodes.clear()
+            
+            # Crear nodos básicos
+            render_layers = tree.nodes.new(type='CompositorNodeRLayers')
+            composite = tree.nodes.new(type='CompositorNodeComposite')
+            
+            # Posicionar nodos
+            render_layers.location = (0, 0)
+            composite.location = (600, 0)
+            
+            # Conectar básico
+            tree.links.new(render_layers.outputs['Image'], composite.inputs['Image'])
+            
+            return tree, render_layers, composite
+            
+        except Exception as e:
+            print(f"Error setting up compositor: {e}")
+            return None, None, None
 
-    def add_lens_distortion_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Lens_Distortion_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        lens_distortion = nodes.new(type='ShaderNodeLensDistortion')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(lens_distortion.outputs['Distorted'], principled.inputs['Base Color'])
-        lens_distortion.inputs['Distortion'].default_value = 0.5
+    def add_bloom_effect_compositor(self):
+        """Añade efecto bloom usando el compositor"""
+        try:
+            tree, render_layers, composite = self.setup_compositor_for_post_effects()
+            if not tree:
+                return
+            
+            # Añadir nodo Glare para bloom
+            glare = tree.nodes.new(type='CompositorNodeGlare')
+            glare.glare_type = 'FOG_GLOW'
+            glare.quality = 'HIGH'
+            glare.threshold = 1.0
+            glare.location = (300, 0)
+            
+            # Conectar
+            tree.links.new(render_layers.outputs['Image'], glare.inputs['Image'])
+            tree.links.new(glare.outputs['Image'], composite.inputs['Image'])
+            
+        except Exception as e:
+            print(f"Error adding bloom effect: {e}")
 
-    def add_lens_flare_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Lens_Flare_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        glare = nodes.new(type='ShaderNodeGlare')
-        glare.inputs['Size'].default_value = 10.0
-        glare.inputs['Threshold'].default_value = 0.5
-        output = nodes.get('Material Output')
-        tree.links.new(glare.outputs['Image'], output.inputs['Surface'])
+    def add_vignette_effect_compositor(self):
+        """Añade efecto viñeta usando el compositor"""
+        try:
+            tree, render_layers, composite = self.setup_compositor_for_post_effects()
+            if not tree:
+                return
+            
+            # Crear máscara para viñeta
+            ellipse_mask = tree.nodes.new(type='CompositorNodeEllipseMask')
+            ellipse_mask.width = 0.8
+            ellipse_mask.height = 0.8
+            ellipse_mask.location = (150, -200)
+            
+            # Invertir máscara
+            invert = tree.nodes.new(type='CompositorNodeInvert')
+            invert.location = (300, -200)
+            
+            # Difuminar máscara
+            blur = tree.nodes.new(type='CompositorNodeBlur')
+            blur.size_x = 50
+            blur.size_y = 50
+            blur.location = (450, -200)
+            
+            # Mezclar con la imagen
+            mix = tree.nodes.new(type='CompositorNodeMixRGB')
+            mix.blend_type = 'MULTIPLY'
+            mix.location = (450, 0)
+            
+            # Conectar
+            tree.links.new(ellipse_mask.outputs['Mask'], invert.inputs['Color'])
+            tree.links.new(invert.outputs['Color'], blur.inputs['Image'])
+            tree.links.new(render_layers.outputs['Image'], mix.inputs['Image'])
+            tree.links.new(blur.outputs['Image'], mix.inputs['Image2'])
+            tree.links.new(mix.outputs['Image'], composite.inputs['Image'])
+            
+        except Exception as e:
+            print(f"Error adding vignette effect: {e}")
 
-    def add_light_rays_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Light_Rays_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        light_rays = nodes.new(type='ShaderNodeLightRays')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(light_rays.outputs['Color'], principled.inputs['Base Color'])
+    def add_lens_distortion_effect_compositor(self):
+        """Añade efecto de distorsión de lente usando el compositor"""
+        try:
+            tree, render_layers, composite = self.setup_compositor_for_post_effects()
+            if not tree:
+                return
+            
+            # Añadir nodo de distorsión de lente
+            lens_distort = tree.nodes.new(type='CompositorNodeLensdist')
+            lens_distort.inputs['Distort'].default_value = 0.1
+            lens_distort.inputs['Dispersion'].default_value = 0.05
+            lens_distort.location = (300, 0)
+            
+            # Conectar
+            tree.links.new(render_layers.outputs['Image'], lens_distort.inputs['Image'])
+            tree.links.new(lens_distort.outputs['Image'], composite.inputs['Image'])
+            
+        except Exception as e:
+            print(f"Error adding lens distortion effect: {e}")
 
-    def add_noise_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Noise_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        noise = nodes.new(type='ShaderNodeTexNoise')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(noise.outputs['Color'], principled.inputs['Base Color'])
+# Instancia singleton
+visual_effects = VisualEffects()
 
-    def add_pixel_sort_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Pixel_Sort_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        pixel_sort = nodes.new(type='ShaderNodePixelSort')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(pixel_sort.outputs['Color'], principled.inputs['Base Color'])
+def register():
+    pass
 
-    def add_pixelate_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Pixelate_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        brick = nodes.new(type='ShaderNodeTexBrick')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(brick.outputs['Color'], principled.inputs['Base Color'])
-
-    def add_rainbow_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Rainbow_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        gradient = nodes.new(type='ShaderNodeTexGradient')
-        color_ramp = nodes.new(type='ShaderNodeValToRGB')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(gradient.outputs['Color'], color_ramp.inputs['Fac'])
-            tree.links.new(color_ramp.outputs['Color'], principled.inputs['Base Color'])
-
-    def add_reflection_visual_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Reflection_Visual_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        mix = nodes.new(type='ShaderNodeMixShader')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(mix.outputs['Shader'], principled.inputs['Surface'])
-
-    def add_sepia_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Sepia_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        mix = nodes.new(type='ShaderNodeMixRGB')
-        mix.inputs['Fac'].default_value = 0.7
-        mix.inputs['Color2'].default_value = (0.44, 0.26, 0.08, 1.0)
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(mix.outputs['Color'], principled.inputs['Base Color'])
-
-    def add_shadow_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Shadow_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        mix = nodes.new(type='ShaderNodeMixRGB')
-        mix.inputs['Fac'].default_value = 0.5
-        mix.inputs['Color2'].default_value = (0.0, 0.0, 0.0, 1.0)
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(mix.outputs['Color'], principled.inputs['Base Color'])
-
-    def add_sharpen_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Sharpen_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        sharpen = nodes.new(type='ShaderNodeTexBlur')
-        sharpen.inputs['Size'].default_value = 0.1
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(sharpen.outputs['Color'], principled.inputs['Base Color'])
-
-    def add_vignette_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Vignette_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        vignette = nodes.new(type='ShaderNodeVignette')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(vignette.outputs['Color'], principled.inputs['Base Color'])
-
-    def add_wire_effect(self, obj):
-        if not obj.material_slots:
-            mat = bpy.data.materials.new(name="Wire_Material")
-            obj.data.materials.append(mat)
-        mat = obj.active_material
-        mat.use_nodes = True
-        tree = mat.node_tree
-        nodes = tree.nodes
-        wireframe = nodes.new(type='ShaderNodeWireframe')
-        principled = nodes.get("Principled BSDF")
-        if principled:
-            tree.links.new(wireframe.outputs['Color'], principled.inputs['Base Color'])
+def unregister():
+    pass
