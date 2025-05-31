@@ -43,12 +43,25 @@ class CameraEffects:
         if not any(n.type == 'LENSDIST' for n in nodes):
             lens_dist = nodes.new(type='CompositorNodeLensdist')
             lens_dist.distort = 0.5
-
+            
     def add_path_effect(self, obj, curve):
-        if obj and curve:
-            if not any(c.type == 'FOLLOW_PATH' and c.target == curve for c in obj.constraints):
+        if obj and curve and curve.type == 'CURVE':
+            if not any(c.type == 'FOLLOW_PATH' for c in obj.constraints):
                 constraint = obj.constraints.new(type='FOLLOW_PATH')
                 constraint.target = curve
-
+                
     def add_track_effect(self, obj, target):
-        self.add_camera_follow_effect(obj, target)
+        if obj and target:
+            if not any(c.type == 'TRACK_TO' for c in obj.constraints):
+                constraint = obj.constraints.new(type='TRACK_TO')
+                constraint.target = target
+
+# Instancia singleton para usar en todo el addon
+camera_effects = CameraEffects()
+
+# No es necesario registrar clases en este archivo
+def register():
+    pass
+
+def unregister():
+    pass
