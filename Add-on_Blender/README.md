@@ -166,15 +166,47 @@ Bienvenido a la guía completa de Motion FX Library Pro, el add-on definitivo pa
 
 ## 🔧 Solución de Problemas
 
-- **Add-on no aparece:** Verifica estructura y consola
-- **Efectos no funcionan:** Revisa tipo de objeto y mensajes de error
-- **Errores comunes:**  
-  - "Effect 'X' only works on mesh objects"
-  - "No animation data found on object"
-  - "Failed to apply effect"
-- **Compatibilidad:**  
-  - Blender 4.0+: revisa cambios de API/nodos
-  - EEVEE vs Cycles: algunos efectos requieren motor específico
+**Errores Comunes y Soluciones:**
+
+- **Add-on no aparece:** 
+  - Verifica que la estructura de carpetas esté intacta
+  - Revisa la consola de Blender (Window > Toggle System Console)
+  - Asegúrate de que todos los archivos .py estén presentes
+
+- **Efectos no funcionan:** 
+  - Revisa que tengas un objeto seleccionado
+  - Algunos efectos requieren tipos específicos de objeto (mesh, luz, cámara)
+  - Verifica mensajes en la consola
+
+- **Error "Mapa de efectos no inicializado":**
+  - Reinicia Blender y reactiva el add-on
+  - Verifica que todos los módulos de efectos estén presentes
+
+- **Presets no guardan/cargan:**
+  - Los presets se almacenan como Text Blocks en el archivo .blend
+  - Guarda el archivo .blend para conservar presets
+
+- **Problemas de rendimiento:**
+  - Desactiva "Live Update" para efectos complejos
+  - Reduce la resolución de simulaciones en modo de prueba
+  - Usa viewport shading simple durante la configuración
+
+**Compatibilidad:**  
+- Blender 3.6.0+: Completamente compatible
+- Blender 4.0+: Optimizado y testado
+- EEVEE vs Cycles: Algunos efectos cambian automáticamente el motor de render
+
+**Validación del Sistema:**
+```python
+# Ejecuta en consola de Blender para verificar instalación
+import bpy
+addon = bpy.context.preferences.addons.get('Motion FX Library Pro')
+if addon:
+    print("✅ Add-on instalado correctamente")
+    print(f"Versión: {addon.bl_info['version']}")
+else:
+    print("❌ Add-on no encontrado")
+```
 
 ---
 
@@ -197,15 +229,65 @@ Bienvenido a la guía completa de Motion FX Library Pro, el add-on definitivo pa
 
 ## 📊 Testing Exhaustivo
 
-Incluye un script de testing automatizado para validar:
-    - Registro de propiedades y operadores
-    - Aplicación de todos los efectos
-    - Compatibilidad de motores de render
-    - Sistema de presets
-    - Validaciones de contexto y rendimiento
-    - Limpieza de escena y recursos
+**Script de Validación Completa:**
+```python
+# Copia y pega en la consola de Blender para testing completo
+def test_motionfx_installation():
+    import bpy
+    
+    print("=== MOTION FX LIBRARY PRO - TEST ===")
+    
+    # 1. Verificar registro del add-on
+    try:
+        settings = bpy.context.scene.motionfx_settings
+        print("✅ Propiedades registradas")
+    except:
+        print("❌ Error: Propiedades no registradas")
+        return
+    
+    # 2. Verificar operadores
+    operators = [
+        'motionfx.apply_effect',
+        'motionfx.save_preset', 
+        'motionfx.load_preset',
+        'motionfx.create_vector_field'
+    ]
+    
+    for op in operators:
+        if hasattr(bpy.ops, op.split('.')[0]) and hasattr(getattr(bpy.ops, op.split('.')[0]), op.split('.')[1]):
+            print(f"✅ Operador {op} disponible")
+        else:
+            print(f"❌ Error: Operador {op} no encontrado")
+    
+    # 3. Verificar mapa de efectos
+    try:
+        from .effects_operations import EffectsOperations
+        EffectsOperations.initialize_effect_map()
+        effect_count = len(EffectsOperations._effect_map)
+        print(f"✅ {effect_count} efectos cargados")
+    except Exception as e:
+        print(f"❌ Error cargando efectos: {e}")
+    
+    # 4. Verificar panel
+    try:
+        panel_found = False
+        for panel in bpy.types.Panel.__subclasses__():
+            if 'motionfx' in panel.bl_idname.lower():
+                panel_found = True
+                break
+        
+        if panel_found:
+            print("✅ Panel UI registrado")
+        else:
+            print("❌ Error: Panel UI no encontrado")
+    except:
+        print("❌ Error verificando panel")
+    
+    print("=== TEST COMPLETADO ===")
 
-*Ejecuta el script en la consola de Blender para verificar la instalación y funcionamiento.*
+# Ejecutar test
+test_motionfx_installation()
+```
 
 ---
 
