@@ -1,44 +1,44 @@
 import bpy
 from bpy.types import Panel, Operator
 
-class MOTIONFX_OT_apply_effect(bpy.types.Operator):
+class MOTIONFX_OT_apply_effect(Operator):
     bl_idname = "motionfx.apply_effect"
     bl_label = "Apply Effect"
-    bl_description = "Apply effect to selected objects"
+    bl_description = "Apply selected effect to active object"
     bl_options = {'REGISTER', 'UNDO'}
     
-    effect_type: bpy.props.StringProperty()
-    effect_name: bpy.props.StringProperty()
+    effect_type: bpy.props.StringProperty(
+        name="Effect Type",
+        description="Type of effect to apply",
+        default=""
+    )
     
     def execute(self, context):
-        if not context.selected_objects:
-            self.report({'WARNING'}, "No objects selected")
+        if not self.effect_type:
+            self.report({'ERROR'}, "No effect type specified")
             return {'CANCELLED'}
         
-        from .effects_operations import EffectsOperations
-        EffectsOperations.initialize_effect_map()
+        obj = context.active_object
+        if not obj:
+            self.report({'ERROR'}, "No active object selected")
+            return {'CANCELLED'}
         
-        applied_count = 0
-        failed_count = 0
-        
-        for obj in context.selected_objects:
-            try:
-                success = EffectsOperations.apply_effect(self.effect_type, obj)
-                if success:
-                    obj['motionfx_last_effect'] = self.effect_type
-                    applied_count += 1
-                else:
-                    failed_count += 1
-            except Exception as e:
-                print(f"Error applying effect to {obj.name}: {e}")
-                failed_count += 1
-        
-        if applied_count > 0:
-            self.report({'INFO'}, f"Effect '{self.effect_name}' applied to {applied_count} object(s)")
-        if failed_count > 0:
-            self.report({'WARNING'}, f"Failed to apply effect to {failed_count} object(s)")
-        
-        return {'FINISHED'}
+        try:
+            from .effects_operations import EffectsOperations
+            EffectsOperations.initialize_effect_map()
+            
+            success = EffectsOperations.apply_effect(self.effect_type, obj)
+            
+            if success:
+                self.report({'INFO'}, f"Effect '{self.effect_type}' applied successfully")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, f"Failed to apply effect '{self.effect_type}'")
+                return {'CANCELLED'}
+                
+        except Exception as e:
+            self.report({'ERROR'}, f"Error applying effect: {str(e)}")
+            return {'CANCELLED'}
 
 class MOTIONFX_PT_quick_effects(Panel):
     bl_label = "Quick Effects"
@@ -46,8 +46,7 @@ class MOTIONFX_PT_quick_effects(Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Motion FX"
-    bl_parent_id = "VIEW3D_PT_motionfx_main"
-
+    
     def draw(self, context):
         layout = self.layout
         
@@ -194,31 +193,15 @@ class MOTIONFX_OT_apply_all_showcase(bpy.types.Operator):
             
             for effect_type, location, category in showcase_effects:
                 try:
-                    # Crear objeto base según categoría
-                    if category == 'Particles':
-                        bpy.ops.mesh.primitive_plane_add(size=2, location=location)
-                    elif category == 'Lighting':
-                        bpy.ops.object.light_add(type='POINT', location=location)
-                    else:
-                        bpy.ops.mesh.primitive_cube_add(location=location)
-                    
-                    obj = context.active_object
-                    obj.name = f"Showcase_{effect_type.title()}"
+                    # Crear cubo para cada efecto
+                    bpy.ops.mesh.primitive_cube_add(location=location)
+                    obj = bpy.context.active_object
+                    obj.name = f"{effect_type.title()}_Demo"
                     
                     # Aplicar efecto
                     success = EffectsOperations.apply_effect(effect_type, obj)
                     if success:
-                        obj['motionfx_showcase'] = effect_type
-                        obj['motionfx_category'] = category
                         created_objects.append(obj)
-                        
-                        # Añadir texto identificativo
-                        bpy.ops.object.text_add(location=(location[0], location[1], location[2] + 1.5))
-                        text_obj = context.active_object
-                        text_obj.name = f"Label_{effect_type}"
-                        text_obj.data.body = effect_type.replace('_', ' ').title()
-                        text_obj.data.size = 0.3
-                        text_obj.rotation_euler = (1.5708, 0, 0)  # 90 grados en X
                         
                 except Exception as e:
                     print(f"Error creating showcase for {effect_type}: {e}")

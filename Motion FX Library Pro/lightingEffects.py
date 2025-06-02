@@ -1,5 +1,6 @@
 import bpy
 import random
+import mathutils
 
 class LightingEffects:
 
@@ -25,25 +26,32 @@ class LightingEffects:
             print(f"Error adding fireworks light effect: {e}")
 
     def add_flash_effect(self, obj):
+        """Añade efecto de destello"""
         try:
-            light_data = bpy.data.lights.new(name="Flash_Light", type='POINT')
-            light_data.energy = 5000
-            light_data.color = (1, 1, 1)
-            light_obj = bpy.data.objects.new(name="Flash_Light", object_data=light_data)
-            bpy.context.collection.objects.link(light_obj)
-            light_obj.location = obj.location
+            # Crear luz de destello
+            bpy.ops.object.light_add(type='POINT', location=obj.location)
+            flash_light = bpy.context.active_object
+            flash_light.name = f"Flash_{obj.name}"
             
-            light_data.energy = 0
-            light_data.keyframe_insert(data_path="energy", frame=1)
-            light_data.energy = 5000
-            light_data.keyframe_insert(data_path="energy", frame=2)
-            light_data.energy = 0
-            light_data.keyframe_insert(data_path="energy", frame=4)
+            # Configurar destello intenso
+            flash_light.data.energy = 1000
+            flash_light.data.color = (1.0, 1.0, 1.0)
+            
+            # Animar destello rápido
+            current_frame = bpy.context.scene.frame_current
+            flash_light.data.energy = 0
+            flash_light.data.keyframe_insert(data_path="energy", frame=current_frame)
+            flash_light.data.energy = 1000
+            flash_light.data.keyframe_insert(data_path="energy", frame=current_frame + 2)
+            flash_light.data.energy = 0
+            flash_light.data.keyframe_insert(data_path="energy", frame=current_frame + 4)
             
             print(f"Flash effect added to {obj.name}")
+            return True
             
         except Exception as e:
             print(f"Error adding flash effect: {e}")
+            return False
 
     def add_glowing_effect(self, obj):
         try:
@@ -115,39 +123,49 @@ class LightingEffects:
             print(f"Error adding lens flare effect: {e}")
 
     def add_neon_effect(self, obj):
+        """Añade efecto de neón brillante"""
         try:
+            # Crear material neón si no existe
             if not obj.data.materials:
-                mat = bpy.data.materials.new(name="Neon_Material")
-                mat.use_nodes = True
-                obj.data.materials.append(mat)
+                neon_mat = bpy.data.materials.new(name="Neon_Material")
+                neon_mat.use_nodes = True
+                obj.data.materials.append(neon_mat)
             else:
-                mat = obj.active_material
-                if not mat.use_nodes:
-                    mat.use_nodes = True
-
-            nodes = mat.node_tree.nodes
-            links = mat.node_tree.links
+                neon_mat = obj.active_material
+                if not neon_mat.use_nodes:
+                    neon_mat.use_nodes = True
             
-            emission = nodes.get("Emission")
-            material_output = nodes.get('Material Output')
-            
-            if not emission:
-                emission = nodes.new(type='ShaderNodeEmission')
-            
-            if not material_output:
-                material_output = nodes.new(type='ShaderNodeOutputMaterial')
-            
-            emission.inputs['Color'].default_value = (0.0, 1.0, 0.8, 1.0)
-            emission.inputs['Strength'].default_value = 20.0
-            
-            links.new(emission.outputs['Emission'], material_output.inputs['Surface'])
-            
-            mat.blend_method = 'BLEND'
+            nodes = neon_mat.node_tree.nodes
+            principled = nodes.get("Principled BSDF")
+            if principled:
+                # Configurar emisión brillante
+                principled.inputs["Emission"].default_value = (0.0, 1.0, 1.0, 1.0)
+                principled.inputs["Emission Strength"].default_value = 10.0
+                principled.inputs["Base Color"].default_value = (0.0, 1.0, 1.0, 1.0)
+                
+                # Añadir luz de área para resplandor
+                bpy.ops.object.light_add(type='AREA', location=obj.location)
+                light_obj = bpy.context.active_object
+                light_obj.name = f"Neon_Light_{obj.name}"
+                light_obj.data.energy = 50
+                light_obj.data.color = (0.0, 1.0, 1.0)
+                light_obj.data.size = 2.0
+                
+                # Animar pulsación
+                current_frame = bpy.context.scene.frame_current
+                light_obj.data.energy = 50
+                light_obj.data.keyframe_insert(data_path="energy", frame=current_frame)
+                light_obj.data.energy = 100
+                light_obj.data.keyframe_insert(data_path="energy", frame=current_frame + 30)
+                light_obj.data.energy = 50
+                light_obj.data.keyframe_insert(data_path="energy", frame=current_frame + 60)
             
             print(f"Neon effect added to {obj.name}")
+            return True
             
         except Exception as e:
             print(f"Error adding neon effect: {e}")
+            return False
 
     def add_ray_tracing_effect(self, obj):
         try:
@@ -197,48 +215,110 @@ class LightingEffects:
             print(f"Error adding shadows effect: {e}")
 
     def add_spotlight_effect(self, obj):
+        """Añade un foco direccional"""
         try:
-            light_data = bpy.data.lights.new(name="Spotlight", type='SPOT')
-            light_data.energy = 1000
-            light_data.spot_size = 0.7
-            light_data.spot_blend = 0.5
-            light_obj = bpy.data.objects.new(name="Spotlight", object_data=light_data)
-            bpy.context.collection.objects.link(light_obj)
-            light_obj.location = obj.location
+            # Crear nueva luz
+            bpy.ops.object.light_add(type='SPOT', location=(obj.location.x, obj.location.y, obj.location.z + 3))
+            light_obj = bpy.context.active_object
+            light_obj.name = f"Spotlight_{obj.name}"
             
-            light_obj.location.z += 3
-            light_obj.rotation_euler = (1.047, 0, 0)
+            # Configurar propiedades del foco
+            light_obj.data.energy = 1000
+            light_obj.data.spot_size = 0.785398  # 45 grados
+            light_obj.data.spot_blend = 0.15
+            light_obj.data.color = (1.0, 0.9, 0.8)
             
+            # Apuntar hacia el objeto
             constraint = light_obj.constraints.new(type='TRACK_TO')
             constraint.target = obj
             constraint.track_axis = 'TRACK_NEGATIVE_Z'
             constraint.up_axis = 'UP_Y'
             
             print(f"Spotlight effect added to {obj.name}")
+            return True
             
         except Exception as e:
             print(f"Error adding spotlight effect: {e}")
+            return False
 
     def add_volumetric_effect(self, obj):
+        """Añade iluminación volumétrica"""
         try:
-            current_engine = bpy.context.scene.render.engine
-            
-            if current_engine == 'BLENDER_EEVEE':
-                eevee = bpy.context.scene.eevee
-                eevee.use_volumetric_lights = True
-                eevee.use_volumetric_shadows = True
-                eevee.volumetric_tile_size = '8'
-                eevee.volumetric_samples = 64
-                
-                print("Volumetric lighting enabled")
-                
-            elif current_engine == 'CYCLES':
-                print("Volumetric effects work automatically in Cycles")
+            # Asegurar que el objeto tenga material
+            if not obj.data.materials:
+                vol_mat = bpy.data.materials.new(name="Volumetric_Material")
+                vol_mat.use_nodes = True
+                obj.data.materials.append(vol_mat)
             else:
-                print(f"Volumetric effects require Eevee or Cycles")
-                
+                vol_mat = obj.active_material
+                if not vol_mat.use_nodes:
+                    vol_mat.use_nodes = True
+            
+            # Configurar nodos para volumen
+            nodes = vol_mat.node_tree.nodes
+            links = vol_mat.node_tree.links
+            
+            # Crear shader de volumen
+            volume_scatter = nodes.new(type='ShaderNodeVolumeScatter')
+            volume_scatter.inputs["Density"].default_value = 0.1
+            volume_scatter.inputs["Color"].default_value = (0.8, 0.9, 1.0, 1.0)
+            
+            output = nodes.get('Material Output')
+            if output:
+                links.new(volume_scatter.outputs['Volume'], output.inputs['Volume'])
+            
+            print(f"Volumetric effect added to {obj.name}")
+            return True
+            
         except Exception as e:
             print(f"Error adding volumetric effect: {e}")
+            return False
+
+    def add_bloom_effect(self, obj):
+        """Añade efecto de florecimiento luminoso"""
+        try:
+            # Habilitar compositor si no está activo
+            bpy.context.scene.use_nodes = True
+            tree = bpy.context.scene.node_tree
+            nodes = tree.nodes
+            links = tree.links
+            
+            # Buscar o crear nodos necesarios
+            render_layer = None
+            composite = None
+            
+            for node in nodes:
+                if node.type == 'R_LAYERS':
+                    render_layer = node
+                elif node.type == 'COMPOSITE':
+                    composite = node
+            
+            if not render_layer:
+                render_layer = nodes.new(type='CompositorNodeRLayers')
+            if not composite:
+                composite = nodes.new(type='CompositorNodeComposite')
+            
+            # Crear nodos de bloom
+            glare = nodes.new(type='CompositorNodeGlare')
+            glare.glare_type = 'FOG_GLOW'
+            glare.quality = 'HIGH'
+            glare.threshold = 0.8
+            glare.size = 6
+            
+            # Conectar nodos
+            links.new(render_layer.outputs['Image'], glare.inputs['Image'])
+            links.new(glare.outputs['Image'], composite.inputs['Image'])
+            
+            print(f"Bloom effect added to scene")
+            return True
+            
+        except Exception as e:
+            print(f"Error adding bloom effect: {e}")
+            return False
+
+    def add_glow_effect(self, obj):
+        """Añade efecto de resplandor usando el método de glowing_effect"""
+        return self.add_glowing_effect(obj)
 
 lighting_effects = LightingEffects()
 

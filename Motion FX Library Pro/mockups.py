@@ -386,6 +386,9 @@ class Mockups:
             # Guardar contexto actual
             original_active = bpy.context.active_object
             
+            # Limpiar selección antes de crear
+            bpy.ops.object.select_all(action='DESELECT')
+            
             # Crear el mockup
             obj = mockup['generator']()
             
@@ -399,8 +402,11 @@ class Mockups:
                 bpy.context.view_layer.objects.active = obj
                 obj.select_set(True)
                 
-                # Centrar vista en el objeto
-                bpy.ops.view3d.view_selected(use_all_regions=False)
+                # Centrar vista en el objeto si es posible
+                try:
+                    bpy.ops.view3d.view_selected(use_all_regions=False)
+                except:
+                    pass  # No hay vista 3D activa
                 
                 print(f"Mockup '{mockup['name']}' created successfully")
                 return obj

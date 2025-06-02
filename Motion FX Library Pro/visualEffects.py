@@ -1,74 +1,114 @@
 import bpy
+import random
 
 class VisualEffects:
     def add_glow_effect(self, obj):
+        """Añade efecto de resplandor"""
         try:
-            scene = bpy.context.scene
-            scene.use_nodes = True
+            if not obj or obj.type != 'MESH':
+                print("Glow effect only works on mesh objects")
+                return False
             
-            tree = scene.node_tree
-            nodes = tree.nodes
+            # Crear material con emisión
+            if not obj.data.materials:
+                glow_mat = bpy.data.materials.new(name="Glow_Material")
+                glow_mat.use_nodes = True
+                obj.data.materials.append(glow_mat)
+            else:
+                glow_mat = obj.data.materials[0]
+                if not glow_mat.use_nodes:
+                    glow_mat.use_nodes = True
             
-            if not any(n.type == 'GLARE' for n in nodes):
-                glare = nodes.new(type='CompositorNodeGlare')
-                glare.glare_type = 'GLOW'
-                glare.threshold = 0.5
-                
-                render_layers = nodes.get('Render Layers')
-                composite = nodes.get('Composite')
-                
-                if render_layers and composite:
-                    existing_links = []
-                    for link in tree.links:
-                        if link.to_node == composite:
-                            existing_links.append((link.from_socket, link.to_socket))
-                    
-                    for from_socket, to_socket in existing_links:
-                        tree.links.remove(tree.links.get((from_socket, to_socket)))
-                        tree.links.new(from_socket, glare.inputs['Image'])
-                        tree.links.new(glare.outputs['Image'], to_socket)
+            nodes = glow_mat.node_tree.nodes
+            principled = nodes.get("Principled BSDF")
             
-            print(f"Glow effect added for {obj.name}")
+            if principled:
+                principled.inputs["Emission"].default_value = (1.0, 0.8, 0.3, 1.0)
+                principled.inputs["Emission Strength"].default_value = 5.0
+            
+            print(f"Glow effect added to {obj.name}")
+            return True
             
         except Exception as e:
             print(f"Error adding glow effect: {e}")
+            return False
 
     def add_glitch_effect(self, obj):
+        """Añade efecto de interferencia"""
         try:
-            scene = bpy.context.scene
-            scene.use_nodes = True
+            if not obj or not hasattr(obj, 'location'):
+                print("Object invalid for glitch effect")
+                return False
             
-            tree = scene.node_tree
-            nodes = tree.nodes
+            import random
+            import mathutils
             
-            if not any(n.type == 'DISPLACE' for n in nodes):
-                displace = nodes.new(type='CompositorNodeDisplace')
-                displace.inputs['X Scale'].default_value = 10
-                displace.inputs['Y Scale'].default_value = 5
+            current_frame = bpy.context.scene.frame_current
+            original_loc = obj.location.copy()
             
-            print(f"Glitch effect added for {obj.name}")
+            # Crear keyframes de vibración
+            for i in range(10):
+                frame = current_frame + i * 2
+                offset = (
+                    (random.random() - 0.5) * 0.2,
+                    (random.random() - 0.5) * 0.2,
+                    (random.random() - 0.5) * 0.2
+                )
+                obj.location = original_loc + mathutils.Vector(offset)
+                obj.keyframe_insert(data_path="location", frame=frame)
+            
+            # Volver a posición original
+            obj.location = original_loc
+            obj.keyframe_insert(data_path="location", frame=current_frame + 20)
+            
+            print(f"Glitch effect added to {obj.name}")
+            return True
             
         except Exception as e:
             print(f"Error adding glitch effect: {e}")
+            return False
 
     def add_bloom_effect_compositor(self, obj):
+        """Añade efecto bloom usando el compositor"""
         try:
-            scene = bpy.context.scene
-            scene.use_nodes = True
-            
-            tree = scene.node_tree
+            # Habilitar compositor
+            bpy.context.scene.use_nodes = True
+            tree = bpy.context.scene.node_tree
             nodes = tree.nodes
+            links = tree.links
             
-            if not any(n.type == 'GLARE' for n in nodes):
-                bloom = nodes.new(type='CompositorNodeGlare')
-                bloom.glare_type = 'BLOOM'
-                bloom.threshold = 1.0
-                bloom.size = 6
+            # Buscar nodos existentes
+            render_layer = None
+            composite = None
             
-            print(f"Bloom effect added for {obj.name}")
+            for node in nodes:
+                if node.type == 'R_LAYERS':
+                    render_layer = node
+                elif node.type == 'COMPOSITE':
+                    composite = node
+            
+            if not render_layer:
+                render_layer = nodes.new(type='CompositorNodeRLayers')
+            if not composite:
+                composite = nodes.new(type='CompositorNodeComposite')
+            
+            # Crear nodo de bloom
+            glare = nodes.new(type='CompositorNodeGlare')
+            glare.glare_type = 'FOG_GLOW'
+            glare.quality = 'HIGH'
+            glare.threshold = 0.8
+            glare.size = 6
+            
+            # Conectar nodos
+            links.new(render_layer.outputs['Image'], glare.inputs['Image'])
+            links.new(glare.outputs['Image'], composite.inputs['Image'])
+            
+            print("Bloom effect added to compositor")
+            return True
             
         except Exception as e:
             print(f"Error adding bloom effect: {e}")
+            return False
 
 visual_effects = VisualEffects()
 

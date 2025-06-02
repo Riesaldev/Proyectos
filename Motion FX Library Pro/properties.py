@@ -149,11 +149,11 @@ class MotionFXSettings(bpy.types.PropertyGroup):
         name="Categoría de Mockups",
         description="Categoría de mockups 3D",
         items=[
-            ('abstract', "Abstracto", "Formas abstractas modernas"),
+            ('abstract', "Abstracto", "Formas abstractas"),
             ('architectural', "Arquitectónico", "Estructuras arquitectónicas"),
             ('scientific', "Científico", "Visualizaciones científicas"),
-            ('natural', "Natural", "Formas inspiradas en la naturaleza"),
-            ('futuristic', "Futurista", "Diseños de ciencia ficción"),
+            ('natural', "Natural", "Formas naturales"),
+            ('futuristic', "Futurista", "Diseños futuristas"),
         ],
         default='abstract'
     )

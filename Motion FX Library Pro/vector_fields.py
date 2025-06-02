@@ -3,6 +3,8 @@ import numpy as np
 from bpy.props import IntProperty, EnumProperty, FloatProperty
 from bpy.types import Operator
 from mathutils import Vector
+import bmesh
+import random
 
 class MOTION_OT_CreateVectorField(Operator):
     bl_idname = "motionfx.create_vector_field"
@@ -185,71 +187,75 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
 class VectorFields:
-    def create_turbulence_field(self, location=Vector((0, 0, 0))):
+    def create_turbulence_field(self, location=(0, 0, 0), strength=10.0):
+        """Crea un campo de turbulencia"""
         try:
             bpy.ops.object.effector_add(type='TURBULENCE', location=location)
-            turbulence_obj = bpy.context.active_object
-            turbulence_obj.name = "Turbulence_Field"
+            field_obj = bpy.context.active_object
+            field_obj.name = "Turbulence_Field"
             
-            turbulence_obj.field.strength = 5.0
-            turbulence_obj.field.noise = 1.0
-            turbulence_obj.field.seed = 1
+            field_obj.field.strength = strength
+            field_obj.field.noise = 1.0
+            field_obj.field.seed = random.randint(1, 100)
             
             print(f"Turbulence field created at {location}")
-            return turbulence_obj
+            return field_obj
             
         except Exception as e:
             print(f"Error creating turbulence field: {e}")
             return None
-    
-    def create_wind_field(self, location=Vector((0, 0, 0)), strength=1.0):
-        try:
-            bpy.ops.object.effector_add(type='WIND', location=location)
-            wind_obj = bpy.context.active_object
-            wind_obj.name = "Wind_Field"
-            
-            wind_obj.field.strength = strength
-            wind_obj.field.flow = 1.0
-            
-            print(f"Wind field created at {location}")
-            return wind_obj
-            
-        except Exception as e:
-            print(f"Error creating wind field: {e}")
-            return None
-    
-    def create_vortex_field(self, location=Vector((0, 0, 0))):
+
+    def create_vortex_field(self, location=(0, 0, 0), strength=5.0):
+        """Crea un campo de vórtice"""
         try:
             bpy.ops.object.effector_add(type='VORTEX', location=location)
-            vortex_obj = bpy.context.active_object
-            vortex_obj.name = "Vortex_Field"
+            field_obj = bpy.context.active_object
+            field_obj.name = "Vortex_Field"
             
-            vortex_obj.field.strength = 10.0
-            vortex_obj.field.flow = 0.5
+            field_obj.field.strength = strength
+            field_obj.field.flow = 1.0
             
             print(f"Vortex field created at {location}")
-            return vortex_obj
+            return field_obj
             
         except Exception as e:
             print(f"Error creating vortex field: {e}")
             return None
-    
-    def create_magnetic_field(self, location=Vector((0, 0, 0))):
+
+    def create_wind_field(self, location=(0, 0, 0), strength=2.0):
+        """Crea un campo de viento"""
         try:
-            bpy.ops.object.effector_add(type='MAGNETIC', location=location)
-            magnetic_obj = bpy.context.active_object
-            magnetic_obj.name = "Magnetic_Field"
+            bpy.ops.object.effector_add(type='WIND', location=location)
+            field_obj = bpy.context.active_object
+            field_obj.name = "Wind_Field"
             
-            magnetic_obj.field.strength = 5.0
+            field_obj.field.strength = strength
+            field_obj.rotation_euler = (0, 0, 0)
             
-            print(f"Magnetic field created at {location}")
-            return magnetic_obj
+            print(f"Wind field created at {location}")
+            return field_obj
             
         except Exception as e:
-            print(f"Error creating magnetic field: {e}")
+            print(f"Error creating wind field: {e}")
             return None
 
-# Instancia singleton
+    def create_force_field(self, location=(0, 0, 0), strength=1.0):
+        """Crea un campo de fuerza"""
+        try:
+            bpy.ops.object.effector_add(type='FORCE', location=location)
+            field_obj = bpy.context.active_object
+            field_obj.name = "Force_Field"
+            
+            field_obj.field.strength = strength
+            field_obj.field.falloff_power = 2.0
+            
+            print(f"Force field created at {location}")
+            return field_obj
+            
+        except Exception as e:
+            print(f"Error creating force field: {e}")
+            return None
+
 vector_fields = VectorFields()
 
 def register():

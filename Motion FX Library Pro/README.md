@@ -36,14 +36,34 @@ Bienvenido a la guía completa de Motion FX Library Pro, el add-on definitivo pa
 
 **Pasos:**
     1. Descarga y descomprime `Motion_FX_Library_Pro.zip` (mantén la estructura de carpetas).
-    2. En Blender:  
-      `Edit > Preferences > Add-ons > Install...`  
-      Selecciona el ZIP y activa: `✅ Motion FX Library Pro`
-    3. Verifica la instalación:  
-      Ve a `View3D > Sidebar (N)` y busca la pestaña "Motion FX".
+    2. Abre Blender y ve a `Edit > Preferences > Add-ons`.
+    3. Haz clic en `Install...` y selecciona el archivo `.zip` del add-on.
+    4. Busca "Motion FX Library Pro" en la lista y actívalo.
+    5. Reinicia Blender para completar la instalación.
+    6. El panel aparecerá en `View3D > Sidebar > Motion FX`.
+
+**Verificación:**
+    - Busca el panel "Motion FX" en la barra lateral derecha del viewport 3D.
+    - Si no aparece, presiona `N` para mostrar la barra lateral.
 
 **Desinstalación:**  
 `Edit > Preferences > Add-ons` → Busca y desactiva/elimina el add-on.
+
+---
+
+## ⚙️ Configuración Inicial
+
+Una vez instalado, configura Motion FX Library Pro:
+
+1. **Selecciona un objeto** en tu escena (cubo, esfera, etc.)
+2. **Abre el panel Motion FX** en la barra lateral
+3. **Elige una categoría de efectos** (Animación, Partículas, etc.)
+4. **Aplica tu primer efecto** haciendo clic en cualquier botón
+
+### Configuraciones Recomendadas:
+- **Modo Avanzado**: Actívalo para acceder a más controles
+- **Auto Keyframe**: Habilitado para animaciones automáticas
+- **Live Update**: Para ver cambios en tiempo real
 
 ---
 

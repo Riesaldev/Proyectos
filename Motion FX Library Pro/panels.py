@@ -3,100 +3,115 @@ import bpy
 class MOTIONFX_OT_create_vector_field(bpy.types.Operator):
     bl_idname = "motionfx.create_vector_field"
     bl_label = "Create Vector Field"
-    bl_description = "Create basic vector field"
+    bl_description = "Create a vector field for particle effects"
+    bl_options = {'REGISTER', 'UNDO'}
     
-    def execute(self, context):
-        try:
-            bpy.ops.mesh.primitive_plane_add(size=2, location=context.scene.cursor.location)
-            obj = context.active_object
-            obj.name = "Vector_Field"
-            
-            if obj.type == 'MESH':
-                bpy.context.view_layer.objects.active = obj
-                bpy.ops.object.modifier_add(type='WAVE')
-                wave_mod = obj.modifiers[-1]
-                wave_mod.name = "Vector_Field_Effect"
-                wave_mod.use_z = True
-                wave_mod.height = 0.2
-                wave_mod.width = 2.0
-                wave_mod.speed = 1.0
-                
-            self.report({'INFO'}, "Vector field created")
-        except Exception as e:
-            self.report({'ERROR'}, f"Error creating vector field: {e}")
-        return {'FINISHED'}
-
-class MOTIONFX_OT_create_mockup(bpy.types.Operator):
-    bl_idname = "motionfx.create_mockup"
-    bl_label = "Create Mockup"
-    bl_description = "Create premium 3D mockup"
-    
-    mockup_type: bpy.props.EnumProperty(
-        name="Mockup Type",
+    field_type: bpy.props.EnumProperty(
+        name="Field Type",
+        description="Type of vector field to create",
         items=[
-            ('fluid_wave_abstract', "Fluid Wave", "Modern fluid wave form"),
-            ('geometric_crystal', "Geometric Crystal", "Low-poly crystalline structure"),
-            ('organic_blob', "Organic Blob", "Smooth organic form"),
-            ('twisted_helix', "Twisted Helix", "DNA-inspired helix"),
-            ('fractal_sphere', "Fractal Sphere", "Sphere with fractal displacement"),
-            ('minimal_arch', "Minimal Arch", "Minimalist arch form"),
-            ('liquid_drop', "Liquid Drop", "Realistic water drop"),
-            ('parametric_tower', "Parametric Tower", "Twisted tower geometry"),
-            ('holographic_panel', "Holographic Panel", "Sci-fi holographic interface"),
-            ('neural_network', "Neural Network", "AI neural network visualization"),
-            ('quantum_tunnel', "Quantum Tunnel", "Quantum physics tunnel effect"),
-            ('biomechanical_wing', "Biomechanical Wing", "Organic wing with mechanics"),
-            ('origami_fold', "Origami Fold", "Complex origami-inspired surface"),
-            ('plasma_sphere', "Plasma Sphere", "Electric plasma energy sphere"),
-            ('voronoi_structure', "Voronoi Structure", "Mathematical cellular structure"),
-            ('flowing_ribbon', "Flowing Ribbon", "Elegant flowing ribbon form"),
-            ('crystal_formation', "Crystal Formation", "Natural crystal growth"),
-            ('spiral_galaxy', "Spiral Galaxy", "Cosmic spiral galaxy structure"),
-            ('molecular_bond', "Molecular Bond", "Scientific molecular visualization"),
-            ('infinity_loop', "Infinity Loop", "Mathematical infinity symbol 3D"),
-        ]
+            ('TURBULENCE', "Turbulence", "Create turbulence field"),
+            ('VORTEX', "Vortex", "Create vortex field"),
+            ('WIND', "Wind", "Create wind field"),
+            ('FORCE', "Force", "Create force field"),
+        ],
+        default='TURBULENCE'
     )
     
     def execute(self, context):
         try:
-            from .mockups import mockups
-            obj = mockups.create_mockup(self.mockup_type.replace('_', ' ').title())
-            if obj:
-                self.report({'INFO'}, f"Mockup '{self.mockup_type}' created")
+            from . import vector_fields
+            
+            location = context.scene.cursor.location
+            
+            if self.field_type == 'TURBULENCE':
+                field_obj = vector_fields.vector_fields.create_turbulence_field(location)
+            elif self.field_type == 'VORTEX':
+                field_obj = vector_fields.vector_fields.create_vortex_field(location)
+            elif self.field_type == 'WIND':
+                field_obj = vector_fields.vector_fields.create_wind_field(location)
+            elif self.field_type == 'FORCE':
+                field_obj = vector_fields.vector_fields.create_force_field(location)
+            
+            if field_obj:
+                self.report({'INFO'}, f"{self.field_type.title()} field created")
+                return {'FINISHED'}
             else:
-                self.report({'ERROR'}, f"Failed to create mockup '{self.mockup_type}'")
+                self.report({'ERROR'}, f"Failed to create {self.field_type} field")
+                return {'CANCELLED'}
+                
         except Exception as e:
-            self.report({'ERROR'}, f"Error creating mockup: {e}")
-        return {'FINISHED'}
+            self.report({'ERROR'}, f"Error creating vector field: {str(e)}")
+            return {'CANCELLED'}
     
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
+
+class MOTIONFX_OT_create_mockup(bpy.types.Operator):
+    bl_idname = "motionfx.create_mockup"
+    bl_label = "Create Mockup"
+    bl_description = "Create a 3D mockup"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        try:
+            settings = context.scene.motionfx_settings
+            mockup_name = settings.selected_mockup if hasattr(settings, 'selected_mockup') else 'fluid_wave_abstract'
+            
+            from . import mockups
+            
+            created_obj = mockups.mockups.create_mockup(mockup_name)
+            
+            if created_obj:
+                self.report({'INFO'}, f"Mockup '{mockup_name}' created successfully")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, f"Failed to create mockup '{mockup_name}'")
+                return {'CANCELLED'}
+                
+        except Exception as e:
+            self.report({'ERROR'}, f"Error creating mockup: {str(e)}")
+            return {'CANCELLED'}
 
 class MOTIONFX_OT_load_preset(bpy.types.Operator):
     bl_idname = "motionfx.load_preset"
     bl_label = "Load Preset"
     bl_description = "Load selected preset configuration"
+    bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
-        settings = context.scene.motionfx_settings
-        preset_name = settings.selected_preset
-        
-        if preset_name == 'none':
-            self.report({'WARNING'}, "No preset selected")
-            return {'CANCELLED'}
-        
         try:
-            # Aquí cargarías el preset desde archivo o configuración
-            self.report({'INFO'}, f"Preset '{preset_name}' loaded successfully")
+            settings = context.scene.motionfx_settings
+            preset_name = settings.selected_preset if hasattr(settings, 'selected_preset') else 'none'
+            
+            if preset_name == 'none':
+                self.report({'WARNING'}, "No preset selected")
+                return {'CANCELLED'}
+            
+            from .utilities import load_preset_data
+            
+            preset_data = load_preset_data(preset_name)
+            if preset_data:
+                # Aplicar configuraciones del preset
+                for key, value in preset_data.items():
+                    if hasattr(settings, key):
+                        setattr(settings, key, value)
+                
+                self.report({'INFO'}, f"Preset '{preset_name}' loaded successfully")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, f"Failed to load preset '{preset_name}'")
+                return {'CANCELLED'}
+                
         except Exception as e:
-            self.report({'ERROR'}, f"Error loading preset: {e}")
-        
-        return {'FINISHED'}
+            self.report({'ERROR'}, f"Error loading preset: {str(e)}")
+            return {'CANCELLED'}
 
 class MOTIONFX_OT_save_preset(bpy.types.Operator):
     bl_idname = "motionfx.save_preset"
     bl_label = "Save Preset"
     bl_description = "Save current configuration as preset"
+    bl_options = {'REGISTER', 'UNDO'}
     
     preset_name: bpy.props.StringProperty(
         name="Preset Name",
@@ -106,12 +121,26 @@ class MOTIONFX_OT_save_preset(bpy.types.Operator):
     
     def execute(self, context):
         try:
-            # Aquí guardarías la configuración actual como preset
-            self.report({'INFO'}, f"Preset '{self.preset_name}' saved successfully")
+            settings = context.scene.motionfx_settings
+            
+            preset_data = {
+                'effect_category': settings.effect_category,
+                'advanced_mode': settings.advanced_mode,
+                'live_update': settings.live_update,
+            }
+            
+            from .utilities import save_preset_data
+            
+            if save_preset_data(self.preset_name, preset_data):
+                self.report({'INFO'}, f"Preset '{self.preset_name}' saved successfully")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, f"Failed to save preset '{self.preset_name}'")
+                return {'CANCELLED'}
+                
         except Exception as e:
-            self.report({'ERROR'}, f"Error saving preset: {e}")
-        
-        return {'FINISHED'}
+            self.report({'ERROR'}, f"Error saving preset: {str(e)}")
+            return {'CANCELLED'}
     
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
@@ -367,20 +396,24 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
         if hasattr(context.scene, "motionfx_settings"):
             settings = context.scene.motionfx_settings
             
-            # Selector de categoría de mockup
-            cat_row = mockup_section.row()
-            cat_row.prop(settings, "mockup_category", text="Categoría")
+            # Verificar que las propiedades existan
+            if hasattr(settings, 'mockup_category'):
+                # Selector de categoría de mockup
+                cat_row = mockup_section.row()
+                cat_row.prop(settings, "mockup_category", text="Categoría")
             
-            # Selector de mockup específico
-            mockup_row = mockup_section.row()
-            mockup_row.prop(settings, "selected_mockup", text="Tipo")
+            if hasattr(settings, 'selected_mockup'):
+                # Selector de mockup específico
+                mockup_row = mockup_section.row()
+                mockup_row.prop(settings, "selected_mockup", text="Tipo")
             
             # Botón para crear mockup
             create_row = mockup_section.row(align=True)
             create_row.scale_y = 1.1
-            op = create_row.operator("motionfx.create_mockup", text="Crear Mockup", icon='ADD')
-            if hasattr(settings, 'selected_mockup') and settings.selected_mockup != 'none':
-                op.mockup_type = settings.selected_mockup
+            create_row.operator("motionfx.create_mockup", text="Crear Mockup", icon='ADD')
+        else:
+            # Fallback si no hay settings
+            mockup_section.label(text="⚠️ Settings no disponibles", icon='ERROR')
         
         # Vector Fields
         vector_row = tools_box.row(align=True)
@@ -388,7 +421,7 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
         vector_row.operator("motionfx.create_vector_field", text="🌀 Campo Vectorial", icon='FORCE_VORTEX')
         
         # Quick Effects Showcase
-        if context.scene.motionfx_settings.advanced_mode:
+        if hasattr(context.scene, 'motionfx_settings') and context.scene.motionfx_settings.advanced_mode:
             showcase_row = tools_box.row(align=True)
             showcase_row.scale_y = 1.1
             showcase_row.operator("motionfx.apply_all_showcase", text="✨ Demo Completa", icon='PLAY')
