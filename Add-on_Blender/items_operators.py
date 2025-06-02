@@ -1,9 +1,7 @@
 class ItemsOperators:
-  """Animation Effects for Blender Add-on"""
   bl_idname = "object.animation_effects"
   bl_label = "Animation Effects"
   items = [
-    # Animation effects
     ('WAVE', "Wave Motion", "Apply a wave effect"),
     ('BOUNCE', "Bounce Motion", "Apply a bounce effect"),
     ('SHAKE', "Shake Motion", "Apply a shake effect"),
@@ -22,15 +20,11 @@ class ItemsOperators:
     ('FOLLOW_OBJECT', "Follow Object", "Make the object follow another object"),
     ('SPRING', "Spring Rigid", "Apply a spring effect"),
     ('PULSE', "Pulse Motion", "Apply a pulse effect"),
-
-    # Simulation effects
     ('CLOTH', "Cloth Simulation", "Simulate a cloth effect"),
     ('VORTEX', "Vortex Simulation", "Simulate a vortex effect"),
     ('RIGID_BODY', "Rigid Body Simulation", "Apply rigid body physics"),
     ('SOFT_BODY', "Soft Body Simulation", "Apply soft body physics"),
     ('FLUID', "Fluid Simulation", "Simulate fluid dynamics"),
-
-    # Particle effects
     ('RAIN', "Rain Particles", "Create a rain particle effect"),
     ('SNOW', "Snow Particles", "Create a snow particle effect"),
     ('SPARKLES', "Sparkles Particles", "Create sparkles particle effect"),
@@ -53,8 +47,6 @@ class ItemsOperators:
     ('SPIDER_WEB', "Spider Web Particles", "Create spider web particle effect"),
     ('GHOST', "Ghost Particles", "Create ghost particle effect"),
     ('MIST', "Mist Particles", "Create mist particle effect"),
-
-    # Visual effects
     ('GLITCH', "Glitch Effect", "Apply a glitch effect"),
     ('PIXELATE', "Pixelate Effect", "Apply a pixelate effect"),
     ('BLUR', "Blur Effect", "Apply a blur effect"),
@@ -71,7 +63,6 @@ class ItemsOperators:
     ('LENS_DISTORTION', "Lens Distortion", "Apply a lens distortion effect"),
     ('HOLOGRAM', "Hologram Effect", "Apply a hologram effect"),
     ('GLOW', "Glow Effect", "Apply a glow effect"),
-    ('RAINBOW', "Rainbow Effect", "Apply a rainbow effect"),
     ('REFLECTION', "Reflection Effect", "Apply a reflection effect"),
     ('SHADOW', "Shadow Effect", "Apply a shadow effect"),
     ('LIGHT_RAYS', "Light Rays Effect", "Apply light rays effect"),
@@ -79,8 +70,6 @@ class ItemsOperators:
     ('KIRBY', "Kirby Effect", "Apply a Kirby effect"),
     ('PIXEL_SORT', "Pixel Sort Effect", "Apply a pixel sort effect"),
     ('WIRE', "Wireframe Effect", "Apply a wireframe effect"),
-
-    # Lighting effects
     ('FLASH', "Flash Effect", "Apply a flash effect"),
     ('SPOTLIGHT', "Spotlight Effect", "Apply a spotlight effect"),
     ('NEON', "Neon Effect", "Apply a neon effect"),
@@ -90,13 +79,10 @@ class ItemsOperators:
     ('RAY_TRACING', "Ray Tracing", "Apply ray tracing effect"),
     ('SHADOWS', "Dynamic Shadows", "Apply dynamic shadows effect"),
     ('GLOBAL_ILLUMINATION', "Global Illumination", "Apply global illumination effect"),
-
-    # Material effects
     ('MATERIAL', "Material Effect", "Apply a material effect"),
     ('TEXTURE', "Texture Effect", "Apply a texture effect"),
     ('NORMAL_MAP', "Normal Map Effect", "Apply a normal map effect"),
     ('DISPLACEMENT', "Displacement Effect", "Apply a displacement effect"),
-    ('REFLECTION', "Reflection Effect", "Apply a reflection effect"),
     ('REFRACTION', "Refraction Effect", "Apply a refraction effect"),
     ('EMISSION', "Emission Effect", "Apply an emission effect"),
     ('TRANSLUCENT', "Translucent Effect", "Apply a translucent effect"),
@@ -112,14 +98,6 @@ class ItemsOperators:
     ('CARPAINT', "Car Paint Effect", "Apply a car paint effect"),
     ('GLASS', "Glass Effect", "Apply a glass effect"),
     ('ICE', "Ice Effect", "Apply an ice effect"),
-    ('FROST', "Frost Effect", "Apply a frost effect"),
-    ('SNOW', "Snow Effect", "Apply a snow effect"),
-    ('ASH', "Ash Effect", "Apply an ash effect"),
-    ('GLITTER', "Glitter Effect", "Apply a glitter effect"),
-    ('GHOST', "Ghost Effect", "Apply a ghost effect"),
-    ('MIST', "Mist Effect", "Apply a mist effect"),
-
-    # Camera effects
     ('PATH', "Camera Path", "Create a camera path effect"),
     ('TRACK', "Camera Track", "Track the camera to an object"),
     ('FOCUS', "Camera Focus", "Set camera focus on an object"),
@@ -136,8 +114,6 @@ class ItemsOperators:
     ('CAMERA_STABILIZATION', "Camera Stabilization", "Stabilize the camera movement"),
     ('CAMERA_FOCUS_PULL', "Focus Pull", "Pull focus during camera movement"),
     ('CAMERA_LENS_FLARE', "Lens Flare", "Add lens flare effect to camera"),
-
-    # Utility effects
     ('TIME_WARP', "Time Warp", "Apply a time warp effect"),
     ('SLOW_MOTION', "Slow Motion", "Apply a slow motion effect"),
     ('FAST_FORWARD', "Fast Forward", "Apply a fast forward effect"),
