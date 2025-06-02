@@ -2,6 +2,7 @@ import bpy
 import numpy as np
 from bpy.props import IntProperty, EnumProperty, FloatProperty
 from bpy.types import Operator
+from mathutils import Vector
 
 class MOTION_OT_CreateVectorField(Operator):
     bl_idname = "motionfx.create_vector_field"
@@ -52,25 +53,20 @@ class MOTION_OT_CreateVectorField(Operator):
             scale = self.scale
             half_scale = scale / 2.0
 
-            # Generar puntos de la malla 3D
             x = np.linspace(-half_scale, half_scale, res)
             y = np.linspace(-half_scale, half_scale, res)
             z = np.linspace(-half_scale, half_scale, res)
             
-            # Crear rejilla de puntos
             gx, gy, gz = np.meshgrid(x, y, z, indexing='ij')
             vertices = np.vstack([gx.ravel(), gy.ravel(), gz.ravel()]).T
             num_verts = vertices.shape[0]
 
-            # Inicializar vectores
             vectors = np.zeros((num_verts, 3), dtype=np.float32)
 
             if self.field_type == 'VORTEX':
-                # Vórtice alrededor del eje Z
-                vectors[:, 0] = -vertices[:, 1]  # -y
-                vectors[:, 1] = vertices[:, 0]   # x
+                vectors[:, 0] = -vertices[:, 1]
+                vectors[:, 1] = vertices[:, 0]
                 vectors[:, 2] = 0
-                # Normalizar en XY y aplicar strength
                 norm = np.linalg.norm(vectors[:, :2], axis=1)
                 mask = norm > 1e-6
                 vectors[mask, 0] /= norm[mask]
@@ -78,19 +74,16 @@ class MOTION_OT_CreateVectorField(Operator):
                 vectors *= self.strength
 
             elif self.field_type == 'TURBULENCE':
-                # Turbulencia usando ruido pseudo-aleatorio
-                np.random.seed(42)  # Para resultados reproducibles
+                np.random.seed(42)
                 vectors = (np.random.rand(num_verts, 3) - 0.5) * 2.0 * self.strength
                 
             elif self.field_type == 'GRADIENT':
-                # Gradiente a lo largo del eje X
                 vectors[:, 0] = 1.0
                 vectors[:, 1] = 0.0
                 vectors[:, 2] = 0.0
                 vectors *= self.strength
 
             elif self.field_type == 'RADIAL':
-                # Campo radial desde el centro
                 center = np.array([0, 0, 0])
                 directions = vertices - center
                 distances = np.linalg.norm(directions, axis=1)
@@ -99,48 +92,39 @@ class MOTION_OT_CreateVectorField(Operator):
                 vectors *= self.strength
 
             elif self.field_type == 'SPIRAL':
-                # Campo espiral
                 r = np.sqrt(vertices[:, 0]**2 + vertices[:, 1]**2)
                 theta = np.arctan2(vertices[:, 1], vertices[:, 0])
                 
-                # Componente tangencial (rotación)
                 vectors[:, 0] = -np.sin(theta)
                 vectors[:, 1] = np.cos(theta)
-                vectors[:, 2] = 0.1  # Componente vertical pequeña
+                vectors[:, 2] = 0.1
                 
-                # Atenuar con la distancia
                 attenuation = np.exp(-r / scale)
                 vectors *= attenuation[:, np.newaxis] * self.strength
 
-            # Crear malla y objeto
             mesh_name = f"{self.field_type}_VectorField"
             obj_name = f"{self.field_type}_Field"
             
             mesh = bpy.data.meshes.new(name=mesh_name)
             obj = bpy.data.objects.new(name=obj_name, object_data=mesh)
 
-            # Crear malla con solo vértices (sin aristas ni caras)
             mesh.from_pydata(vertices.tolist(), [], [])
             mesh.update()
 
-            # Añadir atributo personalizado para los vectores
             attr_name = "vector_field"
             if attr_name not in mesh.attributes:
                 attribute = mesh.attributes.new(name=attr_name, type='FLOAT_VECTOR', domain='POINT')
             else:
                 attribute = mesh.attributes[attr_name]
             
-            # Asignar datos del vector field
             vectors_flat = vectors.ravel()
             attribute.data.foreach_set('vector', vectors_flat)
             mesh.update()
 
-            # Añadir a la colección y seleccionar
             context.collection.objects.link(obj)
             context.view_layer.objects.active = obj
             obj.select_set(True)
 
-            # Añadir propiedades personalizadas para el control
             obj["vector_field_type"] = self.field_type
             obj["vector_field_strength"] = self.strength
             obj["vector_field_scale"] = self.scale
@@ -171,16 +155,12 @@ class MOTION_OT_ApplyVectorField(Operator):
                 self.report({'ERROR'}, "Please select objects to apply the vector field to.")
                 return {'CANCELLED'}
             
-            # Aplicar el campo vectorial a los objetos seleccionados
             for obj in selected_objs:
-                # Añadir un Force Field al objeto del campo vectorial
                 if not any(mod.type == 'FORCE' for mod in active_obj.modifiers):
-                    # En su lugar, podemos crear un objeto Force Field
                     bpy.ops.object.effector_add(type='FORCE', location=active_obj.location)
                     force_obj = context.active_object
                     force_obj.name = f"{active_obj.name}_Force"
                     
-                    # Configurar el Force Field
                     force_obj.field.type = 'FORCE'
                     force_obj.field.strength = active_obj.get("vector_field_strength", 1.0)
                     
@@ -203,3 +183,77 @@ def register():
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+
+class VectorFields:
+    def create_turbulence_field(self, location=Vector((0, 0, 0))):
+        try:
+            bpy.ops.object.effector_add(type='TURBULENCE', location=location)
+            turbulence_obj = bpy.context.active_object
+            turbulence_obj.name = "Turbulence_Field"
+            
+            turbulence_obj.field.strength = 5.0
+            turbulence_obj.field.noise = 1.0
+            turbulence_obj.field.seed = 1
+            
+            print(f"Turbulence field created at {location}")
+            return turbulence_obj
+            
+        except Exception as e:
+            print(f"Error creating turbulence field: {e}")
+            return None
+    
+    def create_wind_field(self, location=Vector((0, 0, 0)), strength=1.0):
+        try:
+            bpy.ops.object.effector_add(type='WIND', location=location)
+            wind_obj = bpy.context.active_object
+            wind_obj.name = "Wind_Field"
+            
+            wind_obj.field.strength = strength
+            wind_obj.field.flow = 1.0
+            
+            print(f"Wind field created at {location}")
+            return wind_obj
+            
+        except Exception as e:
+            print(f"Error creating wind field: {e}")
+            return None
+    
+    def create_vortex_field(self, location=Vector((0, 0, 0))):
+        try:
+            bpy.ops.object.effector_add(type='VORTEX', location=location)
+            vortex_obj = bpy.context.active_object
+            vortex_obj.name = "Vortex_Field"
+            
+            vortex_obj.field.strength = 10.0
+            vortex_obj.field.flow = 0.5
+            
+            print(f"Vortex field created at {location}")
+            return vortex_obj
+            
+        except Exception as e:
+            print(f"Error creating vortex field: {e}")
+            return None
+    
+    def create_magnetic_field(self, location=Vector((0, 0, 0))):
+        try:
+            bpy.ops.object.effector_add(type='MAGNETIC', location=location)
+            magnetic_obj = bpy.context.active_object
+            magnetic_obj.name = "Magnetic_Field"
+            
+            magnetic_obj.field.strength = 5.0
+            
+            print(f"Magnetic field created at {location}")
+            return magnetic_obj
+            
+        except Exception as e:
+            print(f"Error creating magnetic field: {e}")
+            return None
+
+# Instancia singleton
+vector_fields = VectorFields()
+
+def register():
+    print("MotionFX: Vector fields module loaded")
+
+def unregister():
+    print("MotionFX: Vector fields module unloaded")
