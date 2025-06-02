@@ -216,28 +216,119 @@ class EffectsOperations:
             return False
         
         try:
+            # Guardar objeto activo anterior
+            previous_active = bpy.context.view_layer.objects.active
+            previous_selected = [o for o in bpy.context.selected_objects]
+            
+            # Limpiar selección y configurar objeto
+            bpy.ops.object.select_all(action='DESELECT')
             bpy.context.view_layer.objects.active = obj
             obj.select_set(True)
             
+            # Validar objeto según tipo de efecto
+            if not cls._validate_object_for_effect(effect_id, obj):
+                # Restaurar selección anterior
+                bpy.ops.object.select_all(action='DESELECT')
+                if previous_active:
+                    bpy.context.view_layer.objects.active = previous_active
+                for o in previous_selected:
+                    o.select_set(True)
+                return False
+            
+            # Configurar auto-keyframe si está disponible
             if hasattr(bpy.context.scene, 'motionfx_settings'):
                 settings = bpy.context.scene.motionfx_settings
-                if settings.auto_keyframe:
+                if hasattr(settings, 'auto_keyframe') and settings.auto_keyframe:
                     bpy.context.scene.tool_settings.use_keyframe_insert_auto = True
             
+            # Aplicar el efecto
             effect_func = cls._effect_map[effect_id]
             effect_func(obj)
             
+            # Marcar objeto con propiedades del efecto
             obj['motionfx_last_effect'] = effect_id
             obj['motionfx_effect_applied'] = True
+            obj['motionfx_effect_frame'] = bpy.context.scene.frame_current
             
+            # Actualizar vista
             bpy.context.view_layer.update()
+            
+            # Forzar actualización de viewport
+            for area in bpy.context.screen.areas:
+                if area.type == 'VIEW_3D':
+                    area.tag_redraw()
+            
+            # Restaurar selección anterior pero mantener el objeto modificado seleccionado
+            bpy.ops.object.select_all(action='DESELECT')
+            obj.select_set(True)
+            if previous_active and previous_active != obj:
+                previous_active.select_set(True)
+                bpy.context.view_layer.objects.active = previous_active
+            else:
+                bpy.context.view_layer.objects.active = obj
             
             print(f"MotionFX: Effect '{effect_id}' applied to '{obj.name}'")
             return True
+            
         except Exception as e:
             print(f"MotionFX: Error applying effect '{effect_id}': {e}")
             import traceback
             traceback.print_exc()
+            
+            # Restaurar selección en caso de error
+            try:
+                bpy.ops.object.select_all(action='DESELECT')
+                if previous_active:
+                    bpy.context.view_layer.objects.active = previous_active
+                for o in previous_selected:
+                    if o and o.name in bpy.data.objects:
+                        o.select_set(True)
+            except:
+                pass
+            
+            return False
+    
+    @classmethod
+    def _validate_object_for_effect(cls, effect_id, obj):
+        """Validar si el objeto es compatible con el efecto"""
+        try:
+            # Verificar que el objeto existe en la escena
+            if obj.name not in bpy.data.objects:
+                print(f"Object {obj.name} not found in scene")
+                return False
+            
+            # Validaciones específicas por tipo de efecto
+            if effect_id in ['fire', 'smoke', 'cloth', 'wave', 'explosion', 'sparks', 'blood']:
+                if obj.type != 'MESH':
+                    print(f"Effect '{effect_id}' requires MESH object, got {obj.type}")
+                    return False
+            
+            elif effect_id in ['camera_dolly', 'camera_zoom', 'depth_of_field', 'camera_focus_pull', 'camera_follow', 'camera_tracking']:
+                if obj.type != 'CAMERA':
+                    print(f"Effect '{effect_id}' requires CAMERA object, got {obj.type}")
+                    return False
+            
+            elif effect_id in ['spotlight', 'flash', 'glow_light', 'volumetric', 'fireworks_light', 'lens_flare_light']:
+                if obj.type not in ['LIGHT', 'MESH']:
+                    print(f"Effect '{effect_id}' requires LIGHT or MESH object, got {obj.type}")
+                    return False
+            
+            # Validaciones generales para objetos con transformaciones
+            if effect_id in ['bounce', 'rotation', 'scale', 'fade', 'follow_object', 'follow_path']:
+                if not hasattr(obj, 'location'):
+                    print(f"Object {obj.name} has no location attribute")
+                    return False
+            
+            # Validaciones para efectos de material
+            if effect_id in ['glass', 'metal', 'hologram', 'dissolve', 'emission', 'neon']:
+                if obj.type != 'MESH':
+                    print(f"Material effect '{effect_id}' requires MESH object, got {obj.type}")
+                    return False
+            
+            return True
+            
+        except Exception as e:
+            print(f"Error validating object for effect {effect_id}: {e}")
             return False
 
 def register():
