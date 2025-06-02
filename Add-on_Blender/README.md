@@ -17,6 +17,8 @@ Bienvenido a la guía completa de Motion FX Library Pro, el add-on definitivo pa
     - [Efectos Utilitarios](#efectos-utilitarios)
     - [Sistema de Presets](#sistema-de-presets)
     - [Campos Vectoriales](#campos-vectoriales)
+    - [Efectos Rápidos](#efectos-rápidos)
+    - [Mockups 3D](#mockups-3d)
     - [Solución de Problemas](#solución-de-problemas)
     - [FAQ](#faq)
     - [Testing Exhaustivo](#testing-exhaustivo)
@@ -148,19 +150,37 @@ Bienvenido a la guía completa de Motion FX Library Pro, el add-on definitivo pa
 
 ---
 
-## 💾 Sistema de Presets
+## ⚡ Efectos Rápidos
 
-- **Guardar:** `motionfx.save_preset` (almacenado en Text Block)
-- **Cargar:** `motionfx.load_preset` (aplicación automática)
-- **Propiedades:** Nombre, categoría, modo avanzado, live update
+**Panel de Efectos Rápidos:**
+- Acceso directo a efectos más populares
+- Organización por categorías visuales
+- Aplicación con un solo clic
+- Información contextual de objetos seleccionados
+
+**Showcase Completo:**
+- `motionfx.apply_all_showcase`: Crea una escena de demostración
+- Aplica múltiples efectos simultáneamente
+- Ideal para presentaciones y pruebas
 
 ---
 
-## 🌪️ Campos Vectoriales
+## 🎨 Mockups 3D
 
-- **Crear:** `motionfx.create_vector_field`
-- **Tipos:** Vortex, Turbulence, Gradient, Radial, Spiral
-- **Aplicación:** Selecciona objeto → Motion FX → Vector Fields
+**Creación de Mockups Profesionales:**
+- Más de 20 tipos de mockups predefinidos
+- Formas geométricas y orgánicas avanzadas
+- Estructuras paramétricas y fractales
+- Elementos científicos y futuristas
+
+**Tipos Disponibles:**
+- Fluid Wave Abstract, Geometric Crystal
+- Organic Blob, Twisted Helix
+- Fractal Sphere, Minimal Arch
+- Liquid Drop, Parametric Tower
+- Holographic Panel, Neural Network
+- Quantum Tunnel, Biomechanical Wing
+- Y muchos más...
 
 ---
 
@@ -168,12 +188,12 @@ Bienvenido a la guía completa de Motion FX Library Pro, el add-on definitivo pa
 
 **Errores Comunes y Soluciones:**
 
-- **Add-on no aparece:** 
+- **Add-on no aparece:**
   - Verifica que la estructura de carpetas esté intacta
   - Revisa la consola de Blender (Window > Toggle System Console)
   - Asegúrate de que todos los archivos .py estén presentes
 
-- **Efectos no funcionan:** 
+- **Efectos no funcionan:**
   - Revisa que tengas un objeto seleccionado
   - Algunos efectos requieren tipos específicos de objeto (mesh, luz, cámara)
   - Verifica mensajes en la consola
@@ -191,21 +211,77 @@ Bienvenido a la guía completa de Motion FX Library Pro, el add-on definitivo pa
   - Reduce la resolución de simulaciones en modo de prueba
   - Usa viewport shading simple durante la configuración
 
-**Compatibilidad:**  
+- **Efectos rápidos no aparecen:**
+  - Verifica que el módulo `quick_effects.py` esté presente
+  - Reinicia Blender si el panel no se muestra
+  - Revisa que las dependencias estén correctas
+
+- **Mockups no se crean:**
+  - Asegúrate de que el módulo `mockups.py` esté disponible
+  - Algunos mockups requieren más recursos del sistema
+  - Verifica el espacio libre en disco
+
+**Compatibilidad:**
+
 - Blender 3.6.0+: Completamente compatible
 - Blender 4.0+: Optimizado y testado
 - EEVEE vs Cycles: Algunos efectos cambian automáticamente el motor de render
 
+**Estructura de Archivos:**
+```
+Motion_FX_Library_Pro/
+├── __init__.py                 # Registro principal
+├── properties.py              # Propiedades del add-on
+├── panels.py                  # Interfaz principal
+├── quick_effects.py           # Panel de efectos rápidos
+├── operators.py               # Operadores generales
+├── effects_operations.py      # Lógica de efectos
+├── utilities.py              # Utilidades compartidas
+├── mockups/                   # Mockups 3D
+├── effects/                   # Módulos de efectos
+│   ├── animationEffects.py
+│   ├── particlesEffects.py
+│   ├── materialEffects.py
+│   └── ...otros efectos
+└── README.md                  # Esta documentación
+```
+
 **Validación del Sistema:**
 ```python
-# Ejecuta en consola de Blender para verificar instalación
+# Ejecuta en consola de Blender para verificar instalación completa
 import bpy
-addon = bpy.context.preferences.addons.get('Motion FX Library Pro')
-if addon:
-    print("✅ Add-on instalado correctamente")
-    print(f"Versión: {addon.bl_info['version']}")
-else:
-    print("❌ Add-on no encontrado")
+
+def validate_motionfx_installation():
+    print("=== MOTION FX LIBRARY PRO - VALIDACIÓN COMPLETA ===")
+    
+    # 1. Verificar módulos principales
+    modules_to_check = [
+        'properties', 'panels', 'quick_effects', 
+        'operators', 'effects_operations'
+    ]
+    
+    for module in modules_to_check:
+        try:
+            exec(f"from . import {module}")
+            print(f"✅ Módulo {module} disponible")
+        except:
+            print(f"❌ Error: Módulo {module} no encontrado")
+    
+    # 2. Verificar efectos rápidos
+    try:
+        panel_classes = [cls for cls in bpy.types.Panel.__subclasses__() 
+                        if 'quick_effects' in cls.bl_idname.lower()]
+        if panel_classes:
+            print("✅ Panel de efectos rápidos registrado")
+        else:
+            print("❌ Panel de efectos rápidos no encontrado")
+    except:
+        print("❌ Error verificando efectos rápidos")
+    
+    print("=== VALIDACIÓN COMPLETADA ===")
+
+# Ejecutar validación
+validate_motionfx_installation()
 ```
 
 ---
@@ -230,6 +306,7 @@ else:
 ## 📊 Testing Exhaustivo
 
 **Script de Validación Completa:**
+
 ```python
 # Copia y pega en la consola de Blender para testing completo
 def test_motionfx_installation():
