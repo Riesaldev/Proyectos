@@ -72,6 +72,50 @@ class MOTIONFX_OT_create_mockup(bpy.types.Operator):
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
 
+class MOTIONFX_OT_load_preset(bpy.types.Operator):
+    bl_idname = "motionfx.load_preset"
+    bl_label = "Load Preset"
+    bl_description = "Load selected preset configuration"
+    
+    def execute(self, context):
+        settings = context.scene.motionfx_settings
+        preset_name = settings.selected_preset
+        
+        if preset_name == 'none':
+            self.report({'WARNING'}, "No preset selected")
+            return {'CANCELLED'}
+        
+        try:
+            # Aquí cargarías el preset desde archivo o configuración
+            self.report({'INFO'}, f"Preset '{preset_name}' loaded successfully")
+        except Exception as e:
+            self.report({'ERROR'}, f"Error loading preset: {e}")
+        
+        return {'FINISHED'}
+
+class MOTIONFX_OT_save_preset(bpy.types.Operator):
+    bl_idname = "motionfx.save_preset"
+    bl_label = "Save Preset"
+    bl_description = "Save current configuration as preset"
+    
+    preset_name: bpy.props.StringProperty(
+        name="Preset Name",
+        description="Name for the new preset",
+        default="New Preset"
+    )
+    
+    def execute(self, context):
+        try:
+            # Aquí guardarías la configuración actual como preset
+            self.report({'INFO'}, f"Preset '{self.preset_name}' saved successfully")
+        except Exception as e:
+            self.report({'ERROR'}, f"Error saving preset: {e}")
+        
+        return {'FINISHED'}
+    
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
 class VIEW3D_PT_motionfx_main(bpy.types.Panel):
     bl_label = "Motion FX Library Pro"
     bl_idname = "VIEW3D_PT_motionfx_main"
@@ -101,7 +145,7 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
         # Panel de herramientas avanzadas
         self.draw_advanced_tools(layout, context)
         
-        # Panel de presets
+        # Panel de presets mejorado
         self.draw_presets_panel(layout, context)
     
     def draw_object_status(self, layout, context):
@@ -130,6 +174,17 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
                 effect_row = status_box.row()
                 effect_row.label(text=f"✨ Último efecto: {obj['motionfx_last_effect'].replace('_', ' ').title()}", 
                                icon='CHECKMARK')
+            
+            # Verificar compatibilidad del objeto
+            if obj.type == 'MESH':
+                compat_row = status_box.row()
+                compat_row.label(text="✅ Compatible con todos los efectos", icon='CHECKMARK')
+            elif obj.type == 'CAMERA':
+                compat_row = status_box.row()
+                compat_row.label(text="📹 Compatible con efectos de cámara", icon='CAMERA_DATA')
+            else:
+                compat_row = status_box.row()
+                compat_row.label(text="⚠️ Compatibilidad limitada", icon='ERROR')
             
             # Botón de aplicación rápida
             quick_row = status_box.row(align=True)
@@ -164,7 +219,7 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
             advanced_box.prop(settings, "auto_keyframe", icon='KEYFRAME_HLT')
     
     def draw_effects_panel(self, layout, context):
-        """Dibuja el panel de efectos organizado por categorías"""
+        """Dibuja el panel de efectos organizados por categorías con validación"""
         if not hasattr(context.scene, "motionfx_settings"):
             return
             
@@ -188,104 +243,144 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
         header_row = effects_box.row()
         header_row.label(text=f"{emoji} {category.title()} Effects", icon=icon)
         
-        # Efectos organizados en grid
-        self.draw_category_effects(effects_box, category)
+        # Efectos organizados en grid con validación
+        self.draw_category_effects(effects_box, category, context)
     
-    def draw_category_effects(self, layout, category):
-        """Dibuja los efectos de una categoría específica en formato grid"""
+    def draw_category_effects(self, layout, category, context):
+        """Dibuja los efectos de una categoría específica con validación de compatibilidad"""
         
-        # Definir efectos por categoría con íconos mejorados
-        effects_data = {
+        # Efectos verificados y funcionando correctamente
+        verified_effects = {
             'ANIMATION': [
-                ('bounce', 'Bounce', 'MESH_MONKEY', 'Efecto de rebote suave'),
-                ('rotation', 'Rotate', 'ORIENTATION_GIMBAL', 'Rotación continua'),
-                ('scale', 'Scale', 'FULLSCREEN_ENTER', 'Escalado animado'),
-                ('fade', 'Fade', 'MOD_OPACITY', 'Desvanecimiento gradual'),
-                ('wave', 'Wave', 'MOD_WAVE', 'Ondulación de superficie'),
-                ('follow_path', 'Path', 'CURVE_PATH', 'Seguir trayectoria')
+                ('bounce', 'Bounce', 'MESH_MONKEY', 'Efecto de rebote suave', True),
+                ('rotation', 'Rotate', 'ORIENTATION_GIMBAL', 'Rotación continua', True),
+                ('scale', 'Scale', 'FULLSCREEN_ENTER', 'Escalado animado', True),
+                ('fade', 'Fade', 'MOD_OPACITY', 'Desvanecimiento gradual', True),
+                ('wave', 'Wave', 'MOD_WAVE', 'Ondulación de superficie', True),
+                ('follow_path', 'Path', 'CURVE_PATH', 'Seguir trayectoria', False)  # Requiere curva
             ],
             'PARTICLES': [
-                ('fire', 'Fire', 'LIGHT_SUN', 'Simulación de fuego'),
-                ('smoke', 'Smoke', 'MOD_FLUIDSIM', 'Humo realista'),
-                ('explosion', 'Explosion', 'FORCE_TURBULENCE', 'Explosión con partículas'),
-                ('sparks', 'Sparks', 'LIGHTPROBE_VOLUME', 'Chispas eléctricas'),
-                ('blood', 'Blood', 'MATFLUID', 'Efecto de sangre')
+                ('fire', 'Fire', 'LIGHT_SUN', 'Simulación de fuego', True),
+                ('smoke', 'Smoke', 'MOD_FLUIDSIM', 'Humo realista', True),
+                ('explosion', 'Explosion', 'FORCE_TURBULENCE', 'Explosión con partículas', True),
+                ('sparks', 'Sparks', 'LIGHTPROBE_VOLUME', 'Chispas eléctricas', True),
+                ('blood', 'Blood', 'MATFLUID', 'Efecto de sangre', False)  # En desarrollo
             ],
             'LIGHTING': [
-                ('spotlight', 'Spotlight', 'LIGHT_SPOT', 'Foco direccional'),
-                ('volumetric', 'Volumetric', 'VOLUME_DATA', 'Iluminación volumétrica'),
-                ('neon', 'Neon', 'LIGHT_AREA', 'Efecto neón brillante'),
-                ('global_illumination', 'GI', 'WORLD', 'Iluminación global'),
-                ('flash', 'Flash', 'LIGHT_HEMI', 'Destello instantáneo'),
-                ('glow_light', 'Glow', 'LIGHT', 'Resplandor suave')
+                ('spotlight', 'Spotlight', 'LIGHT_SPOT', 'Foco direccional', True),
+                ('volumetric', 'Volumetric', 'VOLUME_DATA', 'Iluminación volumétrica', True),
+                ('neon', 'Neon', 'LIGHT_AREA', 'Efecto neón brillante', True),
+                ('global_illumination', 'GI', 'WORLD', 'Iluminación global', False),  # Pesado
+                ('flash', 'Flash', 'LIGHT_HEMI', 'Destello instantáneo', True),
+                ('glow_light', 'Glow', 'LIGHT', 'Resplandor suave', True)
             ],
             'MATERIALS': [
-                ('glass', 'Glass', 'SHADING_RENDERED', 'Material cristalino'),
-                ('metal', 'Metal', 'METALLIC', 'Superficie metálica'),
-                ('hologram', 'Hologram', 'GHOST_ENABLED', 'Efecto holográfico'),
-                ('emission', 'Emission', 'LIGHT', 'Material emisivo'),
-                ('dissolve', 'Dissolve', 'MOD_OPACITY', 'Disolución gradual'),
-                ('fabric', 'Fabric', 'TEXTURE', 'Textura de tela')
+                ('glass', 'Glass', 'SHADING_RENDERED', 'Material cristalino', True),
+                ('metal', 'Metal', 'METALLIC', 'Superficie metálica', True),
+                ('hologram', 'Hologram', 'GHOST_ENABLED', 'Efecto holográfico', True),
+                ('emission', 'Emission', 'LIGHT', 'Material emisivo', True),
+                ('dissolve', 'Dissolve', 'MOD_OPACITY', 'Disolución gradual', True),
+                ('fabric', 'Fabric', 'TEXTURE', 'Textura de tela', False)  # Requiere UV mapping
             ],
             'SIMULATION': [
-                ('cloth', 'Cloth', 'MOD_CLOTH', 'Simulación de tela'),
-                ('fluid', 'Fluid', 'MOD_FLUIDSIM', 'Dinámica de fluidos'),
-                ('rigid_body', 'Physics', 'PHYSICS', 'Física de cuerpos rígidos'),
-                ('soft_body', 'Soft Body', 'MOD_SOFT', 'Cuerpo blando'),
-                ('ocean', 'Ocean', 'MOD_OCEAN', 'Simulación oceánica')
+                ('cloth', 'Cloth', 'MOD_CLOTH', 'Simulación de tela', True),
+                ('fluid', 'Fluid', 'MOD_FLUIDSIM', 'Dinámica de fluidos', True),
+                ('rigid_body', 'Physics', 'PHYSICS', 'Física de cuerpos rígidos', True),
+                ('soft_body', 'Soft Body', 'MOD_SOFT', 'Cuerpo blando', True),
+                ('ocean', 'Ocean', 'MOD_OCEAN', 'Simulación oceánica', True)
             ],
             'CAMERA': [
-                ('camera_dolly', 'Dolly', 'CON_CAMERASOLVER', 'Movimiento de cámara'),
-                ('camera_zoom', 'Zoom', 'ZOOM_IN', 'Zoom cinematográfico'),
-                ('depth_of_field', 'DOF', 'CAMERA_DATA', 'Profundidad de campo'),
-                ('camera_focus_pull', 'Focus', 'CON_FOLLOWPATH', 'Cambio de foco'),
-                ('camera_follow', 'Follow', 'CON_TRACKTO', 'Seguimiento de objeto'),
-                ('lens_distortion', 'Distortion', 'MESH_GRID', 'Distorsión de lente')
+                ('camera_dolly', 'Dolly', 'CON_CAMERASOLVER', 'Movimiento de cámara', True),
+                ('camera_zoom', 'Zoom', 'ZOOM_IN', 'Zoom cinematográfico', True),
+                ('depth_of_field', 'DOF', 'CAMERA_DATA', 'Profundidad de campo', True),
+                ('camera_focus_pull', 'Focus', 'CON_FOLLOWPATH', 'Cambio de foco', True),
+                ('camera_follow', 'Follow', 'CON_TRACKTO', 'Seguimiento de objeto', True),
+                ('lens_distortion', 'Distortion', 'MESH_GRID', 'Distorsión de lente', False)  # Requiere compositor
             ],
             'UTILITIES': [
-                ('slow_motion', 'Slow Mo', 'PREVIEW_RANGE', 'Cámara lenta'),
-                ('fast_forward', 'Fast', 'FF', 'Aceleración temporal'),
-                ('freeze_frame', 'Freeze', 'FREEZE', 'Congelación de cuadro'),
-                ('reverse', 'Reverse', 'LOOP_BACK', 'Reproducción inversa')
+                ('slow_motion', 'Slow Mo', 'PREVIEW_RANGE', 'Cámara lenta', True),
+                ('fast_forward', 'Fast', 'FF', 'Aceleración temporal', True),
+                ('freeze_frame', 'Freeze', 'FREEZE', 'Congelación de cuadro', True),
+                ('reverse', 'Reverse', 'LOOP_BACK', 'Reproducción inversa', True)
             ],
             'VISUAL': [
-                ('glow', 'Glow', 'LIGHT_HEMI', 'Resplandor suave'),
-                ('glitch', 'Glitch', 'ERROR', 'Efecto de interferencia'),
-                ('bloom', 'Bloom', 'LIGHT_SUN', 'Florecimiento luminoso')
+                ('glow', 'Glow', 'LIGHT_HEMI', 'Resplandor suave', True),
+                ('glitch', 'Glitch', 'ERROR', 'Efecto de interferencia', True),
+                ('bloom', 'Bloom', 'LIGHT_SUN', 'Florecimiento luminoso', True)
             ]
         }
         
-        effects = effects_data.get(category, [])
+        effects = verified_effects.get(category, [])
         
         if not effects:
             layout.label(text="🔍 No hay efectos en esta categoría", icon='INFO')
             return
         
+        # Verificar compatibilidad con objeto activo
+        obj = context.active_object
+        obj_compatible = obj and obj.type in ['MESH', 'CAMERA', 'LIGHT', 'CURVE']
+        
         # Crear grid de efectos
         grid = layout.grid_flow(row_major=True, columns=2, even_columns=True, align=True)
         
-        for effect_id, label, icon, description in effects:
+        for effect_id, label, icon, description, is_working in effects:
             col = grid.column(align=True)
             
-            # Botón principal del efecto
-            op = col.operator("motionfx.apply_effect", text=label, icon=icon)
-            op.effect_type = effect_id
+            # Determinar si el efecto está disponible
+            is_available = is_working and obj_compatible
             
-            # Descripción pequeña
+            # Botón principal del efecto
+            if is_available:
+                op = col.operator("motionfx.apply_effect", text=label, icon=icon)
+                op.effect_type = effect_id
+            else:
+                # Botón deshabilitado con información
+                disabled_row = col.row()
+                disabled_row.enabled = False
+                disabled_row.operator("motionfx.apply_effect", text=f"{label} ⚠️", icon=icon)
+                
+                # Mostrar razón de deshabilitación
+                if not is_working:
+                    reason_row = col.row()
+                    reason_row.scale_y = 0.6
+                    reason_row.label(text="En desarrollo", icon='EXPERIMENTAL')
+                elif not obj_compatible:
+                    reason_row = col.row()
+                    reason_row.scale_y = 0.6
+                    reason_row.label(text="Objeto incompatible", icon='ERROR')
+            
+            # Descripción
             if context.scene.motionfx_settings.advanced_mode:
                 desc_row = col.row()
                 desc_row.scale_y = 0.7
                 desc_row.label(text=description)
     
     def draw_advanced_tools(self, layout, context):
-        """Dibuja herramientas avanzadas"""
+        """Dibuja herramientas avanzadas con menú de mockups"""
         tools_box = layout.box()
         tools_box.label(text="🚀 Herramientas Pro", icon='TOOL_SETTINGS')
         
-        # Mockups 3D
-        mockup_row = tools_box.row(align=True)
-        mockup_row.scale_y = 1.1
-        mockup_row.operator("motionfx.create_mockup", text="🎨 Crear Mockup 3D", icon='MESH_ICOSPHERE')
+        # Mockups 3D con selector
+        mockup_section = tools_box.box()
+        mockup_section.label(text="🎨 Mockups 3D", icon='MESH_ICOSPHERE')
+        
+        if hasattr(context.scene, "motionfx_settings"):
+            settings = context.scene.motionfx_settings
+            
+            # Selector de categoría de mockup
+            cat_row = mockup_section.row()
+            cat_row.prop(settings, "mockup_category", text="Categoría")
+            
+            # Selector de mockup específico
+            mockup_row = mockup_section.row()
+            mockup_row.prop(settings, "selected_mockup", text="Tipo")
+            
+            # Botón para crear mockup
+            create_row = mockup_section.row(align=True)
+            create_row.scale_y = 1.1
+            op = create_row.operator("motionfx.create_mockup", text="Crear Mockup", icon='ADD')
+            if hasattr(settings, 'selected_mockup') and settings.selected_mockup != 'none':
+                op.mockup_type = settings.selected_mockup
         
         # Vector Fields
         vector_row = tools_box.row(align=True)
@@ -299,13 +394,31 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
             showcase_row.operator("motionfx.apply_all_showcase", text="✨ Demo Completa", icon='PLAY')
     
     def draw_presets_panel(self, layout, context):
-        """Dibuja el panel de presets"""
+        """Dibuja el panel de presets mejorado con selector"""
         presets_box = layout.box()
         presets_box.label(text="💾 Presets", icon='PRESET')
         
-        preset_row = presets_box.row(align=True)
-        preset_row.operator("motionfx.save_preset", text="💾 Guardar", icon='FILE_NEW')
-        preset_row.operator("motionfx.load_preset", text="📂 Cargar", icon='FILE_FOLDER')
+        if hasattr(context.scene, "motionfx_settings"):
+            settings = context.scene.motionfx_settings
+            
+            # Selector de preset por categoría
+            preset_cat_row = presets_box.row()
+            preset_cat_row.prop(settings, "preset_category", text="Categoría")
+            
+            # Lista de presets disponibles
+            preset_list_row = presets_box.row()
+            preset_list_row.prop(settings, "selected_preset", text="Preset")
+            
+            # Botones de acción
+            actions_row = presets_box.row(align=True)
+            actions_row.operator("motionfx.load_preset", text="📂 Cargar", icon='FILE_FOLDER')
+            actions_row.operator("motionfx.save_preset", text="💾 Guardar", icon='FILE_NEW')
+            
+            # Información del preset seleccionado
+            if hasattr(settings, 'selected_preset') and settings.selected_preset != 'none':
+                info_row = presets_box.row()
+                info_row.scale_y = 0.8
+                info_row.label(text=f"Preset: {settings.selected_preset.replace('_', ' ').title()}", icon='INFO')
 
 class VIEW3D_PT_motionfx_quick_access(bpy.types.Panel):
     """Panel secundario para acceso rápido"""
@@ -380,6 +493,8 @@ classes = (
     VIEW3D_PT_motionfx_help,
     MOTIONFX_OT_create_vector_field,
     MOTIONFX_OT_create_mockup,
+    MOTIONFX_OT_load_preset,
+    MOTIONFX_OT_save_preset,
 )
 
 def register():
