@@ -1,160 +1,267 @@
 import bpy
 
-class ParticleEffects:  # ✅ CORREGIDO: Era ParticleEffect
-    def add_fire_effect(self, obj):
-        """Añade efecto de fuego con partículas y material emisivo"""
+class MOTIONFX_OT_create_vector_field(bpy.types.Operator):
+    bl_idname = "motionfx.create_vector_field"
+    bl_label = "Create Vector Field"
+    bl_description = "Create basic vector field"
+    
+    def execute(self, context):
         try:
-            if obj.type != 'MESH':
-                print("Fire effect only works on mesh objects")
-                return
+            bpy.ops.mesh.primitive_plane_add(size=2, location=context.scene.cursor.location)
+            obj = context.active_object
+            obj.name = "Vector_Field"
             
-            # Asegurar contexto correcto
-            bpy.context.view_layer.objects.active = obj
-            obj.select_set(True)
-            
-            # Usar Quick Effects para humo/fuego
-            bpy.ops.object.quick_effects_add(type='SMOKE')
-            
-            # Configurar como fuego si se añadió modificador
-            if obj.modifiers:
-                smoke_mod = None
-                for mod in obj.modifiers:
-                    if mod.type == 'FLUID':
-                        smoke_mod = mod
-                        break
-                
-                if smoke_mod and hasattr(smoke_mod, "domain_settings"):
-                    # Configurar dominio de fluido
-                    smoke_mod.domain_settings.domain_type = 'GAS'
-                    smoke_mod.domain_settings.use_adaptive_domain = True
-                    
-                    # Crear material emisivo para el fuego
-                    if not obj.data.materials:
-                        fire_mat = bpy.data.materials.new(name="Fire_Material")
-                        fire_mat.use_nodes = True
-                        obj.data.materials.append(fire_mat)
-                        
-                        nodes = fire_mat.node_tree.nodes
-                        principled = nodes.get("Principled BSDF")
-                        if principled:
-                            principled.inputs["Emission"].default_value = (1.0, 0.3, 0.0, 1.0)
-                            principled.inputs["Emission Strength"].default_value = 5.0
-                    
-        except Exception as e:
-            print(f"Error adding fire effect: {e}")
-
-    def add_smoke_effect(self, obj):
-        """Añade efecto de humo"""
-        try:
-            if obj.type != 'MESH':
-                print("Smoke effect only works on mesh objects")
-                return
-                
-            bpy.context.view_layer.objects.active = obj
-            obj.select_set(True)
-            
-            # Verificar si ya tiene modificador de fluido
-            has_fluid = any(mod.type == 'FLUID' for mod in obj.modifiers)
-            
-            if not has_fluid:
-                bpy.ops.object.quick_effects_add(type='SMOKE')
-                
-        except Exception as e:
-            print(f"Error adding smoke effect: {e}")
-
-    def add_explosion_effect(self, obj):
-        """Añade efecto de explosión con partículas"""
-        try:
-            # Verificar si ya tiene sistema de partículas
-            if not obj.particle_systems:
+            if obj.type == 'MESH':
                 bpy.context.view_layer.objects.active = obj
-                bpy.ops.object.particle_system_add()
-            
-            particle_system = obj.particle_systems[-1]
-            settings = particle_system.settings
-            
-            # Configurar como explosión
-            settings.type = 'EMITTER'
-            settings.count = 1000
-            settings.frame_start = bpy.context.scene.frame_current
-            settings.frame_end = bpy.context.scene.frame_current + 1
-            settings.lifetime = 50
-            settings.emit_from = 'VOLUME'
-            settings.physics_type = 'NEWTON'
-            settings.normal_factor = 5.0
-            settings.factor_random = 2.0
-            settings.size_random = 0.5
-            
-            print(f"Explosion effect added to {obj.name}")
-            
+                bpy.ops.object.modifier_add(type='WAVE')
+                wave_mod = obj.modifiers[-1]
+                wave_mod.name = "Vector_Field_Effect"
+                wave_mod.use_z = True
+                wave_mod.height = 0.2
+                wave_mod.width = 2.0
+                wave_mod.speed = 1.0
+                
+            self.report({'INFO'}, "Vector field created")
         except Exception as e:
-            print(f"Error adding explosion effect: {e}")
+            self.report({'ERROR'}, f"Error creating vector field: {e}")
+        return {'FINISHED'}
 
-    def add_sparks_effect(self, obj):
-        """Añade efecto de chispas"""
+class MOTIONFX_OT_create_mockup(bpy.types.Operator):
+    bl_idname = "motionfx.create_mockup"
+    bl_label = "Create Mockup"
+    bl_description = "Create premium 3D mockup"
+    
+    mockup_type: bpy.props.EnumProperty(
+        name="Mockup Type",
+        items=[
+            ('fluid_wave_abstract', "Fluid Wave", "Modern fluid wave form"),
+            ('geometric_crystal', "Geometric Crystal", "Low-poly crystalline structure"),
+            ('organic_blob', "Organic Blob", "Smooth organic form"),
+            ('twisted_helix', "Twisted Helix", "DNA-inspired helix"),
+            ('fractal_sphere', "Fractal Sphere", "Sphere with fractal displacement"),
+            ('minimal_arch', "Minimal Arch", "Minimalist arch form"),
+            ('liquid_drop', "Liquid Drop", "Realistic water drop"),
+            ('parametric_tower', "Parametric Tower", "Twisted tower geometry"),
+            ('holographic_panel', "Holographic Panel", "Sci-fi holographic interface"),
+            ('neural_network', "Neural Network", "AI neural network visualization"),
+            ('quantum_tunnel', "Quantum Tunnel", "Quantum physics tunnel effect"),
+            ('biomechanical_wing', "Biomechanical Wing", "Organic wing with mechanics"),
+            ('origami_fold', "Origami Fold", "Complex origami-inspired surface"),
+            ('plasma_sphere', "Plasma Sphere", "Electric plasma energy sphere"),
+            ('voronoi_structure', "Voronoi Structure", "Mathematical cellular structure"),
+            ('flowing_ribbon', "Flowing Ribbon", "Elegant flowing ribbon form"),
+            ('crystal_formation', "Crystal Formation", "Natural crystal growth"),
+            ('spiral_galaxy', "Spiral Galaxy", "Cosmic spiral galaxy structure"),
+            ('molecular_bond', "Molecular Bond", "Scientific molecular visualization"),
+            ('infinity_loop', "Infinity Loop", "Mathematical infinity symbol 3D"),
+        ]
+    )
+    
+    def execute(self, context):
         try:
-            if not obj.particle_systems:
-                bpy.context.view_layer.objects.active = obj
-                bpy.ops.object.particle_system_add()
-            
-            particle_system = obj.particle_systems[-1]
-            settings = particle_system.settings
-            
-            settings.type = 'EMITTER'
-            settings.count = 500
-            settings.frame_start = bpy.context.scene.frame_current
-            settings.frame_end = bpy.context.scene.frame_current + 10
-            settings.lifetime = 30
-            settings.emit_from = 'VERT'
-            settings.physics_type = 'NEWTON'
-            settings.normal_factor = 3.0
-            settings.factor_random = 1.5
-            settings.size_random = 0.8
-            
-            print(f"Sparks effect added to {obj.name}")
-            
+            from .mockups import mockups
+            obj = mockups.create_mockup(self.mockup_type.replace('_', ' ').title())
+            if obj:
+                self.report({'INFO'}, f"Mockup '{self.mockup_type}' created")
+            else:
+                self.report({'ERROR'}, f"Failed to create mockup '{self.mockup_type}'")
         except Exception as e:
-            print(f"Error adding sparks effect: {e}")
+            self.report({'ERROR'}, f"Error creating mockup: {e}")
+        return {'FINISHED'}
+    
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
 
-    def add_blood_effect(self, obj):
-        """Añade efecto de sangre con partículas"""
-        try:
-            if not obj.particle_systems:
-                bpy.context.view_layer.objects.active = obj
-                bpy.ops.object.particle_system_add()
-            
-            particle_system = obj.particle_systems[-1]
-            settings = particle_system.settings
-            
-            settings.type = 'EMITTER'
-            settings.count = 200
-            settings.frame_start = bpy.context.scene.frame_current
-            settings.frame_end = bpy.context.scene.frame_current + 5
-            settings.lifetime = 100
-            settings.emit_from = 'VERT'
-            settings.physics_type = 'FLUID'
-            settings.particle_size = 0.02
-            settings.size_random = 0.5
-            
-            # Configurar color rojo para sangre
-            if hasattr(settings, 'material'):
-                if not settings.material:
-                    blood_mat = bpy.data.materials.new(name="Blood_Material")
-                    blood_mat.diffuse_color = (0.8, 0.1, 0.1, 1.0)  # Rojo oscuro
-                    settings.material = blood_mat
-            
-            print(f"Blood effect added to {obj.name}")
-            
-        except Exception as e:
-            print(f"Error adding blood effect: {e}")
+class VIEW3D_PT_motionfx_main(bpy.types.Panel):
+    bl_label = "Motion FX Library Pro"
+    bl_idname = "VIEW3D_PT_motionfx_main"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "Motion FX"
 
-# Instancia singleton
-particle_effects = ParticleEffects()
+    def draw(self, context):
+        layout = self.layout
+        
+        layout.label(text="Motion FX Library Pro", icon='FORCE_TURBULENCE')
+        layout.separator()
+        
+        if hasattr(context.scene, "motionfx_settings"):
+            settings = context.scene.motionfx_settings
+            layout.prop(settings, "effect_category")
+            
+            row = layout.row()
+            row.prop(settings, "advanced_mode")
+            row.prop(settings, "live_update")
+            
+            layout.separator()
+        
+        col = layout.column(align=True)
+        col.operator("motionfx.apply_effect", text="Apply Effect", icon='PLAY')
+        
+        layout.separator()
+        
+        if hasattr(context.scene, "motionfx_settings"):
+            category = context.scene.motionfx_settings.effect_category
+            
+            box = layout.box()
+            box.label(text=f"{category.title()} Effects", icon='MODIFIER')
+            
+            if category == 'ANIMATION':
+                col = box.column(align=True)
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Bounce")
+                op.effect_type = 'bounce'
+                op = row.operator("motionfx.apply_effect", text="Rotation")
+                op.effect_type = 'rotation'
+                
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Scale")
+                op.effect_type = 'scale'
+                op = row.operator("motionfx.apply_effect", text="Wave")
+                op.effect_type = 'wave'
+                
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Fade")
+                op.effect_type = 'fade'
+                op = row.operator("motionfx.apply_effect", text="Follow Path")
+                op.effect_type = 'follow_path'
+                
+            elif category == 'PARTICLES':
+                col = box.column(align=True)
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Fire")
+                op.effect_type = 'fire'
+                op = row.operator("motionfx.apply_effect", text="Smoke")
+                op.effect_type = 'smoke'
+                
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Explosion")
+                op.effect_type = 'explosion'
+                op = row.operator("motionfx.apply_effect", text="Sparks")
+                op.effect_type = 'sparks'
+                
+            elif category == 'LIGHTING':
+                col = box.column(align=True)
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Spotlight")
+                op.effect_type = 'spotlight'
+                op = row.operator("motionfx.apply_effect", text="Volumetric")
+                op.effect_type = 'volumetric'
+                
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Neon")
+                op.effect_type = 'neon'
+                op = row.operator("motionfx.apply_effect", text="Global Illum")
+                op.effect_type = 'global_illumination'
+                
+            elif category == 'MATERIALS':
+                col = box.column(align=True)
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Glass")
+                op.effect_type = 'glass'
+                op = row.operator("motionfx.apply_effect", text="Metal")
+                op.effect_type = 'metal'
+                
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Hologram")
+                op.effect_type = 'hologram'
+                op = row.operator("motionfx.apply_effect", text="Emission")
+                op.effect_type = 'emission'
+                
+            elif category == 'SIMULATION':
+                col = box.column(align=True)
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Cloth")
+                op.effect_type = 'cloth'
+                op = row.operator("motionfx.apply_effect", text="Fluid")
+                op.effect_type = 'fluid'
+                
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Rigid Body")
+                op.effect_type = 'rigid_body'
+                op = row.operator("motionfx.apply_effect", text="Ocean")
+                op.effect_type = 'ocean'
+                
+            elif category == 'CAMERA':
+                col = box.column(align=True)
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Dolly")
+                op.effect_type = 'camera_dolly'
+                op = row.operator("motionfx.apply_effect", text="Zoom")
+                op.effect_type = 'camera_zoom'
+                
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="DOF")
+                op.effect_type = 'depth_of_field'
+                op = row.operator("motionfx.apply_effect", text="Focus Pull")
+                op.effect_type = 'camera_focus_pull'
+                
+            elif category == 'UTILITIES':
+                col = box.column(align=True)
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Slow Motion")
+                op.effect_type = 'slow_motion'
+                op = row.operator("motionfx.apply_effect", text="Fast Forward")
+                op.effect_type = 'fast_forward'
+                
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Freeze Frame")
+                op.effect_type = 'freeze_frame'
+                op = row.operator("motionfx.apply_effect", text="Reverse")
+                op.effect_type = 'reverse'
+                
+            elif category == 'VISUAL':
+                col = box.column(align=True)
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Glow")
+                op.effect_type = 'glow'
+                op = row.operator("motionfx.apply_effect", text="Glitch")
+                op.effect_type = 'glitch'
+                
+                row = col.row(align=True)
+                op = row.operator("motionfx.apply_effect", text="Bloom")
+                op.effect_type = 'bloom'
+            
+            else:
+                box.label(text="Select a category above", icon='INFO')
+        
+        layout.separator()
+        
+        box = layout.box()
+        box.label(text="Premium Assets", icon='ASSET_MANAGER')
+        col = box.column(align=True)
+        col.operator("motionfx.create_mockup", text="Create 3D Mockup", icon='MESH_ICOSPHERE')
+        
+        box = layout.box()
+        box.label(text="Vector Fields", icon='FORCE_VORTEX')
+        box.operator("motionfx.create_vector_field", text="Create Vector Field")
+        
+        layout.separator()
+        
+        box = layout.box()
+        box.label(text="Presets", icon='PRESET')
+        row = box.row()
+        row.operator("motionfx.save_preset", text="Save")
+        row.operator("motionfx.load_preset", text="Load")
+        
+        layout.separator()
+        if context.active_object:
+            layout.label(text=f"Active: {context.active_object.name}", icon='OBJECT_DATA')
+        else:
+            layout.label(text="Select an object", icon='INFO')
 
-classes = []  # No hay clases que registrar en este módulo
+classes = (
+    VIEW3D_PT_motionfx_main,
+    MOTIONFX_OT_create_vector_field,
+    MOTIONFX_OT_create_mockup,
+)
 
 def register():
-    pass
+    for cls in classes:
+        bpy.utils.register_class(cls)
+    print("MotionFX: Panels module loaded")
 
 def unregister():
-    pass
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)
+    print("MotionFX: Panels module unloaded")
