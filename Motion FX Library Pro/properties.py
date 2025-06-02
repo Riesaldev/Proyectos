@@ -37,11 +37,12 @@ def get_mockup_items(self, context):
     """Obtiene la lista de mockups según la categoría seleccionada"""
     category = self.mockup_category
     
-    # Importar los mockups disponibles
+    # Intentar importar los mockups disponibles
     try:
         from . import mockups
         available_mockups = mockups.mockups.get_mockups()
         
+        # Agrupar mockups por categoría
         mockups_by_category = {}
         for mockup in available_mockups:
             cat = mockup.get('category', 'general')
@@ -53,13 +54,65 @@ def get_mockup_items(self, context):
                 mockup.get('description', '')
             ))
         
+        # Debug: imprimir categorías disponibles
+        print(f"Categorías disponibles: {list(mockups_by_category.keys())}")
+        print(f"Categoría seleccionada: {category}")
+        
         items = [('none', "-- Seleccionar Mockup --", "")]
-        items.extend(mockups_by_category.get(category, []))
+        category_items = mockups_by_category.get(category, [])
+        
+        if category_items:
+            items.extend(category_items)
+        else:
+            # Fallback: mostrar algunos mockups de ejemplo si la categoría está vacía
+            print(f"No se encontraron mockups para la categoría '{category}'")
+            fallback_items = [
+                ('glassmorphism_panel', "Glassmorphism Panel", "Panel de cristal moderno"),
+                ('neon_grid_landscape', "Neon Grid", "Paisaje de grilla neón"),
+                ('nft_art_frame', "NFT Frame", "Marco de arte NFT"),
+            ]
+            items.extend(fallback_items)
+        
         return items
         
+    except ImportError as e:
+        print(f"Error importando mockups: {e}")
+        # Mockups estáticos como fallback
+        fallback_mockups = {
+            'glassmorphism': [
+                ('glassmorphism_panel', "Glassmorphism Panel", "Panel de cristal moderno"),
+                ('floating_glass_cards', "Floating Cards", "Tarjetas flotantes de cristal"),
+                ('neo_glass_sphere', "Neo Glass Sphere", "Esfera de cristal neón"),
+            ],
+            'cyberpunk': [
+                ('neon_grid_landscape', "Neon Grid", "Paisaje de grilla neón"),
+                ('cyberpunk_tower', "Cyberpunk Tower", "Torre futurista"),
+                ('hologram_data_stream', "Data Stream", "Flujo de datos holográfico"),
+            ],
+            'metaverse': [
+                ('nft_art_frame', "NFT Frame", "Marco de arte NFT"),
+                ('metaverse_portal', "Portal", "Portal del metaverso"),
+                ('crypto_crystal', "Crypto Crystal", "Cristal de criptomoneda"),
+            ],
+            'parametric': [
+                ('voronoi_structure', "Voronoi", "Estructura voronoi"),
+                ('algorithmic_facade', "Facade", "Fachada algorítmica"),
+                ('fractal_tree', "Fractal Tree", "Árbol fractal"),
+            ],
+            'bio_design': [
+                ('bio_membrane', "Bio Membrane", "Membrana biológica"),
+                ('sustainable_pod', "Sustainable Pod", "Pod sostenible"),
+                ('living_wall', "Living Wall", "Muro viviente"),
+            ]
+        }
+        
+        items = [('none', "-- Seleccionar Mockup --", "")]
+        items.extend(fallback_mockups.get(category, []))
+        return items
+    
     except Exception as e:
-        print(f"Error cargando mockups: {e}")
-        return [('none', "-- No disponible --", "")]
+        print(f"Error obteniendo mockups: {e}")
+        return [('none', "-- Error al cargar mockups --", "")]
 
 class MotionFXSettings(bpy.types.PropertyGroup):
     """Configuraciones principales de Motion FX"""
@@ -135,7 +188,7 @@ class MotionFXSettings(bpy.types.PropertyGroup):
         items=get_preset_items
     )
     
-    # Propiedades de mockups
+    # Propiedades de mockups - corregir categorías para que coincidan con mockups.py
     mockup_category: EnumProperty(
         name="Categoría de Mockup",
         description="Categoría del mockup",
@@ -146,7 +199,8 @@ class MotionFXSettings(bpy.types.PropertyGroup):
             ('parametric', "Paramétrico", "Diseño paramétrico"),
             ('bio_design', "Bio Diseño", "Diseño biológico"),
         ],
-        default='glassmorphism'
+        default='glassmorphism',
+        update=lambda self, context: self.refresh_mockup_list(context)
     )
     
     selected_mockup: EnumProperty(
@@ -154,6 +208,15 @@ class MotionFXSettings(bpy.types.PropertyGroup):
         description="Mockup a crear",
         items=get_mockup_items
     )
+    
+    def refresh_mockup_list(self, context):
+        """Fuerza la actualización de la lista de mockups cuando cambia la categoría"""
+        try:
+            # Forzar actualización del EnumProperty
+            self.selected_mockup = 'none'
+            print(f"Lista de mockups actualizada para categoría: {self.mockup_category}")
+        except Exception as e:
+            print(f"Error actualizando lista de mockups: {e}")
 
 classes = (
     MotionFXSettings,

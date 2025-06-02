@@ -442,15 +442,41 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
             if hasattr(settings, 'mockup_category'):
                 cat_row = mockup_section.row()
                 cat_row.prop(settings, "mockup_category", text="Categoría")
+                
+                # Debug info en modo avanzado
+                if settings.advanced_mode:
+                    debug_row = mockup_section.row()
+                    debug_row.label(text=f"Categoría: {settings.mockup_category}", icon='INFO')
             
             if hasattr(settings, 'selected_mockup'):
                 mockup_row = mockup_section.row()
                 mockup_row.prop(settings, "selected_mockup", text="Mockup")
+                
+                # Botón de actualización manual
+                refresh_row = mockup_section.row()
+                refresh_row.scale_y = 0.8
+                refresh_op = refresh_row.operator("motionfx.refresh_mockup_list", text="🔄 Actualizar Lista", icon='FILE_REFRESH')
+                
+                # Mostrar mockup seleccionado
+                if settings.selected_mockup and settings.selected_mockup != 'none':
+                    info_row = mockup_section.row()
+                    info_row.label(text=f"Seleccionado: {settings.selected_mockup}", icon='CHECKMARK')
             
             # Botón para crear mockup
             create_row = mockup_section.row(align=True)
             create_row.scale_y = 1.1
+            
+            # Habilitar/deshabilitar según selección
+            is_enabled = (hasattr(settings, 'selected_mockup') and 
+                         settings.selected_mockup and 
+                         settings.selected_mockup != 'none')
+            
+            create_row.enabled = is_enabled
             create_row.operator("motionfx.create_mockup", text="Crear Mockup", icon='ADD')
+            
+            if not is_enabled:
+                warning_row = mockup_section.row()
+                warning_row.label(text="⚠️ Selecciona un mockup primero", icon='ERROR')
         else:
             # Fallback si no hay settings
             mockup_section.label(text="⚠️ Settings no disponibles", icon='ERROR')
@@ -571,6 +597,7 @@ classes = (
     MOTIONFX_OT_create_mockup,
     MOTIONFX_OT_load_preset,
     MOTIONFX_OT_save_preset,
+    MOTIONFX_OT_refresh_mockup_list,
 )
 
 def register():

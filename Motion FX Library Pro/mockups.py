@@ -641,19 +641,31 @@ class Mockups:
             return None
 
     def get_mockups(self):
+        """Retorna lista de mockups disponibles"""
+        print(f"Total mockups disponibles: {len(self.mockups)}")
+        for mockup in self.mockups:
+            print(f"  - {mockup['name']} (categoría: {mockup.get('category', 'N/A')})")
         return self.mockups
     
     def get_categories(self):
+        """Retorna lista de categorías disponibles"""
         categories = set()
         for mockup in self.mockups:
             if 'category' in mockup:
                 categories.add(mockup['category'])
         return sorted(list(categories))
+    
+    def get_mockups_by_category(self, category):
+        """Retorna mockups filtrados por categoría"""
+        filtered = [m for m in self.mockups if m.get('category') == category]
+        print(f"Mockups en categoría '{category}': {len(filtered)}")
+        return filtered
 
 mockups = Mockups()
 
 def register():
     print("MotionFX: Contemporary mockups module loaded with modern 3D designs")
+    print(f"Available categories: {mockups.get_categories()}")
 
 def unregister():
     print("MotionFX: Contemporary mockups module unloaded")
