@@ -37,10 +37,27 @@ def get_mockup_items(self, context):
     """Obtiene la lista de mockups según la categoría seleccionada"""
     category = self.mockup_category
     
+    # Debug inicial
+    print(f"=== DEBUG get_mockup_items ===")
+    print(f"Categoría solicitada: {category}")
+    
     # Intentar importar los mockups disponibles
     try:
+        # Importar el módulo mockups
+        import importlib
+        import sys
+        
+        # Forzar recarga del módulo si ya existe
+        if 'mockups' in sys.modules:
+            importlib.reload(sys.modules['mockups'])
+        
         from . import mockups
-        available_mockups = mockups.mockups.get_mockups()
+        
+        # Acceder a la instancia global de mockups
+        mockups_instance = mockups.mockups
+        available_mockups = mockups_instance.get_mockups()
+        
+        print(f"Mockups cargados: {len(available_mockups)}")
         
         # Agrupar mockups por categoría
         mockups_by_category = {}
@@ -56,16 +73,17 @@ def get_mockup_items(self, context):
         
         # Debug: imprimir categorías disponibles
         print(f"Categorías disponibles: {list(mockups_by_category.keys())}")
-        print(f"Categoría seleccionada: {category}")
+        print(f"Mockups por categoría: {[(k, len(v)) for k, v in mockups_by_category.items()]}")
         
         items = [('none', "-- Seleccionar Mockup --", "")]
         category_items = mockups_by_category.get(category, [])
         
         if category_items:
             items.extend(category_items)
+            print(f"Items añadidos para categoría '{category}': {len(category_items)}")
         else:
             # Fallback: mostrar algunos mockups de ejemplo si la categoría está vacía
-            print(f"No se encontraron mockups para la categoría '{category}'")
+            print(f"No se encontraron mockups para la categoría '{category}', usando fallback")
             fallback_items = [
                 ('glassmorphism_panel', "Glassmorphism Panel", "Panel de cristal moderno"),
                 ('neon_grid_landscape', "Neon Grid", "Paisaje de grilla neón"),
@@ -73,11 +91,13 @@ def get_mockup_items(self, context):
             ]
             items.extend(fallback_items)
         
+        print(f"Total items retornados: {len(items)}")
+        print("=== FIN DEBUG ===")
         return items
         
     except ImportError as e:
-        print(f"Error importando mockups: {e}")
-        # Mockups estáticos como fallback
+        print(f"Error importando mockups (ImportError): {e}")
+        # Mockups estáticos como fallback completo
         fallback_mockups = {
             'glassmorphism': [
                 ('glassmorphism_panel', "Glassmorphism Panel", "Panel de cristal moderno"),
@@ -108,10 +128,13 @@ def get_mockup_items(self, context):
         
         items = [('none', "-- Seleccionar Mockup --", "")]
         items.extend(fallback_mockups.get(category, []))
+        print(f"Usando fallback para categoría '{category}': {len(items)-1} items")
         return items
     
     except Exception as e:
-        print(f"Error obteniendo mockups: {e}")
+        print(f"Error obteniendo mockups (Exception): {e}")
+        import traceback
+        traceback.print_exc()
         return [('none', "-- Error al cargar mockups --", "")]
 
 class MotionFXSettings(bpy.types.PropertyGroup):
@@ -213,8 +236,14 @@ class MotionFXSettings(bpy.types.PropertyGroup):
         """Fuerza la actualización de la lista de mockups cuando cambia la categoría"""
         try:
             # Forzar actualización del EnumProperty
+            old_mockup = self.selected_mockup
             self.selected_mockup = 'none'
+            
+            # Forzar re-evaluación de la función get_mockup_items
+            bpy.context.scene.frame_set(bpy.context.scene.frame_current)
+            
             print(f"Lista de mockups actualizada para categoría: {self.mockup_category}")
+            print(f"Mockup anterior: {old_mockup} -> nuevo: none")
         except Exception as e:
             print(f"Error actualizando lista de mockups: {e}")
 

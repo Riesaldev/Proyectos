@@ -176,6 +176,131 @@ class MOTIONFX_OT_save_preset(bpy.types.Operator):
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
 
+class MOTIONFX_OT_refresh_mockup_list(bpy.types.Operator):
+    """Operador para actualizar manualmente la lista de mockups"""
+    bl_idname = "motionfx.refresh_mockup_list"
+    bl_label = "Refresh Mockup List"
+    bl_description = "Refresh the list of available mockups"
+    bl_options = {'REGISTER'}
+    
+    def execute(self, context):
+        try:
+            if hasattr(context.scene, 'motionfx_settings'):
+                settings = context.scene.motionfx_settings
+                
+                print(f"=== REFRESH MOCKUP LIST ===")
+                print(f"Categoría actual: {settings.mockup_category}")
+                print(f"Mockup seleccionado: {settings.selected_mockup}")
+                
+                # Forzar recarga del módulo mockups
+                import importlib
+                import sys
+                if 'mockups' in sys.modules:
+                    importlib.reload(sys.modules['mockups'])
+                    print("Módulo mockups recargado")
+                
+                # Forzar actualización
+                current_category = settings.mockup_category
+                
+                # Cambiar temporalmente la categoría para forzar update
+                temp_categories = ['glassmorphism', 'cyberpunk', 'metaverse', 'parametric', 'bio_design']
+                temp_cat = temp_categories[0] if current_category != temp_categories[0] else temp_categories[1]
+                
+                settings.mockup_category = temp_cat
+                bpy.context.scene.frame_set(bpy.context.scene.frame_current)  # Forzar re-evaluación
+                
+                settings.mockup_category = current_category  # Restaurar
+                bpy.context.scene.frame_set(bpy.context.scene.frame_current)  # Forzar re-evaluación
+                
+                # Resetear selección
+                settings.selected_mockup = 'none'
+                
+                self.report({'INFO'}, f"Lista de mockups actualizada para categoría: {current_category}")
+                
+                # Debug: intentar obtener mockups directamente
+                try:
+                    from . import mockups
+                    available = mockups.mockups.get_mockups()
+                    categories = mockups.mockups.get_categories()
+                    category_mockups = mockups.mockups.get_mockups_by_category(current_category)
+                    
+                    print(f"Total mockups disponibles: {len(available)}")
+                    print(f"Categorías disponibles: {categories}")
+                    print(f"Mockups en categoría '{current_category}': {len(category_mockups)}")
+                    
+                    if category_mockups:
+                        for mockup in category_mockups:
+                            print(f"  - {mockup['name']} ({mockup.get('display_name', 'Sin nombre')})")
+                    
+                except Exception as debug_e:
+                    print(f"Error en debug directo: {debug_e}")
+                
+                print("=== FIN REFRESH ===")
+                return {'FINISHED'}
+            else:
+                self.report({'ERROR'}, "Settings no disponibles")
+                return {'CANCELLED'}
+                
+        except Exception as e:
+            self.report({'ERROR'}, f"Error actualizando lista: {str(e)}")
+            print(f"Error en refresh_mockup_list: {e}")
+            import traceback
+            traceback.print_exc()
+            return {'CANCELLED'}
+
+class MOTIONFX_OT_test_mockups_direct(bpy.types.Operator):
+    """Operador de test para verificar mockups directamente"""
+    bl_idname = "motionfx.test_mockups_direct"
+    bl_label = "Test Mockups Direct"
+    bl_description = "Test direct access to mockups"
+    bl_options = {'REGISTER'}
+    
+    def execute(self, context):
+        try:
+            print("=== TEST MOCKUPS DIRECTO ===")
+            
+            # Test 1: Importar módulo
+            from . import mockups
+            print("✓ Módulo mockups importado")
+            
+            # Test 2: Acceso a instancia
+            mockups_instance = mockups.mockups
+            print("✓ Instancia mockups obtenida")
+            
+            # Test 3: Obtener lista
+            available = mockups_instance.get_mockups()
+            print(f"✓ Mockups disponibles: {len(available)}")
+            
+            # Test 4: Obtener categorías
+            categories = mockups_instance.get_categories()
+            print(f"✓ Categorías: {categories}")
+            
+            # Test 5: Mockups por categoría
+            for cat in categories:
+                cat_mockups = mockups_instance.get_mockups_by_category(cat)
+                print(f"  - {cat}: {len(cat_mockups)} mockups")
+                for mockup in cat_mockups[:2]:  # Solo los primeros 2
+                    print(f"    * {mockup['name']} ({mockup.get('display_name', 'Sin nombre')})")
+            
+            # Test 6: Crear un mockup de prueba
+            test_mockup = mockups_instance.create_mockup('glassmorphism_panel')
+            if test_mockup:
+                print("✓ Test mockup creado exitosamente")
+                self.report({'INFO'}, "Test completado - Ver consola para detalles")
+            else:
+                print("✗ Error creando test mockup")
+                self.report({'WARNING'}, "Test completado con warnings - Ver consola")
+            
+            print("=== FIN TEST ===")
+            return {'FINISHED'}
+            
+        except Exception as e:
+            print(f"✗ Error en test: {e}")
+            import traceback
+            traceback.print_exc()
+            self.report({'ERROR'}, f"Test falló: {str(e)}")
+            return {'CANCELLED'}
+
 class VIEW3D_PT_motionfx_main(bpy.types.Panel):
     bl_label = "Motion FX Library Pro"
     bl_idname = "VIEW3D_PT_motionfx_main"
@@ -438,29 +563,32 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
         if hasattr(context.scene, "motionfx_settings"):
             settings = context.scene.motionfx_settings
             
+            # Debug info siempre visible en desarrollo
+            debug_row = mockup_section.row()
+            debug_row.scale_y = 0.7
+            debug_row.label(text=f"Debug: Cat={settings.mockup_category}, Sel={getattr(settings, 'selected_mockup', 'N/A')}", icon='INFO')
+            
             # Verificar que las propiedades existan
             if hasattr(settings, 'mockup_category'):
                 cat_row = mockup_section.row()
                 cat_row.prop(settings, "mockup_category", text="Categoría")
                 
-                # Debug info en modo avanzado
-                if settings.advanced_mode:
-                    debug_row = mockup_section.row()
-                    debug_row.label(text=f"Categoría: {settings.mockup_category}", icon='INFO')
+                # Botón de actualización manual siempre visible
+                refresh_row = mockup_section.row()
+                refresh_row.scale_y = 0.9
+                refresh_row.operator("motionfx.refresh_mockup_list", text="🔄 Actualizar Lista", icon='FILE_REFRESH')
             
             if hasattr(settings, 'selected_mockup'):
                 mockup_row = mockup_section.row()
                 mockup_row.prop(settings, "selected_mockup", text="Mockup")
                 
-                # Botón de actualización manual
-                refresh_row = mockup_section.row()
-                refresh_row.scale_y = 0.8
-                refresh_op = refresh_row.operator("motionfx.refresh_mockup_list", text="🔄 Actualizar Lista", icon='FILE_REFRESH')
-                
                 # Mostrar mockup seleccionado
-                if settings.selected_mockup and settings.selected_mockup != 'none':
+                if hasattr(settings, 'selected_mockup') and settings.selected_mockup and settings.selected_mockup != 'none':
                     info_row = mockup_section.row()
                     info_row.label(text=f"Seleccionado: {settings.selected_mockup}", icon='CHECKMARK')
+                else:
+                    info_row = mockup_section.row()
+                    info_row.label(text="Ningún mockup seleccionado", icon='X')
             
             # Botón para crear mockup
             create_row = mockup_section.row(align=True)
@@ -477,6 +605,12 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
             if not is_enabled:
                 warning_row = mockup_section.row()
                 warning_row.label(text="⚠️ Selecciona un mockup primero", icon='ERROR')
+            
+            # Botón de test directo (temporal para debug)
+            if settings.advanced_mode:
+                test_row = mockup_section.row()
+                test_row.scale_y = 0.8
+                test_op = test_row.operator("motionfx.test_mockups_direct", text="🧪 Test Directo", icon='EXPERIMENTAL')
         else:
             # Fallback si no hay settings
             mockup_section.label(text="⚠️ Settings no disponibles", icon='ERROR')
@@ -598,6 +732,7 @@ classes = (
     MOTIONFX_OT_load_preset,
     MOTIONFX_OT_save_preset,
     MOTIONFX_OT_refresh_mockup_list,
+    MOTIONFX_OT_test_mockups_direct,
 )
 
 def register():
