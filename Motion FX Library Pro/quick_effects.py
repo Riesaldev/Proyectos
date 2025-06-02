@@ -46,7 +46,7 @@ class MOTIONFX_PT_quick_effects(Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Motion FX"
-    
+        
     def draw(self, context):
         layout = self.layout
         
@@ -248,6 +248,4 @@ def register():
     print("MotionFX: Quick Effects module loaded")
 
 def unregister():
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-    print("MotionFX: Quick Effects module unloaded")
+        print("MotionFX: Quick Effects module unloaded")

@@ -1,6 +1,6 @@
 import bpy
-import mathutils
 import random
+import mathutils
 
 class UtilitiesEffects:
     def add_slow_motion_effect(self, context):

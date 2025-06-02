@@ -307,6 +307,46 @@ def log_effect_application(obj, effect_type, success=True, details=""):
         print(f"Error logging effect application: {e}")
         return False
 
+class Utilities:
+    @staticmethod
+    def ensure_object_selected(obj):
+        """Asegurar que un objeto esté seleccionado y activo"""
+        if obj:
+            bpy.ops.object.select_all(action='DESELECT')
+            bpy.context.view_layer.objects.active = obj
+            obj.select_set(True)
+            return True
+        return False
+    
+    @staticmethod
+    def safe_keyframe_insert(obj, data_path, frame=None):
+        """Insertar keyframe de manera segura"""
+        try:
+            if frame is None:
+                frame = bpy.context.scene.frame_current
+            obj.keyframe_insert(data_path=data_path, frame=frame)
+            return True
+        except Exception as e:
+            print(f"Error inserting keyframe: {e}")
+            return False
+    
+    @staticmethod
+    def get_current_frame():
+        """Obtener frame actual"""
+        return bpy.context.scene.frame_current
+    
+    @staticmethod
+    def validate_object_type(obj, required_types):
+        """Validar tipo de objeto"""
+        if not obj:
+            return False
+        if isinstance(required_types, str):
+            required_types = [required_types]
+        return obj.type in required_types
+
+# Crear instancia global
+utilities = Utilities()
+
 def register():
     print("MotionFX: Utilities module loaded")
 

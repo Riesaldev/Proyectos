@@ -333,4 +333,4 @@ def register():
     print("MotionFX: Lighting effects module loaded")
 
 def unregister():
-    print("MotionFX: Lighting effects module unloaded")
+        print("MotionFX: Lighting effects module unloaded")

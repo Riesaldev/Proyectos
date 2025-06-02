@@ -162,4 +162,4 @@ def register():
     print("MotionFX: Simulation effects module loaded")
 
 def unregister():
-    print("MotionFX: Simulation effects module unloaded")
+        print("MotionFX: Simulation effects module unloaded")
