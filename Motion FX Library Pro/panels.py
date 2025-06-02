@@ -56,22 +56,73 @@ class MOTIONFX_OT_create_mockup(bpy.types.Operator):
     def execute(self, context):
         try:
             settings = context.scene.motionfx_settings
-            mockup_name = settings.selected_mockup if hasattr(settings, 'selected_mockup') else 'fluid_wave_abstract'
+            mockup_name = settings.selected_mockup if hasattr(settings, 'selected_mockup') else 'none'
+            
+            if mockup_name == 'none':
+                self.report({'WARNING'}, "Please select a mockup to create")
+                return {'CANCELLED'}
             
             from . import mockups
             
+            # Intentar crear el mockup
             created_obj = mockups.mockups.create_mockup(mockup_name)
             
             if created_obj:
-                self.report({'INFO'}, f"Mockup '{mockup_name}' created successfully")
+                self.report({'INFO'}, f"Mockup '{mockup_name.replace('_', ' ').title()}' created successfully")
                 return {'FINISHED'}
             else:
-                self.report({'ERROR'}, f"Failed to create mockup '{mockup_name}'")
-                return {'CANCELLED'}
+                # Si falla, intentar crear un mockup básico por defecto
+                self.report({'WARNING'}, f"Creating fallback mockup for '{mockup_name}'")
+                fallback_obj = self.create_fallback_mockup(mockup_name)
+                if fallback_obj:
+                    self.report({'INFO'}, f"Fallback mockup created for '{mockup_name}'")
+                    return {'FINISHED'}
+                else:
+                    self.report({'ERROR'}, f"Failed to create mockup '{mockup_name}'")
+                    return {'CANCELLED'}
                 
         except Exception as e:
             self.report({'ERROR'}, f"Error creating mockup: {str(e)}")
+            print(f"Mockup creation error: {e}")
+            import traceback
+            traceback.print_exc()
             return {'CANCELLED'}
+    
+    def create_fallback_mockup(self, mockup_name):
+        """Crear un mockup básico como fallback"""
+        try:
+            bpy.ops.object.select_all(action='DESELECT')
+            
+            # Crear objeto básico según el nombre
+            if 'fluid' in mockup_name or 'wave' in mockup_name:
+                bpy.ops.mesh.primitive_plane_add(size=4, location=(0, 0, 0))
+                obj = bpy.context.active_object
+                wave_mod = obj.modifiers.new(name="Wave", type='WAVE')
+                wave_mod.height = 1.0
+                wave_mod.width = 2.0
+            elif 'crystal' in mockup_name or 'geometric' in mockup_name:
+                bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, location=(0, 0, 0))
+                obj = bpy.context.active_object
+                wireframe = obj.modifiers.new(name="Wireframe", type='WIREFRAME')
+                wireframe.thickness = 0.02
+            elif 'organic' in mockup_name or 'blob' in mockup_name:
+                bpy.ops.mesh.primitive_uv_sphere_add(radius=2, location=(0, 0, 0))
+                obj = bpy.context.active_object
+                displace = obj.modifiers.new(name="Displace", type='DISPLACE')
+                displace.strength = 0.5
+            else:
+                # Mockup genérico
+                bpy.ops.mesh.primitive_monkey_add(location=(0, 0, 0))
+                obj = bpy.context.active_object
+            
+            obj.name = f"Fallback_{mockup_name.replace('_', ' ').title()}"
+            obj['motionfx_mockup'] = f"Fallback: {mockup_name}"
+            
+            return obj
+            
+        except Exception as e:
+            print(f"Error creating fallback mockup: {e}")
+            return None
 
 class MOTIONFX_OT_load_preset(bpy.types.Operator):
     bl_idname = "motionfx.load_preset"

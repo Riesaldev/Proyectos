@@ -40,27 +40,27 @@ def get_mockup_items(self, context):
     mockups_by_category = {
         'abstract': [
             ('fluid_wave_abstract', "Onda Fluida", "Forma de onda abstracta"),
-            ('geometric_crystal', "Cristal Geométrico", "Estructura cristalina"),
             ('organic_blob', "Forma Orgánica", "Estructura orgánica suave"),
+            ('twisted_helix', "Hélice Retorcida", "Estructura helicoidal"),
         ],
-        'architectural': [
+        'geometric': [
+            ('geometric_crystal', "Cristal Geométrico", "Estructura cristalina"),
             ('minimal_arch', "Arco Minimalista", "Arquitectura minimalista"),
             ('parametric_tower', "Torre Paramétrica", "Geometría arquitectónica"),
-            ('spiral_staircase', "Escalera Espiral", "Estructura en espiral"),
         ],
-        'scientific': [
-            ('molecular_bond', "Enlace Molecular", "Visualización científica"),
+        'futuristic': [
             ('neural_network', "Red Neuronal", "Visualización de IA"),
+            ('holographic_panel', "Panel Holográfico", "Interface futurista"),
             ('quantum_tunnel', "Túnel Cuántico", "Efecto de física cuántica"),
+        ],
+        'mathematical': [
+            ('infinity_loop', "Bucle Infinito", "Símbolo de infinito 3D"),
+            ('spiral_galaxy', "Galaxia Espiral", "Estructura cósmica"),
+            ('molecular_bond', "Enlace Molecular", "Visualización científica"),
         ],
         'natural': [
             ('crystal_formation', "Formación Cristalina", "Crecimiento de cristales"),
-            ('spiral_galaxy', "Galaxia Espiral", "Estructura cósmica"),
             ('liquid_drop', "Gota Líquida", "Gota de agua realista"),
-        ],
-        'futuristic': [
-            ('holographic_panel', "Panel Holográfico", "Interface futurista"),
-            ('plasma_sphere', "Esfera de Plasma", "Energía eléctrica"),
             ('biomechanical_wing', "Ala Biomecánica", "Fusión orgánica-mecánica"),
         ]
     }
@@ -150,10 +150,10 @@ class MotionFXSettings(bpy.types.PropertyGroup):
         description="Categoría de mockups 3D",
         items=[
             ('abstract', "Abstracto", "Formas abstractas"),
-            ('architectural', "Arquitectónico", "Estructuras arquitectónicas"),
-            ('scientific', "Científico", "Visualizaciones científicas"),
-            ('natural', "Natural", "Formas naturales"),
+            ('geometric', "Geométrico", "Estructuras geométricas"),
             ('futuristic', "Futurista", "Diseños futuristas"),
+            ('mathematical', "Matemático", "Formas matemáticas"),
+            ('natural', "Natural", "Formas naturales"),
         ],
         default='abstract'
     )

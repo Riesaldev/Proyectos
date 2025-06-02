@@ -199,19 +199,44 @@ Una vez instalado, configura Motion FX Library Pro:
 ## 🎨 Mockups 3D
 
 **Creación de Mockups Profesionales:**
-- Más de 20 tipos de mockups predefinidos
-- Formas geométricas y orgánicas avanzadas
-- Estructuras paramétricas y fractales
-- Elementos científicos y futuristas
+- Más de 15 tipos de mockups predefinidos organizados por categorías
+- Formas geométricas, abstractas y futuristas
+- Estructuras paramétricas y matemáticas
+- Elementos científicos y naturales
 
-**Tipos Disponibles:**
-- Fluid Wave Abstract, Geometric Crystal
-- Organic Blob, Twisted Helix
-- Fractal Sphere, Minimal Arch
-- Liquid Drop, Parametric Tower
-- Holographic Panel, Neural Network
-- Quantum Tunnel, Biomechanical Wing
-- Y muchos más...
+**Categorías Disponibles:**
+
+### 🎭 Abstracto
+- **Fluid Wave Abstract**: Onda fluida con topología dinámica
+- **Organic Blob**: Estructura orgánica con desplazamiento
+- **Twisted Helix**: Hélice retorcida con deformaciones
+
+### 🔷 Geométrico  
+- **Geometric Crystal**: Estructura cristalina low-poly
+- **Minimal Arch**: Arco arquitectónico minimalista
+- **Parametric Tower**: Torre con geometría paramétrica
+
+### 🚀 Futurista
+- **Neural Network**: Visualización de red neuronal de IA
+- **Holographic Panel**: Panel de interfaz holográfica
+- **Quantum Tunnel**: Efecto de túnel cuántico
+
+### 📐 Matemático
+- **Infinity Loop**: Símbolo de infinito en 3D
+- **Spiral Galaxy**: Estructura de galaxia espiral
+- **Molecular Bond**: Visualización de enlaces moleculares
+
+**Uso:**
+1. Selecciona una categoría de mockup
+2. Elige el tipo específico
+3. Haz clic en "Crear Mockup"
+4. El objeto aparecerá con materiales y animaciones aplicadas
+
+**Características:**
+- Materiales procedurales automáticos
+- Animaciones integradas
+- Propiedades personalizadas para identificación
+- Compatibilidad con todos los efectos de Motion FX
 
 ---
 
@@ -249,8 +274,9 @@ Una vez instalado, configura Motion FX Library Pro:
 
 - **Mockups no se crean:**
   - Asegúrate de que el módulo `mockups.py` esté disponible
-  - Algunos mockups requieren más recursos del sistema
-  - Verifica el espacio libre en disco
+  - Verifica que el nombre del mockup coincida con los disponibles
+  - Si falla, se creará automáticamente un mockup de respaldo (fallback)
+  - Revisa la consola para mensajes de error específicos
 
 **Compatibilidad:**
 
