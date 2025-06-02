@@ -37,11 +37,25 @@ class MOTIONFX_OT_apply_effect(bpy.types.Operator):
             from .effects_operations import EffectsOperations
             EffectsOperations.initialize_effect_map()
             
-            success = EffectsOperations.apply_effect(self.effect_type, obj)
+            # Verificar si es un efecto de utilidades que requiere contexto
+            utility_effects = [
+                'slow_motion', 'fast_forward', 'freeze_frame', 'reverse',
+                'time_remap', 'frame_blending', 'scene_scale', 'physics_time_scale',
+                'glassmorphism', 'cyberpunk_glow', 'holographic_distortion',
+                'bio_organic_growth', 'nft_showcase'
+            ]
+            
+            if self.effect_type in utility_effects:
+                success = EffectsOperations.apply_utility_effect(self.effect_type, context)
+            else:
+                success = EffectsOperations.apply_effect(self.effect_type, obj)
             
             if success:
                 effect_name = self.effect_type.replace("_", " ").title()
-                self.report({'INFO'}, f"Effect '{effect_name}' applied to '{obj.name}'")
+                if self.effect_type in utility_effects:
+                    self.report({'INFO'}, f"Utility effect '{effect_name}' applied to scene/selection")
+                else:
+                    self.report({'INFO'}, f"Effect '{effect_name}' applied to '{obj.name}'")
                 return {'FINISHED'}
             else:
                 self.report({'ERROR'}, f"Failed to apply effect '{self.effect_type}'")

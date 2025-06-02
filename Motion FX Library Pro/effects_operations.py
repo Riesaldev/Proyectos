@@ -142,8 +142,18 @@ class EffectsOperations:
             'fast_forward': utilities_effects.add_fast_forward_effect,
             'freeze_frame': utilities_effects.add_freeze_frame_effect,
             'reverse': utilities_effects.add_reverse_effect,
+            'time_remap': utilities_effects.add_time_remap_effect,
+            'frame_blending': utilities_effects.add_frame_blending_effect,
+            'scene_scale': utilities_effects.add_scene_scale_effect,
+            'physics_time_scale': utilities_effects.add_physics_time_scale_effect,
+            'glassmorphism': utilities_effects.add_glassmorphism_effect,
+            'cyberpunk_glow': utilities_effects.add_cyberpunk_glow_effect,
+            'holographic_distortion': utilities_effects.add_holographic_distortion_effect,
+            'bio_organic_growth': utilities_effects.add_bio_organic_growth_effect,
+            'nft_showcase': utilities_effects.add_nft_showcase_effect,
+            'parametric_deformation': utilities_effects.add_parametric_deformation_effect,
         })
-        
+    
     @classmethod
     def _add_visual_effects(cls, visual_effects):
         cls._effect_map.update({
@@ -286,6 +296,51 @@ class EffectsOperations:
             except:
                 pass
             
+            return False
+    
+    @classmethod
+    def apply_utility_effect(cls, effect_id, context):
+        """Aplicar efectos de utilidades que requieren contexto"""
+        if not cls._initialized:
+            cls.initialize_effect_map()
+        
+        try:
+            from .utilitiesEffects import utilities_effects
+            
+            if effect_id == 'slow_motion':
+                return utilities_effects.add_slow_motion_effect(context)
+            elif effect_id == 'fast_forward':
+                return utilities_effects.add_fast_forward_effect(context)
+            elif effect_id == 'freeze_frame':
+                return utilities_effects.add_freeze_frame_effect(context)
+            elif effect_id == 'reverse':
+                return utilities_effects.add_reverse_effect(context)
+            elif effect_id == 'glassmorphism':
+                return utilities_effects.add_glassmorphism_effect(context)
+            elif effect_id == 'cyberpunk_glow':
+                return utilities_effects.add_cyberpunk_glow_effect(context)
+            elif effect_id == 'holographic_distortion':
+                return utilities_effects.add_holographic_distortion_effect(context)
+            elif effect_id == 'bio_organic_growth':
+                return utilities_effects.add_bio_organic_growth_effect(context)
+            elif effect_id == 'nft_showcase':
+                return utilities_effects.add_nft_showcase_effect(context)
+            elif effect_id == 'parametric_deformation':
+                return utilities_effects.add_parametric_deformation_effect(context)
+            elif effect_id == 'frame_blending':
+                return utilities_effects.add_frame_blending_effect(context)
+            elif effect_id == 'scene_scale':
+                return utilities_effects.add_scene_scale_effect()
+            elif effect_id == 'physics_time_scale':
+                return utilities_effects.add_physics_time_scale_effect()
+            elif effect_id == 'time_remap' and context.active_object:
+                return utilities_effects.add_time_remap_effect(context.active_object, 'EASE_IN_OUT')
+            else:
+                print(f"Unknown utility effect: {effect_id}")
+                return False
+                
+        except Exception as e:
+            print(f"Error applying utility effect {effect_id}: {e}")
             return False
     
     @classmethod

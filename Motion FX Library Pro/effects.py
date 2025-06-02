@@ -146,6 +146,38 @@ class MOTIONFX_OT_apply_effect(bpy.types.Operator):
             elif effect_type == 'reverse':
                 return self.add_reverse_effect(context)
             
+            # Nuevos efectos de utilidades contemporáneos
+            elif effect_type == 'glassmorphism':
+                from .utilitiesEffects import utilities_effects
+                return utilities_effects.add_glassmorphism_effect(context)
+            elif effect_type == 'cyberpunk_glow':
+                from .utilitiesEffects import utilities_effects
+                return utilities_effects.add_cyberpunk_glow_effect(context)
+            elif effect_type == 'holographic_distortion':
+                from .utilitiesEffects import utilities_effects
+                return utilities_effects.add_holographic_distortion_effect(context)
+            elif effect_type == 'bio_organic_growth':
+                from .utilitiesEffects import utilities_effects
+                return utilities_effects.add_bio_organic_growth_effect(context)
+            elif effect_type == 'nft_showcase':
+                from .utilitiesEffects import utilities_effects
+                return utilities_effects.add_nft_showcase_effect(context)
+            elif effect_type == 'parametric_deformation':
+                from .utilitiesEffects import utilities_effects
+                return utilities_effects.add_parametric_deformation_effect(context)
+            elif effect_type == 'time_remap':
+                from .utilitiesEffects import utilities_effects
+                return utilities_effects.add_time_remap_effect(obj, 'EASE_IN_OUT')
+            elif effect_type == 'frame_blending':
+                from .utilitiesEffects import utilities_effects
+                return utilities_effects.add_frame_blending_effect(context)
+            elif effect_type == 'scene_scale':
+                from .utilitiesEffects import utilities_effects
+                return utilities_effects.add_scene_scale_effect()
+            elif effect_type == 'physics_time_scale':
+                from .utilitiesEffects import utilities_effects
+                return utilities_effects.add_physics_time_scale_effect()
+            
             else:
                 print(f"Unknown effect type: {effect_type}")
                 return False

@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Motion FX Library Pro",
     "author": "RiesalDev",
-    "version": (1, 5, 0),
+    "version": (0, 5, 0),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > Motion FX",
     "description": "Professional VFX library with advanced animation and special effects tools",

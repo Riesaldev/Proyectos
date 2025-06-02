@@ -361,14 +361,19 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
                 ('hologram', 'Hologram', 'GHOST_ENABLED', 'Efecto holográfico', True),
                 ('emission', 'Emission', 'LIGHT', 'Material emisivo', True),
                 ('dissolve', 'Dissolve', 'MOD_OPACITY', 'Disolución gradual', True),
-                ('fabric', 'Fabric', 'TEXTURE', 'Textura de tela', False)  # Requiere UV mapping
+                ('fabric', 'Fabric', 'TEXTURE', 'Textura de tela', False),  # Requiere UV mapping
+                ('glassmorphism', 'Glassmorphism', 'NODE_MATERIAL', 'Efecto vidrio esmerilado moderno', True),
+                ('cyberpunk_glow', 'Cyberpunk', 'LIGHT_AREA', 'Brillo neón cyberpunk', True),
+                ('holographic_distortion', 'Holo Distort', 'GHOST_ENABLED', 'Distorsión holográfica', True)
             ],
             'SIMULATION': [
                 ('cloth', 'Cloth', 'MOD_CLOTH', 'Simulación de tela', True),
                 ('fluid', 'Fluid', 'MOD_FLUIDSIM', 'Dinámica de fluidos', True),
                 ('rigid_body', 'Physics', 'PHYSICS', 'Física de cuerpos rígidos', True),
                 ('soft_body', 'Soft Body', 'MOD_SOFT', 'Cuerpo blando', True),
-                ('ocean', 'Ocean', 'MOD_OCEAN', 'Simulación oceánica', True)
+                ('ocean', 'Ocean', 'MOD_OCEAN', 'Simulación oceánica', True),
+                ('bio_organic_growth', 'Bio Growth', 'MODIFIER', 'Crecimiento orgánico', True),
+                ('parametric_deformation', 'Param Deform', 'MOD_WAVE', 'Deformación paramétrica', True)
             ],
             'CAMERA': [
                 ('camera_dolly', 'Dolly', 'CON_CAMERASOLVER', 'Movimiento de cámara', True),
@@ -379,15 +384,20 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
                 ('lens_distortion', 'Distortion', 'MESH_GRID', 'Distorsión de lente', False)  # Requiere compositor
             ],
             'UTILITIES': [
-                ('slow_motion', 'Slow Mo', 'PREVIEW_RANGE', 'Cámara lenta', True),
+                ('slow_motion', 'Slow Mo', 'PREVIEW_RANGE', 'Cámara lenta avanzada', True),
                 ('fast_forward', 'Fast', 'FF', 'Aceleración temporal', True),
                 ('freeze_frame', 'Freeze', 'FREEZE', 'Congelación de cuadro', True),
-                ('reverse', 'Reverse', 'LOOP_BACK', 'Reproducción inversa', True)
+                ('reverse', 'Reverse', 'LOOP_BACK', 'Reproducción inversa', True),
+                ('time_remap', 'Time Remap', 'TIME', 'Remapeo temporal avanzado', True),
+                ('frame_blending', 'Frame Blend', 'RENDER_ANIMATION', 'Mezcla de frames', True),
+                ('scene_scale', 'Scene Scale', 'FULLSCREEN_ENTER', 'Escala de escena', True),
+                ('physics_time_scale', 'Physics Time', 'PHYSICS', 'Escala tiempo físicas', True)
             ],
             'VISUAL': [
                 ('glow', 'Glow', 'LIGHT_HEMI', 'Resplandor suave', True),
                 ('glitch', 'Glitch', 'ERROR', 'Efecto de interferencia', True),
-                ('bloom', 'Bloom', 'LIGHT_SUN', 'Florecimiento luminoso', True)
+                ('bloom', 'Bloom', 'LIGHT_SUN', 'Florecimiento luminoso', True),
+                ('nft_showcase', 'NFT Showcase', 'SOLO_ON', 'Showcase NFT premium', True)
             ]
         }
         

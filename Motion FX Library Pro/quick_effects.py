@@ -116,6 +116,8 @@ class MOTIONFX_PT_quick_effects(Panel):
             ('hologram', 'Hologram', 'GHOST_ENABLED'),
             ('dissolve', 'Dissolve', 'MOD_OPACITY'),
             ('emission', 'Emission', 'LIGHT'),
+            ('glassmorphism', 'Glassmorphism', 'NODE_MATERIAL'),
+            ('cyberpunk_glow', 'Cyberpunk', 'LIGHT_AREA'),
         ]
         
         for effect_id, label, icon in material_effects:
@@ -151,6 +153,24 @@ class MOTIONFX_PT_quick_effects(Panel):
         ]
         
         for effect_id, label, icon in lighting_effects:
+            op = grid.operator("motionfx.apply_effect", text=label, icon=icon)
+            op.effect_type = effect_id
+        
+        # Utilities Effects - Nueva sección
+        box = layout.box()
+        box.label(text="🛠️ Utilities Pro", icon='TOOL_SETTINGS')
+        grid = box.grid_flow(row_major=True, columns=2, even_columns=True, align=True)
+        
+        utility_effects = [
+            ('slow_motion', 'Slow Mo', 'PREVIEW_RANGE'),
+            ('fast_forward', 'Fast Forward', 'FF'),
+            ('freeze_frame', 'Freeze', 'FREEZE'),
+            ('reverse', 'Reverse', 'LOOP_BACK'),
+            ('nft_showcase', 'NFT Show', 'SOLO_ON'),
+            ('bio_organic_growth', 'Bio Growth', 'MODIFIER'),
+        ]
+        
+        for effect_id, label, icon in utility_effects:
             op = grid.operator("motionfx.apply_effect", text=label, icon=icon)
             op.effect_type = effect_id
 
