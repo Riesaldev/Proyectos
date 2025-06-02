@@ -3,101 +3,96 @@ bl_info = {
     "author": "RiesalDev",
     "version": (1, 0, 0),
     "blender": (3, 6, 0),
-    "location": "View3D > Sidebar > Motion FX Library Pro",
-    "description": "Biblioteca avanzada de efectos con +50 herramientas de animación y efectos especiales",
+    "location": "View3D > Sidebar > Motion FX",
+    "description": "Professional VFX library with advanced animation and special effects tools",
     "category": "Animation",
+    "doc_url": "",
+    "tracker_url": "",
 }
 
 import bpy
-from bpy.props import EnumProperty
+import importlib
+import sys
 
-# Importar módulos con manejo de errores
-try:
-    from . import (
-        operators,
-        panels,
-        properties,
-        utilities,
-        vector_fields,
-    )
-    
-    modules = [
-        operators,
-        panels,
-        properties,
-        utilities,
-        vector_fields,
-    ]
-    
-    modules_loaded = True
-    
-except Exception as e:
-    print(f"MotionFX: Error importing modules: {e}")
-    modules = []
-    modules_loaded = False
+basic_modules = [
+    'properties',
+    'utilities',
+]
+
+effect_modules = [
+    'animationEffects',
+    'particlesEffects', 
+    'materialEffects',
+    'cameraEffects',
+    'lightingEffects',
+    'simulationEffects',
+    'utilitiesEffects',
+    'visualEffects',
+    'vector_fields',
+    'mockups'
+]
+
+main_modules = [
+    'effects_operations',
+    'operators', 
+    'panels',
+    'drag_drop',
+]
+
+def safe_import_module(module_name, package=__name__, optional=False):
+    try:
+        if package:
+            full_name = f"{package}.{module_name}"
+        else:
+            full_name = module_name
+            
+        if full_name in sys.modules:
+            return importlib.reload(sys.modules[full_name])
+        else:
+            return importlib.import_module(f".{module_name}", package)
+    except Exception as e:
+        if not optional:
+            print(f"MotionFX: Error importing module {module_name}: {e}")
+        return None
 
 def register():
-    if not modules_loaded:
-        print("MotionFX: Cannot register - modules failed to load")
-        return
+    print("MotionFX: Starting add-on registration...")
     
-    try:
-        # Registrar módulos
-        for module in modules:
-            if hasattr(module, "classes"):
-                for cls in module.classes:
-                    try:
-                        bpy.utils.register_class(cls)
-                    except Exception as e:
-                        print(f"MotionFX: Error registering class {cls}: {e}")
-            
+    imported_modules = {}
+    registration_order = basic_modules + effect_modules + main_modules
+    
+    for module_name in registration_order:
+        module = safe_import_module(module_name)
+        if module:
+            imported_modules[module_name] = module
             if hasattr(module, "register"):
                 try:
                     module.register()
                 except Exception as e:
-                    print(f"MotionFX: Error in module register {module}: {e}")
-
-        # Registrar propiedad de previews
-        try:
-            bpy.types.Scene.motionfx_previews = EnumProperty(
-                items=utilities.generate_previews
-            )
-        except Exception as e:
-            print(f"MotionFX: Error registering previews property: {e}")
-            
-        print("MotionFX: Add-on registered successfully")
-        
-    except Exception as e:
-        print(f"MotionFX: Critical error during registration: {e}")
+                    print(f"MotionFX: Error registering {module_name}: {e}")
+    
+    global _imported_modules
+    _imported_modules = imported_modules
+    
+    print(f"Motion FX Library Pro: Add-on registered successfully ({len(imported_modules)} modules)")
 
 def unregister():
-    if not modules_loaded:
-        return
+    print("MotionFX: Starting add-on unregistration...")
+    
+    global _imported_modules
+    if '_imported_modules' in globals():
+        all_modules = list(_imported_modules.values())
         
-    try:
-        # Desregistrar propiedad de previews
-        if hasattr(bpy.types.Scene, "motionfx_previews"):
-            del bpy.types.Scene.motionfx_previews
-        
-        # Desregistrar módulos en orden inverso
-        for module in reversed(modules):
+        for module in reversed(all_modules):
             if hasattr(module, "unregister"):
                 try:
                     module.unregister()
                 except Exception as e:
-                    print(f"MotionFX: Error in module unregister {module}: {e}")
-            
-            if hasattr(module, "classes"):
-                for cls in reversed(module.classes):
-                    try:
-                        bpy.utils.unregister_class(cls)
-                    except Exception as e:
-                        print(f"MotionFX: Error unregistering class {cls}: {e}")
-                        
-        print("MotionFX: Add-on unregistered successfully")
-        
-    except Exception as e:
-        print(f"MotionFX: Error during unregistration: {e}")
+                    print(f"MotionFX: Error unregistering {module.__name__}: {e}")
+    
+    print("Motion FX Library Pro: Add-on unregistered successfully")
+
+_imported_modules = {}
 
 if __name__ == "__main__":
     register()
