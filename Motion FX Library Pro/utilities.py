@@ -78,47 +78,47 @@ def save_preset_data(preset_name, preset_data):
     """Guarda datos de preset en un Text Block de Blender"""
     try:
         # Crear o actualizar text block
-        text_name = f"MotionFX_Preset_{preset_name}"
+        text_block_name = f"MotionFX_Preset_{preset_name}"
         
-        if text_name in bpy.data.texts:
-            text_block = bpy.data.texts[text_name]
+        if text_block_name in bpy.data.texts:
+            text_block = bpy.data.texts[text_block_name]
             text_block.clear()
         else:
-            text_block = bpy.data.texts.new(text_name)
+            text_block = bpy.data.texts.new(text_block_name)
         
-        # Convertir datos a JSON
+        # Convertir datos a JSON y guardar
         json_data = json.dumps(preset_data, indent=2)
         text_block.write(json_data)
         
-        print(f"Preset '{preset_name}' saved successfully")
+        print(f"Preset '{preset_name}' guardado exitosamente")
         return True
         
     except Exception as e:
-        print(f"Error saving preset: {e}")
+        print(f"Error guardando preset '{preset_name}': {e}")
         return False
 
 def load_preset_data(preset_name):
-    """Carga datos de preset desde un Text Block"""
+    """Carga datos de preset desde un Text Block de Blender"""
     try:
-        text_name = f"MotionFX_Preset_{preset_name}"
+        text_block_name = f"MotionFX_Preset_{preset_name}"
         
-        if text_name not in bpy.data.texts:
-            print(f"Preset '{preset_name}' not found")
+        if text_block_name not in bpy.data.texts:
+            print(f"Preset '{preset_name}' no encontrado")
             return None
-        
-        text_block = bpy.data.texts[text_name]
+            
+        text_block = bpy.data.texts[text_block_name]
         json_data = text_block.as_string()
         
         if not json_data.strip():
-            print(f"Preset '{preset_name}' is empty")
+            print(f"Preset '{preset_name}' está vacío")
             return None
-        
+            
         preset_data = json.loads(json_data)
-        print(f"Preset '{preset_name}' loaded successfully")
+        print(f"Preset '{preset_name}' cargado exitosamente")
         return preset_data
         
     except Exception as e:
-        print(f"Error loading preset: {e}")
+        print(f"Error cargando preset '{preset_name}': {e}")
         return None
 
 def get_available_presets():

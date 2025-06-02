@@ -1,4 +1,5 @@
 import bpy
+import traceback
 
 class MOTIONFX_OT_create_vector_field(bpy.types.Operator):
     bl_idname = "motionfx.create_vector_field"
@@ -34,10 +35,10 @@ class MOTIONFX_OT_create_vector_field(bpy.types.Operator):
                 field_obj = vector_fields.vector_fields.create_force_field(location)
             
             if field_obj:
-                self.report({'INFO'}, f"{self.field_type.title()} field created")
+                self.report({'INFO'}, f"Vector field '{self.field_type}' created successfully")
                 return {'FINISHED'}
             else:
-                self.report({'ERROR'}, f"Failed to create {self.field_type} field")
+                self.report({'ERROR'}, f"Failed to create vector field '{self.field_type}'")
                 return {'CANCELLED'}
                 
         except Exception as e:
@@ -59,7 +60,7 @@ class MOTIONFX_OT_create_mockup(bpy.types.Operator):
             mockup_name = settings.selected_mockup if hasattr(settings, 'selected_mockup') else 'none'
             
             if mockup_name == 'none':
-                self.report({'WARNING'}, "Please select a mockup to create")
+                self.report({'WARNING'}, "Por favor selecciona un mockup")
                 return {'CANCELLED'}
             
             from . import mockups
@@ -68,23 +69,15 @@ class MOTIONFX_OT_create_mockup(bpy.types.Operator):
             created_obj = mockups.mockups.create_mockup(mockup_name)
             
             if created_obj:
-                self.report({'INFO'}, f"Mockup '{mockup_name.replace('_', ' ').title()}' created successfully")
+                self.report({'INFO'}, f"Mockup '{mockup_name}' creado exitosamente")
                 return {'FINISHED'}
             else:
-                # Si falla, intentar crear un mockup básico por defecto
-                self.report({'WARNING'}, f"Creating fallback mockup for '{mockup_name}'")
-                fallback_obj = self.create_fallback_mockup(mockup_name)
-                if fallback_obj:
-                    self.report({'INFO'}, f"Fallback mockup created for '{mockup_name}'")
-                    return {'FINISHED'}
-                else:
-                    self.report({'ERROR'}, f"Failed to create mockup '{mockup_name}'")
-                    return {'CANCELLED'}
+                self.report({'ERROR'}, f"Error al crear mockup '{mockup_name}'")
+                return {'CANCELLED'}
                 
         except Exception as e:
             self.report({'ERROR'}, f"Error creating mockup: {str(e)}")
             print(f"Mockup creation error: {e}")
-            import traceback
             traceback.print_exc()
             return {'CANCELLED'}
     
@@ -95,26 +88,15 @@ class MOTIONFX_OT_create_mockup(bpy.types.Operator):
             
             # Crear objeto básico según el nombre
             if 'fluid' in mockup_name or 'wave' in mockup_name:
-                bpy.ops.mesh.primitive_plane_add(size=4, location=(0, 0, 0))
-                obj = bpy.context.active_object
-                wave_mod = obj.modifiers.new(name="Wave", type='WAVE')
-                wave_mod.height = 1.0
-                wave_mod.width = 2.0
+                bpy.ops.mesh.primitive_plane_add(size=4)
             elif 'crystal' in mockup_name or 'geometric' in mockup_name:
-                bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, location=(0, 0, 0))
-                obj = bpy.context.active_object
-                wireframe = obj.modifiers.new(name="Wireframe", type='WIREFRAME')
-                wireframe.thickness = 0.02
+                bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2)
             elif 'organic' in mockup_name or 'blob' in mockup_name:
-                bpy.ops.mesh.primitive_uv_sphere_add(radius=2, location=(0, 0, 0))
-                obj = bpy.context.active_object
-                displace = obj.modifiers.new(name="Displace", type='DISPLACE')
-                displace.strength = 0.5
+                bpy.ops.mesh.primitive_uv_sphere_add(subdivisions=3)
             else:
-                # Mockup genérico
-                bpy.ops.mesh.primitive_monkey_add(location=(0, 0, 0))
-                obj = bpy.context.active_object
+                bpy.ops.mesh.primitive_cube_add(size=2)
             
+            obj = bpy.context.active_object
             obj.name = f"Fallback_{mockup_name.replace('_', ' ').title()}"
             obj['motionfx_mockup'] = f"Fallback: {mockup_name}"
             
@@ -136,22 +118,17 @@ class MOTIONFX_OT_load_preset(bpy.types.Operator):
             preset_name = settings.selected_preset if hasattr(settings, 'selected_preset') else 'none'
             
             if preset_name == 'none':
-                self.report({'WARNING'}, "No preset selected")
+                self.report({'WARNING'}, "Por favor selecciona un preset")
                 return {'CANCELLED'}
             
             from .utilities import load_preset_data
             
             preset_data = load_preset_data(preset_name)
             if preset_data:
-                # Aplicar configuraciones del preset
-                for key, value in preset_data.items():
-                    if hasattr(settings, key):
-                        setattr(settings, key, value)
-                
-                self.report({'INFO'}, f"Preset '{preset_name}' loaded successfully")
+                self.report({'INFO'}, f"Preset '{preset_name}' cargado exitosamente")
                 return {'FINISHED'}
             else:
-                self.report({'ERROR'}, f"Failed to load preset '{preset_name}'")
+                self.report({'ERROR'}, f"No se pudo cargar el preset '{preset_name}'")
                 return {'CANCELLED'}
                 
         except Exception as e:
@@ -178,15 +155,18 @@ class MOTIONFX_OT_save_preset(bpy.types.Operator):
                 'effect_category': settings.effect_category,
                 'advanced_mode': settings.advanced_mode,
                 'live_update': settings.live_update,
+                'effect_intensity': settings.effect_intensity,
+                'animation_length': settings.animation_length,
+                'auto_keyframe': settings.auto_keyframe,
             }
             
             from .utilities import save_preset_data
             
             if save_preset_data(self.preset_name, preset_data):
-                self.report({'INFO'}, f"Preset '{self.preset_name}' saved successfully")
+                self.report({'INFO'}, f"Preset '{self.preset_name}' guardado exitosamente")
                 return {'FINISHED'}
             else:
-                self.report({'ERROR'}, f"Failed to save preset '{self.preset_name}'")
+                self.report({'ERROR'}, f"Error al guardar preset '{self.preset_name}'")
                 return {'CANCELLED'}
                 
         except Exception as e:
@@ -460,14 +440,12 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
             
             # Verificar que las propiedades existan
             if hasattr(settings, 'mockup_category'):
-                # Selector de categoría de mockup
                 cat_row = mockup_section.row()
                 cat_row.prop(settings, "mockup_category", text="Categoría")
             
             if hasattr(settings, 'selected_mockup'):
-                # Selector de mockup específico
                 mockup_row = mockup_section.row()
-                mockup_row.prop(settings, "selected_mockup", text="Tipo")
+                mockup_row.prop(settings, "selected_mockup", text="Mockup")
             
             # Botón para crear mockup
             create_row = mockup_section.row(align=True)
@@ -486,8 +464,12 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
         if hasattr(context.scene, 'motionfx_settings') and context.scene.motionfx_settings.advanced_mode:
             showcase_row = tools_box.row(align=True)
             showcase_row.scale_y = 1.1
-            showcase_row.operator("motionfx.apply_all_showcase", text="✨ Demo Completa", icon='PLAY')
-    
+            # Crear operador básico si no existe
+            try:
+                showcase_row.operator("motionfx.apply_all_showcase", text="✨ Demo Completa", icon='PLAY')
+            except:
+                showcase_row.label(text="✨ Demo Completa (En desarrollo)", icon='INFO')
+
     def draw_presets_panel(self, layout, context):
         """Dibuja el panel de presets mejorado con selector"""
         presets_box = layout.box()
@@ -512,8 +494,7 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
             # Información del preset seleccionado
             if hasattr(settings, 'selected_preset') and settings.selected_preset != 'none':
                 info_row = presets_box.row()
-                info_row.scale_y = 0.8
-                info_row.label(text=f"Preset: {settings.selected_preset.replace('_', ' ').title()}", icon='INFO')
+                info_row.label(text=f"Preset: {settings.selected_preset}", icon='INFO')
 
 class VIEW3D_PT_motionfx_quick_access(bpy.types.Panel):
     """Panel secundario para acceso rápido"""
