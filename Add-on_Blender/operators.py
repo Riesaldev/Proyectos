@@ -1,80 +1,57 @@
 import bpy
 from bpy.types import Operator
-from bpy.props import EnumProperty
-from .effects_operations import EffectsOperations
+from bpy.props import EnumProperty, StringProperty
+from .utilities import save_preset_data, load_preset_data, get_available_presets
 
 def get_effect_items(self, context):
-    """Función que genera los items del enum dinámicamente"""
     try:
-        # Asegurar que el mapa de efectos esté inicializado
-        if not hasattr(EffectsOperations, '_effect_map') or not EffectsOperations._effect_map:
-            EffectsOperations.initialize_effect_map()
-        
+        from .effects_operations import EffectsOperations
         return EffectsOperations.get_effect_items()
     except Exception as e:
         print(f"Error generating effect items: {e}")
         return [("NONE", "No Effects Available", "Error loading effects")]
 
-class MotionFX_OT_ApplyEffect(Operator):
+class MOTIONFX_OT_apply_effect(bpy.types.Operator):
     bl_idname = "motionfx.apply_effect"
     bl_label = "Apply Motion FX Effect"
-    bl_description = "Apply the selected motion effect to the active object"
+    bl_description = "Apply selected effect to active object"
     bl_options = {'REGISTER', 'UNDO'}
 
     effect_type: EnumProperty(
         name="Effect",
-        description="Choose the effect to apply",
+        description="Choose effect to apply",
         items=get_effect_items,
     )
 
     def execute(self, context):
-        # Validaciones de contexto
         if self.effect_type == "NONE":
             self.report({'ERROR'}, "No valid effect selected")
             return {'CANCELLED'}
             
         obj = context.active_object
         if not obj:
-            self.report({'ERROR'}, "No active object selected. Please select an object first.")
-            return {'CANCELLED'}
-
-        # Validación específica por tipo de objeto
-        mesh_only_effects = ["cloth", "fluid", "rigid_body", "soft_body", "ocean", "wave", 
-                           "fire", "smoke", "explosion", "sparks", "blood"]
-        
-        if self.effect_type in mesh_only_effects and obj.type != 'MESH':
-            self.report({'ERROR'}, f"Effect '{self.effect_type}' only works on mesh objects. Selected object type: {obj.type}")
+            self.report({'ERROR'}, "No active object selected")
             return {'CANCELLED'}
 
         try:
-            # Asegurar que EffectsOperations esté inicializado
-            if not hasattr(EffectsOperations, '_effect_map') or not EffectsOperations._effect_map:
-                EffectsOperations.initialize_effect_map()
+            from .effects_operations import EffectsOperations
+            EffectsOperations.initialize_effect_map()
             
-            # Aplicar el efecto seleccionado
             success = EffectsOperations.apply_effect(self.effect_type, obj)
             
             if success:
-                # Formatear nombre del efecto para mostrar
                 effect_name = self.effect_type.replace("_", " ").title()
-                self.report({'INFO'}, f"Applied '{effect_name}' effect to '{obj.name}'")
-                
-                # Forzar actualización de la vista
-                if context.area:
-                    context.area.tag_redraw()
-                    
+                self.report({'INFO'}, f"Effect '{effect_name}' applied to '{obj.name}'")
                 return {'FINISHED'}
             else:
-                self.report({'ERROR'}, f"Failed to apply effect '{self.effect_type}' to '{obj.name}'")
+                self.report({'ERROR'}, f"Failed to apply effect '{self.effect_type}'")
                 return {'CANCELLED'}
                 
         except Exception as e:
             self.report({'ERROR'}, f"Error applying effect: {str(e)}")
-            print(f"Detailed error: {e}")
             return {'CANCELLED'}
 
     def invoke(self, context, event):
-        # Validar contexto antes de mostrar el diálogo
         if not context.active_object:
             self.report({'ERROR'}, "No active object selected")
             return {'CANCELLED'}
@@ -85,60 +62,125 @@ class MotionFX_OT_ApplyEffect(Operator):
         layout = self.layout
         layout.prop(self, "effect_type")
         
-        # Mostrar información del objeto activo
         if context.active_object:
-            layout.label(text=f"Target: {context.active_object.name} ({context.active_object.type})")
+            layout.label(text=f"Target: {context.active_object.name}")
 
-class MotionFX_OT_QuickApply(Operator):
-    """Operador para aplicación rápida sin diálogo"""
-    bl_idname = "motionfx.quick_apply"
-    bl_label = "Quick Apply Effect"
-    bl_description = "Quickly apply an effect without dialog"
+class MOTIONFX_OT_save_preset(bpy.types.Operator):
+    bl_idname = "motionfx.save_preset"
+    bl_label = "Save Preset"
+    bl_description = "Save current configuration as preset"
     bl_options = {'REGISTER', 'UNDO'}
-    
-    effect_type: bpy.props.StringProperty()
-    
+
+    preset_name: StringProperty(
+        name="Preset Name",
+        description="Name for the preset",
+        default="My Preset"
+    )
+
     def execute(self, context):
-        if not self.effect_type:
-            self.report({'ERROR'}, "No effect type specified")
-            return {'CANCELLED'}
-            
-        obj = context.active_object
-        if not obj:
-            self.report({'ERROR'}, "No active object selected")
-            return {'CANCELLED'}
-        
         try:
-            success = EffectsOperations.apply_effect(self.effect_type, obj)
+            if not hasattr(context.scene, "motionfx_settings"):
+                self.report({'ERROR'}, "MotionFX settings not found")
+                return {'CANCELLED'}
+
+            settings = context.scene.motionfx_settings
             
-            if success:
-                effect_name = self.effect_type.replace("_", " ").title()
-                self.report({'INFO'}, f"Applied '{effect_name}' to '{obj.name}'")
+            preset_data = {
+                'effect_category': settings.effect_category,
+                'advanced_mode': settings.advanced_mode,
+                'live_update': settings.live_update,
+            }
+            
+            if save_preset_data(self.preset_name, preset_data):
+                self.report({'INFO'}, f"Preset '{self.preset_name}' saved successfully")
                 return {'FINISHED'}
             else:
-                self.report({'ERROR'}, f"Failed to apply effect '{self.effect_type}'")
+                self.report({'ERROR'}, f"Error saving preset '{self.preset_name}'")
                 return {'CANCELLED'}
                 
         except Exception as e:
-            self.report({'ERROR'}, f"Error: {str(e)}")
+            self.report({'ERROR'}, f"Error saving preset: {e}")
             return {'CANCELLED'}
 
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
+class MOTIONFX_OT_load_preset(bpy.types.Operator):
+    bl_idname = "motionfx.load_preset"
+    bl_label = "Load Preset"
+    bl_description = "Load saved preset"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def get_presets(self, context):
+        items = []
+        available_presets = get_available_presets()
+        
+        for preset_name in available_presets:
+            items.append((preset_name, preset_name, f"Load preset {preset_name}"))
+        
+        if not items:
+            items.append(("NONE", "No presets", "No presets found"))
+        
+        return items
+
+    preset_choice: EnumProperty(
+        name="Preset",
+        description="Select preset to load",
+        items=get_presets
+    )
+
+    def execute(self, context):
+        if self.preset_choice == "NONE":
+            self.report({'WARNING'}, "No presets available")
+            return {'CANCELLED'}
+        
+        try:
+            if not hasattr(context.scene, "motionfx_settings"):
+                self.report({'ERROR'}, "MotionFX settings not found")
+                return {'CANCELLED'}
+
+            preset_data = load_preset_data(self.preset_choice)
+            if not preset_data:
+                self.report({'ERROR'}, f"Could not load preset '{self.preset_choice}'")
+                return {'CANCELLED'}
+            
+            settings = context.scene.motionfx_settings
+            
+            for key, value in preset_data.items():
+                if hasattr(settings, key):
+                    try:
+                        setattr(settings, key, value)
+                    except Exception as e:
+                        print(f"Could not set property {key}: {e}")
+                else:
+                    print(f"Preset key '{key}' not found in settings.")
+            
+            self.report({'INFO'}, f"Preset '{self.preset_choice}' loaded successfully")
+            
+            if hasattr(context.area, 'tag_redraw'):
+                context.area.tag_redraw()
+
+            return {'FINISHED'}
+            
+        except Exception as e:
+            self.report({'ERROR'}, f"Error loading preset: {e}")
+            return {'CANCELLED'}
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
 classes = (
-    MotionFX_OT_ApplyEffect,
-    MotionFX_OT_QuickApply,
+    MOTIONFX_OT_apply_effect,
+    MOTIONFX_OT_save_preset,
+    MOTIONFX_OT_load_preset,
 )
 
 def register():
-    # Inicializar el mapa de efectos antes del registro
-    try:
-        EffectsOperations.initialize_effect_map()
-        print("MotionFX: Effects map initialized successfully")
-    except Exception as e:
-        print(f"MotionFX: Error initializing effects map: {e}")
-    
     for cls in classes:
         bpy.utils.register_class(cls)
+    print("MotionFX: Operators module loaded")
 
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+    print("MotionFX: Operators module unloaded")
