@@ -218,7 +218,8 @@ class VIEW3D_PT_motionfx_main(bpy.types.Panel):
             # Botón de aplicación rápida
             quick_row = status_box.row(align=True)
             quick_row.scale_y = 1.2
-            quick_row.operator("motionfx.apply_effect", text="🚀 Aplicar Efecto", icon='PLAY')
+            op = quick_row.operator("motionfx.apply_effect", text="🚀 Aplicar Efecto", icon='PLAY')
+            op.effect_type = "bounce"  # Efecto por defecto
             
         else:
             status_box.label(text="⚠️ Selecciona un objeto para comenzar", icon='ERROR')

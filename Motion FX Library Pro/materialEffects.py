@@ -11,6 +11,24 @@ class MaterialEffects:
             mat = obj.data.materials[0]
             if not mat.use_nodes:
                 mat.use_nodes = True
+        
+        # Asegurar que tiene nodos básicos
+        nodes = mat.node_tree.nodes
+        links = mat.node_tree.links
+        
+        if not nodes.get("Principled BSDF"):
+            # Limpiar y recrear estructura básica
+            for node in nodes:
+                if node.type != 'OUTPUT_MATERIAL':
+                    nodes.remove(node)
+            
+            principled = nodes.new(type='ShaderNodeBsdfPrincipled')
+            output = nodes.get('Material Output')
+            if not output:
+                output = nodes.new(type='ShaderNodeOutputMaterial')
+            
+            links.new(principled.outputs['BSDF'], output.inputs['Surface'])
+        
         return mat
 
     def add_glass_effect(self, obj):

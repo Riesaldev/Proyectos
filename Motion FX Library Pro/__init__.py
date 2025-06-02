@@ -36,7 +36,7 @@ main_modules = [
     'effects_operations',
     'operators', 
     'panels',
-    'quick_effects',  # Renombrado de 'drag_drop'
+    'quick_effects',
 ]
 
 def safe_import_module(module_name, package=__name__, optional=False):

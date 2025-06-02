@@ -60,29 +60,36 @@ class LightingEffects:
                 mat.use_nodes = True
                 obj.data.materials.append(mat)
             else:
-                mat = obj.active_material
+                mat = obj.data.materials[0]
                 if not mat.use_nodes:
                     mat.use_nodes = True
 
             nodes = mat.node_tree.nodes
+            links = mat.node_tree.links
             
-            emission = nodes.get("Emission")
-            material_output = nodes.get('Material Output')
+            # Limpiar nodos existentes excepto output
+            for node in nodes:
+                if node.type != 'OUTPUT_MATERIAL':
+                    nodes.remove(node)
             
-            if not emission:
-                emission = nodes.new(type='ShaderNodeEmission')
-                emission.inputs['Strength'].default_value = 10.0
-                emission.inputs['Color'].default_value = (1.0, 0.8, 0.3, 1.0)
+            # Crear estructura básica
+            principled = nodes.new(type='ShaderNodeBsdfPrincipled')
+            output = nodes.get('Material Output')
+            if not output:
+                output = nodes.new(type='ShaderNodeOutputMaterial')
             
-            if not material_output:
-                material_output = nodes.new(type='ShaderNodeOutputMaterial')
-            
-            mat.node_tree.links.new(emission.outputs['Emission'], material_output.inputs['Surface'])
+            # Conectar y configurar emisión
+            links.new(principled.outputs['BSDF'], output.inputs['Surface'])
+            principled.inputs['Base Color'].default_value = (1.0, 0.8, 0.3, 1.0)
+            principled.inputs['Emission'].default_value = (1.0, 0.8, 0.3, 1.0)
+            principled.inputs['Emission Strength'].default_value = 10.0
             
             print(f"Glowing effect added to {obj.name}")
+            return True
             
         except Exception as e:
             print(f"Error adding glowing effect: {e}")
+            return False
 
     def add_global_illumination_effect(self, obj):
         try:

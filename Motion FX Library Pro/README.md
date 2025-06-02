@@ -13,6 +13,7 @@ Bienvenido a la guía completa de Motion FX Library Pro, el add-on definitivo pa
     - [Efectos de Partículas](#efectos-de-partículas)
     - [Efectos de Iluminación](#efectos-de-iluminación)
     - [Efectos de Material](#efectos-de-material)
+    - [Efectos Visuales](#efectos-visuales)
     - [Efectos de Cámara](#efectos-de-cámara)
     - [Efectos Utilitarios](#efectos-utilitarios)
     - [Sistema de Presets](#sistema-de-presets)
@@ -145,6 +146,16 @@ Una vez instalado, configura Motion FX Library Pro:
 - **Metal:** Material metálico (`add_metal_effect()`)
 - **Emission:** Material emisivo (`add_emission_effect()`)
 - **Fabric:** Material tela (`add_fabric_effect()`)
+
+---
+
+## ✨ Efectos Visuales
+
+- **Glow:** Resplandor suave (`add_glow_effect()`)
+- **Glitch:** Interferencia digital (`add_glitch_effect()`)
+- **Bloom:** Florecimiento luminoso (`add_bloom_effect_compositor()`)
+
+*Efectos especiales para post-procesamiento y mejoras visuales.*
 
 ---
 
@@ -347,7 +358,8 @@ def test_motionfx_installation():
         'motionfx.apply_effect',
         'motionfx.save_preset', 
         'motionfx.load_preset',
-        'motionfx.create_vector_field'
+        'motionfx.create_vector_field',
+        'motionfx.create_mockup'
     ]
     
     for op in operators:

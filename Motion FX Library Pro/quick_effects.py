@@ -86,7 +86,6 @@ class MOTIONFX_PT_quick_effects(Panel):
         for effect_id, label, icon in anim_effects:
             op = grid.operator("motionfx.apply_effect", text=label, icon=icon)
             op.effect_type = effect_id
-            op.effect_name = label
         
         # Particle Effects
         box = layout.box()
@@ -104,7 +103,6 @@ class MOTIONFX_PT_quick_effects(Panel):
         for effect_id, label, icon in particle_effects:
             op = grid.operator("motionfx.apply_effect", text=label, icon=icon)
             op.effect_type = effect_id
-            op.effect_name = label
         
         # Material Effects
         box = layout.box()
@@ -113,7 +111,7 @@ class MOTIONFX_PT_quick_effects(Panel):
         
         material_effects = [
             ('glass', 'Glass', 'SHADING_RENDERED'),
-            ('metal', 'Metal', 'METALLIC'),
+            ('metal', 'Metal', 'MATERIAL'),
             ('neon', 'Neon', 'LIGHT_AREA'),
             ('hologram', 'Hologram', 'GHOST_ENABLED'),
             ('dissolve', 'Dissolve', 'MOD_OPACITY'),
@@ -123,7 +121,6 @@ class MOTIONFX_PT_quick_effects(Panel):
         for effect_id, label, icon in material_effects:
             op = grid.operator("motionfx.apply_effect", text=label, icon=icon)
             op.effect_type = effect_id
-            op.effect_name = label
         
         # Camera Effects
         box = layout.box()
@@ -140,7 +137,6 @@ class MOTIONFX_PT_quick_effects(Panel):
         for effect_id, label, icon in camera_effects:
             op = grid.operator("motionfx.apply_effect", text=label, icon=icon)
             op.effect_type = effect_id
-            op.effect_name = label
         
         # Lighting Effects
         box = layout.box()
@@ -157,7 +153,6 @@ class MOTIONFX_PT_quick_effects(Panel):
         for effect_id, label, icon in lighting_effects:
             op = grid.operator("motionfx.apply_effect", text=label, icon=icon)
             op.effect_type = effect_id
-            op.effect_name = label
 
 class MOTIONFX_OT_apply_all_showcase(bpy.types.Operator):
     bl_idname = "motionfx.apply_all_showcase"

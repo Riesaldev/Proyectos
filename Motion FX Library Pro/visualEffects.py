@@ -20,11 +20,24 @@ class VisualEffects:
                     glow_mat.use_nodes = True
             
             nodes = glow_mat.node_tree.nodes
-            principled = nodes.get("Principled BSDF")
+            links = glow_mat.node_tree.links
             
-            if principled:
-                principled.inputs["Emission"].default_value = (1.0, 0.8, 0.3, 1.0)
-                principled.inputs["Emission Strength"].default_value = 5.0
+            # Limpiar nodos existentes excepto output
+            for node in nodes:
+                if node.type != 'OUTPUT_MATERIAL':
+                    nodes.remove(node)
+            
+            # Crear nodos necesarios
+            principled = nodes.new(type='ShaderNodeBsdfPrincipled')
+            output = nodes.get('Material Output')
+            if not output:
+                output = nodes.new(type='ShaderNodeOutputMaterial')
+            
+            # Conectar y configurar
+            links.new(principled.outputs['BSDF'], output.inputs['Surface'])
+            principled.inputs["Base Color"].default_value = (1.0, 0.8, 0.3, 1.0)
+            principled.inputs["Emission"].default_value = (1.0, 0.8, 0.3, 1.0)
+            principled.inputs["Emission Strength"].default_value = 5.0
             
             print(f"Glow effect added to {obj.name}")
             return True
