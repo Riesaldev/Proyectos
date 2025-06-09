@@ -1,6 +1,6 @@
 # Orden lógico de desarrollo (Todo List)
 
-1️⃣ Configuración Inicial
+1️⃣ Configuración Inicial(DONE)
 
 * Crear el proyecto con Next.js (npx create-next-app tu-portafolio).
 
@@ -8,7 +8,7 @@
 
 * Instalar Three.js y GSAP (npm install three gsap).
 
-2️⃣ Estructura de Layout
+2️⃣ Estructura de Layout(DONE)
 
 * Crear el header con el menú de navegación (mantendrá la coherencia entre páginas).
 
