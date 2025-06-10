@@ -26,31 +26,33 @@ const Header = () => {
   }, []);
 
   return (
-    <div className={`flex items-center p-6 top-0 sticky z-50 transition-all h-24 duration-300 ${isScrolled ? 'bg-[#a842b1]/60 backdrop-blur-xs' : 'bg-[#a842b1]'}`}>
+    <>
+    <div className="top-0 sticky z-0 bg-[#a842b1] h-24 w-screen">
+    <div className={`flex items-center z-30 transition-all h-24 duration-300 ${isScrolled ? 'bg-[#a842b1]/60 backdrop-blur-xs' : 'bg-[#a842b1]'}`}>
       <nav className="flex justify-between items-center w-full">
-        <div>
+        <div className="flex items-start">
           <Link href="/" className="flex items-center">
             <Image
             src="/logo2.svg"
             alt="Logo"
-            width={100}
-            height={100}
-            className='h-24 w-auto hover:scale-120 transition-transform duration-300'
+            width={20}
+            height={10}
+            className='h-20 w-26 hover:scale-120 transition-transform duration-300 ease-in-out'
             />
           </Link>
         </div>
         <div
-        className="h-24 inline-flex items-center transition-all duration-200 cursor-pointer"
+        className="items-center transition-all duration-200 cursor-pointer"
         >
-          <h1 className={`text-4xl font-bold text-white ${isHovered ? 'animate-bounce-limited' : ''}`}
+          <h1 className={`text-4xl font-bold text-[#fddbff] ${isHovered ? 'animate-bounce-limited' : ''}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onAnimationEnd={() => setIsHovered(false)}>RiesalDev</h1>
-          <button type='switch' className="ml-4 text-white bg-fuchsia-600 hover:bg-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-opacity-50 rounded-lg px-4 py-2 transition-colors duration-300">
-            Toggle
-          </button>
+          
         </div>
+        <div className="m-10">
         <Menu />
+        </div>
       </nav>
       
       <style>{`
@@ -77,6 +79,8 @@ const Header = () => {
         }
       `}</style>
     </div>
+    </div>
+    </>
   );
 }
 
