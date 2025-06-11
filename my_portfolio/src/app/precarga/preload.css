@@ -1,0 +1,179 @@
+/* 🌄 Estilos generales */
+#preload {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #1a1a40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9999;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* 🌅 Fondo animado */
+#background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+#mountains,
+#clouds,
+#valley {
+  position: absolute;
+  width: 200%;
+  height: 100%;
+  background-repeat: repeat-x;
+}
+
+#mountains {
+  background: url("/images/mountains.png");
+  animation: moverMontañas 12s infinite linear;
+}
+
+#clouds {
+  background: url("/images/clouds.png");
+  animation: moverNubes 18s infinite linear;
+}
+
+#valley {
+  background: url("/images/valley.png");
+  animation: moverValle 10s infinite linear;
+}
+
+/* 🏔️ Animación del fondo */
+@keyframes moverMontañas {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes moverNubes {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-40%); }
+}
+
+@keyframes moverValle {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-30%); }
+}
+
+/* 🐉 Dragón animado */
+#dragon {
+  position: absolute;
+  top: 45%;
+  left: -150px;
+  width: 120px;
+  height: 100px;
+  z-index: 5;
+  animation: volar 8s infinite linear;
+}
+
+/* 🔴 Cuerpo del dragón */
+#body {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
+  animation: flotar 2.5s infinite ease-in-out;
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 🏅 Alas del dragón */
+#wing-L,
+#wing-R {
+  width: 80px;
+  height: 40px;
+  background-color: darkred;
+  position: absolute;
+  border-radius: 50%;
+  animation: batir 0.4s infinite alternate ease-in-out;
+}
+
+#wing-L {
+  left: -40px;
+  transform: rotate(-30deg);
+}
+#wing-R {
+  right: -40px;
+  transform: rotate(30deg);
+}
+
+/* 🎥 Animaciones del dragón */
+@keyframes volar {
+  0% { transform: translateX(-250px) rotate(-5deg); }
+  50% { transform: translateX(50vw) rotate(5deg); }
+  100% { transform: translateX(100vw) rotate(-5deg); }
+}
+
+@keyframes flotar {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes batir {
+  0% { transform: rotate(-12deg) translateY(-6px); }
+  100% { transform: rotate(12deg) translateY(6px); }
+}
+
+/* 🔄 Barra de carga */
+#loading-bar {
+  width: 60%;
+  height: 12px;
+  background-color: #222;
+  border-radius: 6px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0px 5px 10px rgba(255, 255, 255, 0.3);
+}
+
+#progress {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #ff4d4d, #ffad33);
+  transition: width 0.4s ease-in-out;
+}
+
+/* 📝 Frases mágicas */
+#loading-text {
+  position: absolute;
+  bottom: 18%;
+  font-size: 1.3rem;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 0px 3px 8px rgba(255, 255, 255, 0.3);
+}
+
+/* 🖱️ Botón de continuar */
+#continue-button {
+  position: absolute;
+  bottom: 5%;
+  padding: 16px 32px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(90deg, #ff4d4d, #ffad33);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0px 6px 12px rgba(255, 255, 255, 0.3);
+}
+
+#continue-button:hover {
+  background: linear-gradient(90deg, #ff6f6f, #ffc566);
+  transform: scale(1.1);
+  box-shadow: 0px 8px 16px rgba(255, 255, 255, 0.5);
+}
