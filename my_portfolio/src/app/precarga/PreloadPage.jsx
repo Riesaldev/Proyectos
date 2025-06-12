@@ -6,6 +6,7 @@ export default function PreloadPage({ onContinue }) {
   const [progress, setProgress] = useState(0);
   const [currentPhrase, setCurrentPhrase] = useState(0);
   const [showButton, setShowButton] = useState(false);
+  const [animationLoaded, setAnimationLoaded] = useState(false);
 
   const magicPhrases = [
     "✨ Conjurando elementos mágicos...",
@@ -16,6 +17,8 @@ export default function PreloadPage({ onContinue }) {
   ];
 
   useEffect(() => {
+    if (!animationLoaded) return;
+
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
@@ -24,7 +27,6 @@ export default function PreloadPage({ onContinue }) {
           return 100;
         }
 
-        // Cambiar frase cada 20% de progreso
         const newProgress = prev + 2;
         const phraseIndex = Math.floor(newProgress / 20);
         if (phraseIndex !== currentPhrase && phraseIndex < magicPhrases.length) {
@@ -36,34 +38,23 @@ export default function PreloadPage({ onContinue }) {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [currentPhrase, magicPhrases.length]);
+  }, [currentPhrase, magicPhrases.length, animationLoaded]);
 
   return (
     <div id="preload">
-  <div id="background">
-    <div id="mountains"></div>
-    <div id="clouds"></div>
-    <div id="valley"></div>
-  </div>
-  
-  <div id="dragon">
-    <div id="body"></div>
-    <div id="wing-L"></div>
-    <div id="wing-R"></div>
-  </div>
+      <div id="loading-bar">
+        <div id="progress" style={{ width: `${progress}%` }}></div>
+      </div>
 
-  <div id="loading-bar">
-    <div id="progress" style={{ width: `${progress}%` }}></div>
-  </div>
+      <div id="loading-text">
+        {magicPhrases[currentPhrase]}
+      </div>
 
-  <p id="loading-text">{magicPhrases[currentPhrase]}</p>
-
-  {showButton && (
-    <button id="continue-button" onClick={onContinue}>
-      ¡Continuar la aventura!
-    </button>
-  )}
-</div>
-
+      {showButton && (
+        <button id="continue-button" onClick={onContinue}>
+          ¡Continuar la aventura!
+        </button>
+      )}
+    </div>
   );
 }
