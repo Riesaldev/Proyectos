@@ -17,17 +17,19 @@ export const Footer: React.FC = () => {
       </div>
 
       <div
-        className="relative h-full flex flex-col justify-center items-center text-white gap-2 "
+        className="relative h-full flex justify-center items-center text-white text-center "
       >
 
-        <div className="flex flex-col justify-center items-center gap-5">
+        <div className="flex flex-col justify-start items-center w-full h-full">
 
           <h1
             className="text-center text-lg text-[#2a1f26]"
-          >© 2025 La Velada del Año. Todos los derechos reservados.</h1>
+          >
+            © 2025 La Velada del Año. Todos los derechos reservados.
+            </h1>
 
 
-          <div className=" flex flex-row gap-3 justify-center items-center text-[#2a1f26]">
+          <div className=" flex flex-row gap-3 justify-center items-center text-[#2a1f26] h-32">
 
             <Link href="http://X.com/infoLaVelada" rel="noopener"
               className="w-8 h-8 flex justify-center items-center hover:scale-125 transition duration-300 hover:cursor-pointer"
@@ -55,18 +57,21 @@ export const Footer: React.FC = () => {
 
           </div>
         </div>
-        <div className="flex flex-row justify-around w-full items-center gap-60">
-          <div className="w-auto h-auto">
-            <Sponsors />
-          </div>
-          <div>
-            <div className="w-auto h-auto">
-              <p className="text-center text-sm text-[#2a1f26]">
-                Hecho con ❤️ por la comunidad de La Velada del Año.
-              </p>
+        <div className="w-full absolute bottom-16 items-center justify-center ">
+          <div className="w-2/5 gap-8 flex flex-col justify-center items-center">
+            <h1 className="text-center text-xl text-[#2a1f26]">
+              Patrocinadores del evento
+            </h1>
+            <div>
+              <Sponsors />
             </div>
           </div>
-      </div>
+        </div>
+        <div className="absolute bottom-0 left-0 w-full flex justify-center items-end h-12">
+          <p className="text-center text-sm text-[#2a1f26]">
+            Hecho con ❤️ por RiesalDev siguiendo el diseño de la web oficial de La Velada del Año V realizada por Midudev y la comunidad.
+          </p>
+        </div>
       </div>
     </footer >
   );
