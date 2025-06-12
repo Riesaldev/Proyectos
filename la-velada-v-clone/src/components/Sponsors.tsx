@@ -124,16 +124,16 @@ export const Sponsors: React.FC = () => {
               className='hover:scale-125 transition flex items-center justify-center'
               title={sponsor.name}
             >
-              <div className="w-32 h-16 flex items-center justify-center">
+              <div className="w-24 h-12 flex items-center justify-center">
                 <sponsor.imagen.logo
-                  className="w-full h-full object-fi"
+                  className="w-24 h-12 object-fit"
                 />
               </div>
             </a>
           ))
         }
       </div>
-      <div className='grid grid-cols-5 text-[#2a1f26]'>
+      <div className='grid grid-cols-6 text-[#2a1f26]'>
         {
           secondRow.map((sponsor) => (
             <a
@@ -144,9 +144,9 @@ export const Sponsors: React.FC = () => {
               className='hover:scale-125 transition flex items-center justify-center'
               title={sponsor.name}
             >
-              <div className="w-32 h-16 flex items-center justify-center">
+              <div className="w-24 h-12 flex items-center justify-center">
                 <sponsor.imagen.logo
-                  className="w-full h-full object-contain"
+                  className="w-24 h-12 object-fit"
                 />
               </div>
             </a>
