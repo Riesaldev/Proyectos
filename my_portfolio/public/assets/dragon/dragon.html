@@ -18,5 +18,17 @@
     
     <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script>
     <script src="dragon.js"></script>
+    
+    <!-- Script para comunicarse con el parent -->
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                // Notificar al parent que la animación está lista
+                if (window.parent) {
+                    window.parent.postMessage({ type: 'dragonLoaded' }, '*');
+                }
+            }, 1500);
+        });
+    </script>
 </body>
 </html>

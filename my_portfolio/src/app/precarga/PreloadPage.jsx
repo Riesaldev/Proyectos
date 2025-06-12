@@ -16,6 +16,25 @@ export default function PreloadPage({ onContinue }) {
     "🚀 Cargando la magia del desarrollo..."
   ];
 
+  const handleIframeLoad = () => {
+    // Dar tiempo para que la animación del dragón se inicialice completamente
+    setTimeout(() => {
+      setAnimationLoaded(true);
+    }, 2000);
+  };
+
+  // Agregar este useEffect adicional en PreloadPage.jsx
+useEffect(() => {
+    const handleMessage = (event) => {
+        if (event.data.type === 'dragonLoaded') {
+            setAnimationLoaded(true);
+        }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+}, []);
+
   useEffect(() => {
     if (!animationLoaded) return;
 
@@ -42,6 +61,17 @@ export default function PreloadPage({ onContinue }) {
 
   return (
     <div id="preload">
+      {/* Animación del dragón en iframe */}
+      <div className="dragon-section">
+        <iframe
+          src="/assets/dragon/dragon.html"
+          className="dragon-iframe"
+          onLoad={handleIframeLoad}
+          title="Dragon Animation"
+          loading="eager"
+        />
+      </div>
+
       <div id="loading-bar">
         <div id="progress" style={{ width: `${progress}%` }}></div>
       </div>
