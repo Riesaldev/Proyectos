@@ -113,7 +113,7 @@ export const Sponsors: React.FC = () => {
 
   return (
     <>
-      <div className='grid grid-cols-5 text-[#2a1f26]'>
+      <div className='grid grid-cols-5 text-[#f7d8fd]'>
         {
           firstRow.map((sponsor) => (
             <a
@@ -133,7 +133,7 @@ export const Sponsors: React.FC = () => {
           ))
         }
       </div>
-      <div className='grid grid-cols-6 text-[#2a1f26]'>
+      <div className='grid grid-cols-6 text-[#f7d8fd]'>
         {
           secondRow.map((sponsor) => (
             <a
