@@ -5,9 +5,10 @@ import * as THREE from 'three';
 export default function LavenderFog() {
     const mountRef = useRef(null);
 
-    useEffect(() => {
-        let scene, camera, renderer, fogMaterial, animationId;
+    useEffect(() => {        let scene, camera, renderer, fogMaterial, animationId;
         const mouse = new THREE.Vector2(0, 0);
+        const mouseTrail = []; // Array para mantener la estela del mouse
+        const maxTrailLength = 20; // Máximo número de posiciones en la estela
         const clock = new THREE.Clock();
 
         function init() {
@@ -19,15 +20,13 @@ export default function LavenderFog() {
             renderer = new THREE.WebGLRenderer({
                 antialias: true,
                 alpha: true
-            });
-            renderer.setPixelRatio(window.devicePixelRatio);
+            });            renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
-              // Agregar al contenedor del componente
+            
+            // Agregar al contenedor del componente
             if (mountRef.current) {
                 mountRef.current.appendChild(renderer.domElement);
-            }
-
-            // 3. Geometría (plano fullscreen)
+            }            // 3. Geometría (plano fullscreen)
             const geometry = new THREE.PlaneGeometry(2, 2);
 
             // 4. Material con shader personalizado
@@ -35,10 +34,14 @@ export default function LavenderFog() {
                 uniforms: {
                     u_time: { value: 0 },
                     u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
-                    u_mouse: { value: new THREE.Vector2(0, 0) },                    u_noiseScale: { value: 3.0 },
+                    u_mouse: { value: new THREE.Vector2(0, 0) },
+                    u_mouseTrail: { value: new Array(20).fill().map(() => new THREE.Vector3(0, 0, 0)) }, // [x, y, timestamp]
+                    u_trailLength: { value: 0 },
+                    u_noiseScale: { value: 3.0 },
                     u_fogDensity: { value: 0.5 },
                     u_speed: { value: 0.5 },
-                    u_distortionStrength: { value: 5.0 }
+                    u_distortionStrength: { value: 5.0 },
+                    u_trailDecay: { value: 2.0 } // Para el efecto de estela
                 },
                 vertexShader: `
                     varying vec2 vUv;
@@ -52,10 +55,13 @@ export default function LavenderFog() {
                     uniform float u_time;
                     uniform vec2 u_resolution;
                     uniform vec2 u_mouse;
+                    uniform vec3 u_mouseTrail[20]; // Array de posiciones del trail [x, y, timestamp]
+                    uniform int u_trailLength;
                     uniform float u_noiseScale;
                     uniform float u_fogDensity;
                     uniform float u_speed;
                     uniform float u_distortionStrength;
+                    uniform float u_trailDecay;
                     varying vec2 vUv;
 
                     // Función de ruido Simplex (optimizada)
@@ -120,31 +126,52 @@ export default function LavenderFog() {
                         vec4 m = max(0.6 - vec4(
                             dot(x0, x0), dot(x1, x1), dot(x2, x2), dot(x3, x3)
                         ), 0.0);
-                        m = m * m;
-                        return 42.0 * dot(m * m, vec4(
-                            dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)                        ));
+                        m = m * m;                        return 42.0 * dot(m * m, vec4(
+                            dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)
+                        ));
                     }
 
                     void main() {
                         // Coordenadas normalizadas
                         vec2 uv = vUv;
                         vec2 mouseNorm = u_mouse;
-                        
-                        // Tiempo y ruido
+                          // Tiempo y ruido
                         float time = u_time * u_speed;
-                        float noise = snoise(vec3(uv * u_noiseScale, time)) * 0.5 + 0.5;                        // Distorsión del ratón (efecto de calma/despeje)
-                        float dist = distance(uv, mouseNorm);
-                        float mouseInfluence = 1.0 - smoothstep(0.0, 0.1, dist); // Radio más pequeño
-                        float calmEffect = mouseInfluence * u_distortionStrength * 0.2; // Efecto de calma
+                        float noise = snoise(vec3(uv * u_noiseScale, time)) * 0.5 + 0.5;
                         
-                        // Efecto de remolino suave alrededor del mouse (más sutil)
+                        // Distorsión del ratón con efecto de estela
+                        float dist = distance(uv, mouseNorm);
+                        float mouseInfluence = 1.0 - smoothstep(0.0, 0.1, dist);
+                          // Efecto de estela usando las posiciones reales del mouse
+                        float trailEffect = 0.0;
+                        for(int i = 0; i < 20; i++) {
+                            if(i >= u_trailLength) break; // Solo procesar posiciones válidas
+                            
+                            vec2 trailPos = u_mouseTrail[i].xy;
+                            float trailTime = u_mouseTrail[i].z;
+                            float age = time - trailTime; // Edad de esta posición
+                            
+                            // Solo considerar posiciones no muy viejas
+                            if(age < 3.0 && age > 0.0) {
+                                float trailDist = distance(uv, trailPos);
+                                float trailInfluence = (1.0 - smoothstep(0.0, 0.15, trailDist)) * 
+                                                     exp(-age * 0.8); // Decaimiento temporal
+                                trailEffect += trailInfluence;
+                            }
+                        }
+                          // Combinar efecto actual del mouse con la estela real
+                        float totalMouseEffect = mouseInfluence + trailEffect * 0.4;
+                        float calmEffect = totalMouseEffect * u_distortionStrength * 0.2;
+                        
+                        // Efecto de remolino suave que incluye la estela
                         vec2 toMouse = uv - mouseNorm;
                         float angle = atan(toMouse.y, toMouse.x);
-                        float gentleSwirl = sin(angle * 2.0 + time) * mouseInfluence * 0.1;
-                        
-                        // Combinar efectos (el mouse reduce la intensidad)
+                        float gentleSwirl = sin(angle * 2.0 + time) * totalMouseEffect * 0.1;
+                          // Combinar efectos (el mouse reduce la intensidad)
                         float finalNoise = noise - calmEffect + gentleSwirl;
-                        float fog = finalNoise * u_fogDensity;// Color que cambia con la interacción del mouse
+                        float fog = finalNoise * u_fogDensity;
+                        
+                        // Color que cambia con la interacción del mouse
                         vec3 baseColor = vec3(0.5, 0.7, 1.0); // Azul más intenso
                         vec3 interactiveColor = vec3(1.0, 0.4, 1.0); // Púrpura más vibrante
                         
@@ -153,27 +180,57 @@ export default function LavenderFog() {
                             mix(baseColor, interactiveColor, mouseInfluence),
                             fog
                         );
-                        
-                        gl_FragColor = vec4(color, clamp(fog * 1.2, 0.0, 1.0)); // Mayor opacidad
+                          gl_FragColor = vec4(color, clamp(fog * 1.2, 0.0, 1.0)); // Mayor opacidad
                     }
-                `,                transparent: true,
+                `,
+                transparent: true,
                 blending: THREE.AdditiveBlending
-            });
-
-            // 5. Crear mesh
+            });            // 5. Crear mesh
             const fogPlane = new THREE.Mesh(geometry, fogMaterial);
-            scene.add(fogPlane);            // Eventos
+            scene.add(fogPlane);
+
+            // Eventos
             const handleMouseMove = (e) => {
                 mouse.x = e.clientX / window.innerWidth;
                 mouse.y = 1.0 - (e.clientY / window.innerHeight); // Invertir eje Y
                 
+                // Añadir la posición actual al trail con timestamp
+                mouseTrail.push({
+                    x: mouse.x,
+                    y: mouse.y,
+                    time: clock.getElapsedTime()
+                });
+                  // Mantener solo las últimas posiciones
+                if (mouseTrail.length > maxTrailLength) {
+                    mouseTrail.shift();
+                }
+                
+                // Actualizar uniforms
                 fogMaterial.uniforms.u_mouse.value.set(mouse.x, mouse.y);
+                
+                // Convertir mouseTrail a formato para el shader
+                const trailArray = fogMaterial.uniforms.u_mouseTrail.value;
+                const currentTime = clock.getElapsedTime();
+                
+                for (let i = 0; i < 20; i++) {
+                    if (i < mouseTrail.length) {
+                        trailArray[i].set(
+                            mouseTrail[i].x, 
+                            mouseTrail[i].y, 
+                            mouseTrail[i].time
+                        );
+                    } else {
+                        trailArray[i].set(0, 0, currentTime - 10); // Posiciones inválidas
+                    }
+                }
+                
+                fogMaterial.uniforms.u_trailLength.value = Math.min(mouseTrail.length, 20);
             };
 
             const handleResize = () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);                fogMaterial.uniforms.u_resolution.value.set(
+                camera.updateProjectionMatrix();                renderer.setSize(window.innerWidth, window.innerHeight);
+                fogMaterial.uniforms.u_resolution.value.set(
                     window.innerWidth, window.innerHeight
                 );
             };
@@ -181,12 +238,19 @@ export default function LavenderFog() {
             // Añadir eventos tanto al window como al canvas
             window.addEventListener('mousemove', handleMouseMove);
             renderer.domElement.addEventListener('mousemove', handleMouseMove);
-            window.addEventListener('resize', handleResize);
-
-            // Función de animación
+            window.addEventListener('resize', handleResize);            // Función de animación
             function animate() {
                 animationId = requestAnimationFrame(animate);
-                fogMaterial.uniforms.u_time.value = clock.getElapsedTime();                renderer.render(scene, camera);
+                const currentTime = clock.getElapsedTime();
+                fogMaterial.uniforms.u_time.value = currentTime;
+                
+                // Limpiar trail de posiciones viejas (más de 3 segundos)
+                const trailLifetime = 3.0; // segundos
+                while (mouseTrail.length > 0 && currentTime - mouseTrail[0].time > trailLifetime) {
+                    mouseTrail.shift();
+                }
+                
+                renderer.render(scene, camera);
             }
 
             animate();
