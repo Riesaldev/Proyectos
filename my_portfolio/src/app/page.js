@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import PreloadPage from "./precarga/PreloadPage";
+import LavenderFog from "../components/Three/LavenderFog";
 
 export default function Home() {
   const [showHome, setShowHome] = useState(false);
@@ -18,12 +19,13 @@ export default function Home() {
       {!showHome && <PreloadPage onContinue={() => setShowHome(true)} />}
       {showHome && (
         <main
-          className={`flex flex-col items-center h-screen p-24 transition-colors duration-700 ${
-            startScroll
-              ? "bg-black"
-              : "bg-gradient-to-b from-[#a842b1] from-70% to-[#2c002e]"
+        className={`flex flex-col items-center h-screen p-24 transition-colors duration-700 ${
+          startScroll
+          ? "bg-black"
+          : "bg-gradient-to-b from-[#a842b1] from-70% to-[#2c002e]"
           } text-[#fddbff]`}
-        >
+          >
+          <LavenderFog />
           <div className="md:grid grid-cols-2 items-center justify-center w-full h-full p-6 my-8">
             {/* Letras y botón */}
             <div className={`text-center md:text-left md:pl-12 transition-opacity duration-500 ${
