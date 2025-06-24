@@ -165,12 +165,10 @@ export default function LavenderFog() {
 
             // 5. Crear mesh
             const fogPlane = new THREE.Mesh(geometry, fogMaterial);
-            scene.add(fogPlane);
-
-            // Eventos
+            scene.add(fogPlane);            // Eventos
             const handleMouseMove = (e) => {
                 mouse.x = e.clientX / window.innerWidth;
-                mouse.y = e.clientY / window.innerHeight;
+                mouse.y = 1.0 - (e.clientY / window.innerHeight); // Invertir eje Y
                 
                 fogMaterial.uniforms.u_mouse.value.set(mouse.x, mouse.y);
             };
