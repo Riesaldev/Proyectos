@@ -35,11 +35,10 @@ export default function LavenderFog() {
                 uniforms: {
                     u_time: { value: 0 },
                     u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
-                    u_mouse: { value: new THREE.Vector2(0, 0) },
-                    u_noiseScale: { value: 3.0 },
-                    u_fogDensity: { value: 0.6 },
-                    u_speed: { value: 0.15 },
-                    u_distortionStrength: { value: 2.0 }
+                    u_mouse: { value: new THREE.Vector2(0, 0) },                    u_noiseScale: { value: 3.0 },
+                    u_fogDensity: { value: 0.8 },
+                    u_speed: { value: 0.3 },
+                    u_distortionStrength: { value: 4.0 }
                 },
                 vertexShader: `
                     varying vec2 vUv;
@@ -146,10 +145,9 @@ export default function LavenderFog() {
                         
                         // Combinar efectos
                         float finalNoise = noise + distortion + swirl;
-                        float fog = finalNoise * u_fogDensity;
-                          // Color que cambia con la interacción del mouse
-                        vec3 baseColor = vec3(0.7, 0.8, 0.9);
-                        vec3 interactiveColor = vec3(0.9, 0.6, 1.0); // Púrpura cuando hay interacción
+                        float fog = finalNoise * u_fogDensity;                        // Color que cambia con la interacción del mouse
+                        vec3 baseColor = vec3(0.5, 0.7, 1.0); // Azul más intenso
+                        vec3 interactiveColor = vec3(1.0, 0.4, 1.0); // Púrpura más vibrante
                         
                         vec3 color = mix(
                             baseColor,
@@ -157,7 +155,7 @@ export default function LavenderFog() {
                             fog
                         );
                         
-                        gl_FragColor = vec4(color, clamp(fog * 0.8, 0.0, 1.0));
+                        gl_FragColor = vec4(color, clamp(fog * 1.2, 0.0, 1.0)); // Mayor opacidad
                     }
                 `,                transparent: true,
                 blending: THREE.AdditiveBlending
