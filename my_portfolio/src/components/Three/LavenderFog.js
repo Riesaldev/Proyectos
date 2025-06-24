@@ -132,20 +132,19 @@ export default function LavenderFog() {
                         
                         // Tiempo y ruido
                         float time = u_time * u_speed;
-                        float noise = snoise(vec3(uv * u_noiseScale, time)) * 0.5 + 0.5;
-                          // Distorsión del ratón (efecto más visible)
+                        float noise = snoise(vec3(uv * u_noiseScale, time)) * 0.5 + 0.5;                        // Distorsión del ratón (efecto de calma/despeje)
                         float dist = distance(uv, mouseNorm);
                         float mouseInfluence = 1.0 - smoothstep(0.0, 0.5, dist);
-                        float distortion = mouseInfluence * u_distortionStrength;
+                        float calmEffect = mouseInfluence * u_distortionStrength * 0.3; // Efecto de calma
                         
-                        // Efecto de remolino alrededor del mouse
+                        // Efecto de remolino suave alrededor del mouse (más sutil)
                         vec2 toMouse = uv - mouseNorm;
                         float angle = atan(toMouse.y, toMouse.x);
-                        float swirl = sin(angle * 3.0 + time * 2.0) * mouseInfluence * 0.5;
+                        float gentleSwirl = sin(angle * 2.0 + time) * mouseInfluence * 0.2;
                         
-                        // Combinar efectos
-                        float finalNoise = noise + distortion + swirl;
-                        float fog = finalNoise * u_fogDensity;                        // Color que cambia con la interacción del mouse
+                        // Combinar efectos (el mouse reduce la intensidad)
+                        float finalNoise = noise - calmEffect + gentleSwirl;
+                        float fog = finalNoise * u_fogDensity;// Color que cambia con la interacción del mouse
                         vec3 baseColor = vec3(0.5, 0.7, 1.0); // Azul más intenso
                         vec3 interactiveColor = vec3(1.0, 0.4, 1.0); // Púrpura más vibrante
                         
