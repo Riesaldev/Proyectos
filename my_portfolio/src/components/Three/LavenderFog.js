@@ -36,9 +36,9 @@ export default function LavenderFog() {
                     u_time: { value: 0 },
                     u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
                     u_mouse: { value: new THREE.Vector2(0, 0) },                    u_noiseScale: { value: 3.0 },
-                    u_fogDensity: { value: 0.8 },
-                    u_speed: { value: 0.3 },
-                    u_distortionStrength: { value: 4.0 }
+                    u_fogDensity: { value: 0.5 },
+                    u_speed: { value: 0.5 },
+                    u_distortionStrength: { value: 5.0 }
                 },
                 vertexShader: `
                     varying vec2 vUv;
@@ -134,13 +134,13 @@ export default function LavenderFog() {
                         float time = u_time * u_speed;
                         float noise = snoise(vec3(uv * u_noiseScale, time)) * 0.5 + 0.5;                        // Distorsión del ratón (efecto de calma/despeje)
                         float dist = distance(uv, mouseNorm);
-                        float mouseInfluence = 1.0 - smoothstep(0.0, 0.5, dist);
-                        float calmEffect = mouseInfluence * u_distortionStrength * 0.3; // Efecto de calma
+                        float mouseInfluence = 1.0 - smoothstep(0.0, 0.1, dist); // Radio más pequeño
+                        float calmEffect = mouseInfluence * u_distortionStrength * 0.2; // Efecto de calma
                         
                         // Efecto de remolino suave alrededor del mouse (más sutil)
                         vec2 toMouse = uv - mouseNorm;
                         float angle = atan(toMouse.y, toMouse.x);
-                        float gentleSwirl = sin(angle * 2.0 + time) * mouseInfluence * 0.2;
+                        float gentleSwirl = sin(angle * 2.0 + time) * mouseInfluence * 0.1;
                         
                         // Combinar efectos (el mouse reduce la intensidad)
                         float finalNoise = noise - calmEffect + gentleSwirl;
