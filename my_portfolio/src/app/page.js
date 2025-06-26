@@ -36,10 +36,9 @@ export default function Home () {
               </p>
             </div>
             {/* Video*/}
-            <div className="relative w-full max-w-2xl mx-auto">
+            <div className="relative w-full max-w-2xl mx-auto opacity-80 brightness-50 rounded-lg overflow-hidden">
               {/* Video con máscara aplicada para crear el efecto de desvanecimiento en los bordes */}
               <div
-                className="w-full"
                 style={{
                   WebkitMaskImage: 'radial-gradient(ellipse, black 55%, transparent 70%)',
                   maskImage: 'radial-gradient(ellipse, black 55%, transparent 70%)'
