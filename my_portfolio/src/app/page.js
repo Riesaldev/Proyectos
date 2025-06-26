@@ -42,7 +42,7 @@ export default function Home () {
                 style={{
                   WebkitMaskImage: 'radial-gradient(ellipse, black 55%, transparent 70%)',
                   maskImage: 'radial-gradient(ellipse, black 55%, transparent 70%)'
-                }}
+                }}npm
               >
                 <video
                   ref={videoRef}
