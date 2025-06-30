@@ -17,7 +17,7 @@ const MobileMenu = () => {
     <div className="relative">
       <button onClick={toggleMenu} className="focus:outline-none">
         <Image 
-          src={menuOpen ? '/cruz.svg' : '/menu-hamburguesa.svg'} 
+          src={menuOpen ? 'assets/images/cruz.svg' : 'assets/images/menu-hamburguesa.svg'} 
           alt="Menu" 
           width={40} 
           height={40}
