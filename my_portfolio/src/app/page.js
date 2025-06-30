@@ -1,10 +1,12 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from 'next/navigation'; // Importar useRouter
 import PreloadPage from "./precarga/PreloadPage";
 import LavenderFog from "../components/Three/LavenderFog";
 import VideoSource from "../../public/assets/videos/puerta.mp4";
 
 export default function Home () {
+  const router = useRouter(); // Inicializar el router
   const [ showHome, setShowHome ] = useState( false );
   const [ isExpanded, setIsExpanded ] = useState( false );
   const [ videoRect, setVideoRect ] = useState(null);
@@ -34,12 +36,18 @@ export default function Home () {
         if (expandedVideoRef.current) {
           expandedVideoRef.current.play();
         }
+        
+        // Redirigir a menu/page.js cuando termina la animación
+        const redirectTimer = setTimeout(() => {
+          router.push('/menu');
+        }, 8000); // 8 segundos, coincidiendo con la duración de la transición
+        
+        return () => clearTimeout(redirectTimer);
       }, 50);
     } else {
       setExpandAnimation(false);
     }
-  }, [isExpanded, videoRect]);
-
+  }, [isExpanded, videoRect, router]);
   // Estilos iniciales y expandidos
   const initialStyle = videoRect ? {
     position: "fixed",
@@ -126,9 +134,11 @@ export default function Home () {
                   height: "100%",
                   objectFit: "cover", // Cambiado a cover para llenar completamente
                   objectPosition: "center", // Ajusta esto según donde esté la zona negra
-                  transform: expandAnimation ? "scale(10) translateX(15%)" : "scale(1)", // Escalado mayor
+                  transform: expandAnimation ? "scale(10) translateX(15%)" : "",
                   transformOrigin: "center center", // Punto de origen del escalado
                   transition: "all 8s cubic-bezier(0.4,0,0.2,1)",
+                  WebkitMaskImage: 'radial-gradient(ellipse, black 55%, transparent 70%)',
+                  maskImage: 'radial-gradient(ellipse, black 55%, transparent 70%)'
                 }}
               >
                 <source src={VideoSource} type="video/mp4" />
