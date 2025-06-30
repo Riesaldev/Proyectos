@@ -109,7 +109,7 @@ export default function Home () {
                   WebkitMaskImage: 'radial-gradient(ellipse, black 55%, transparent 70%)',
                   maskImage: 'radial-gradient(ellipse, black 55%, transparent 70%)'
                 }}
-              >
+              ></div>
               <video
                 ref={expandedVideoRef}
                 onClick={() => {
@@ -134,38 +134,6 @@ export default function Home () {
                 <source src={VideoSource} type="video/mp4" />
                 Tu navegador no soporta el elemento video.
               </video>
-              <div
-                style={{
-                  WebkitMaskImage: 'radial-gradient(ellipse, black 55%, transparent 70%)',
-                  maskImage: 'radial-gradient(ellipse, black 55%, transparent 70%)'
-                }}
-              >
-              <video
-                ref={expandedVideoRef}
-                onClick={() => {
-                  if (expandedVideoRef.current) {
-                    expandedVideoRef.current.pause();
-                  }
-                  setIsExpanded(false);
-                  setTimeout(() => setVideoRect(null), 3100);
-                }}
-                className="cursor-pointer"
-                playsInline
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover", // Cambiado a cover para llenar completamente
-                  objectPosition: "center", // Ajusta esto según donde esté la zona negra
-                  transform: expandAnimation ? "scale(10) translateX(15%)" : "scale(1)", // Escalado mayor
-                  transformOrigin: "center center", // Punto de origen del escalado
-                  transition: "all 8s cubic-bezier(0.4,0,0.2,1)",
-                }}
-              >
-                <source src={VideoSource} type="video/mp4" />
-                Tu navegador no soporta el elemento video.
-              </video>
-              </div>
-            </div>
             </div>
           )}
         </main>
