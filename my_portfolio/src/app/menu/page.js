@@ -77,11 +77,14 @@ export default function Menu() {
           // Preparamos el otro video para la transición
           const nextVideoRef = activeVideoRef === 'primary' ? secondVideoRef.current : videoRef.current;
           nextVideoRef.src = Main;
-          // Esperar a que los metadatos estén disponibles
-          nextVideoRef.addEventListener('loadedmetadata', () => {
-            if (nextVideoRef && !isNaN(nextVideoRef.duration) && isFinite(nextVideoRef.duration)) {
+          
+          // Esperar a que los metadatos del video estén cargados antes de establecer currentTime
+          nextVideoRef.addEventListener('loadedmetadata', function onMetadataLoaded() {
+            if (!isNaN(nextVideoRef.duration) && isFinite(nextVideoRef.duration)) {
               nextVideoRef.currentTime = nextVideoRef.duration - 0.1;
             }
+            // Eliminar el listener después de usarlo para evitar duplicados
+            nextVideoRef.removeEventListener('loadedmetadata', onMetadataLoaded);
           }, { once: true });
           
           // Configuramos la transición suave

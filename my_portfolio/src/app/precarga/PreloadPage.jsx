@@ -17,6 +17,7 @@ export default function PreloadPage({ onContinue }) {
     iportal: false,
     puerta: false,
   });
+  // Nuevo estado para seguir el progreso de carga de cada video
   const [videoLoadProgress, setVideoLoadProgress] = useState({
     main: 0,
     dportal: 0,
@@ -44,14 +45,11 @@ export default function PreloadPage({ onContinue }) {
     videos.forEach(({ url, key }) => {
       const video = document.createElement('video');
       
-      // Forzar al navegador a cachear el video
-      video.setAttribute('crossorigin', 'anonymous'); // Permite CORS para caché
-      video.preload = 'auto'; // Fuerza la precarga
-      
       // Añadir un listener para el progreso de carga
-      video.addEventListener('progress', (event) => {
+      video.addEventListener('progress', () => {
         if (video.buffered.length > 0) {
           try {
+            // Calcula cuánto se ha cargado del video
             const loadedPercentage = (video.buffered.end(0) / video.duration) * 100;
             console.log(`${key} video loaded: ${loadedPercentage.toFixed(2)}%`);
             
@@ -66,13 +64,9 @@ export default function PreloadPage({ onContinue }) {
         }
       });
       
-      // Cuando el video esté listo para reproducirse
+      // Añadir listener para cuando el video esté completamente cargado
       video.addEventListener('canplaythrough', () => {
-        console.log(`${key} video fully loaded and cached`);
-        
-        // Crear un objeto en sessionStorage para marcar que el video está cacheado
-        sessionStorage.setItem(`video_${key}_cached`, 'true');
-        
+        console.log(`${key} video fully loaded`);
         setVideosLoaded(prev => ({
           ...prev,
           [key]: true
@@ -85,32 +79,23 @@ export default function PreloadPage({ onContinue }) {
         }));
       });
       
-      // Manejar errores
+      // Agregar un manejador para los errores de carga
       video.addEventListener('error', (error) => {
         console.error(`Error cargando ${key} video:`, error);
       });
       
-      // Establecer la fuente y comenzar la carga
+      // Configura la fuente del video y comienza la carga
+      video.preload = "auto";
       video.src = url;
-      video.load(); // Esto inicia la carga del video
-      
-      // Añadir al DOM para que el navegador no lo limpie de la memoria
-      video.style.display = 'none';
-      document.body.appendChild(video);
-      
-      // Guardar referencia para limpieza posterior
-      return () => {
-        if (document.body.contains(video)) {
-          document.body.removeChild(video);
-        }
-      };
+      video.load(); // Esto es crucial para iniciar la carga
     });
   };
-  
+
   // Función para actualizar el progreso general
   useEffect(() => {
     const updateProgress = () => {
       const totalVideos = 4; // Número total de videos a cargar
+      const loadedVideos = Object.values(videosLoaded).filter(loaded => loaded).length;
       
       // Calcular el progreso basado tanto en videos completos como en progreso parcial
       const videoProgressValues = Object.values(videoLoadProgress);
@@ -124,7 +109,6 @@ export default function PreloadPage({ onContinue }) {
       const totalProgress = Math.min(dragonProgress + videosProgress, 99); // Limitamos a 99% hasta que todo esté listo
       
       // Solo mostramos 100% cuando todo esté realmente cargado
-      const loadedVideos = Object.values(videosLoaded).filter(loaded => loaded).length;
       const finalProgress = (animationLoaded && loadedVideos === totalVideos) ? 100 : totalProgress;
       
       setProgress(finalProgress);
@@ -143,15 +127,65 @@ export default function PreloadPage({ onContinue }) {
     
     updateProgress();
     
-    // Actualizar cada 200ms para mantener la barra fluida
+    // Ejecutar la actualización cada 200ms para mantener la barra de progreso fluida
     const intervalId = setInterval(updateProgress, 200);
     return () => clearInterval(intervalId);
   }, [animationLoaded, videosLoaded, videoLoadProgress, currentPhrase, magicPhrases.length]);
+
+  const handleIframeLoad = () => {
+    // Dar tiempo para que la animación del dragón se inicialice completamente
+    setTimeout(() => {
+      setAnimationLoaded(true);
+    }, 1000);
+  };
+
+  // Manejar mensajes del iframe del dragón
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === 'dragonLoaded') {
+        setAnimationLoaded(true);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   // Iniciar la precarga de videos cuando el componente se monte
   useEffect(() => {
     preloadVideos();
   }, []);
 
-  // Resto del componente...
+  return (
+    <div id="preload">
+      {/* Animación del dragón en iframe */}
+      <div className="dragon-section">
+        <iframe
+          src="/assets/dragon/dragon.html"
+          className="dragon-iframe"
+          onLoad={handleIframeLoad}
+          title="Dragon Animation"
+          loading="eager"
+        />
+      </div>
+      <div id="loading-container">
+        <div id="loading-bar">
+          <div id="progress" style={{ width: `${progress}%` }}></div>
+        </div>
+        <div id="progress-container">
+          <span id="progress-text">{Math.round(progress)}%</span>
+        </div>
+      </div>
+
+      <div id="loading-text">
+        {magicPhrases[currentPhrase]}
+      </div>
+
+      {showButton && (
+        <button id="continue-button" onClick={onContinue}>
+          ¡Continuar la aventura!
+        </button>
+      )}
+    </div>
+  );
 }
