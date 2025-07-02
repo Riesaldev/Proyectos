@@ -40,7 +40,7 @@ export default function Home () {
         // Redirigir a menu/page.js cuando termina la animación
         const redirectTimer = setTimeout(() => {
           router.push('/menu');
-        }, 8000); // 8 segundos, coincidiendo con la duración de la transición
+        }, 7000); // 8 segundos, coincidiendo con la duración de la transición
         
         return () => clearTimeout(redirectTimer);
       }, 50);

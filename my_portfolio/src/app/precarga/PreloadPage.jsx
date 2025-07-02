@@ -26,11 +26,11 @@ export default function PreloadPage({ onContinue }) {
   });
 
   const magicPhrases = [
-    "✨ Conjurando elementos mágicos...",
-    "🔮 Preparando pociones de código...",
-    "🌟 Invocando sprites y animaciones...",
-    "🎭 Mezclando colores y texturas...",
-    "🚀 Cargando la magia del desarrollo..."
+    "Conjurando el código...",
+    "Elaborando pociones de UI...",
+    "Invocando las animaciones...",
+    "Domesticando bugs...",
+    "Implorando a los Dioses Antiguos..."
   ];
 
   // Función para precargar videos
@@ -101,10 +101,12 @@ export default function PreloadPage({ onContinue }) {
       const videoProgressValues = Object.values(videoLoadProgress);
       const videoProgressAverage = videoProgressValues.reduce((acc, val) => acc + val, 0) / totalVideos;
       
-      // El progreso se divide: 50% para la animación del dragón y 50% para los videos
-      const dragonProgress = animationLoaded ? 50 : 0;
-      const videosProgress = videoProgressAverage * 0.5; // 50% del progreso total
-      
+      // El progreso se divide en dos partes:
+      // 1. Progreso del dragón (30%)
+      const dragonProgress = animationLoaded ? 30 : 0;
+      // 2. Progreso de los videos (70%)
+      const videosProgress = videoProgressAverage * 0.7; // 70% del progreso total
+
       // Progreso total
       const totalProgress = Math.min(dragonProgress + videosProgress, 99); // Limitamos a 99% hasta que todo esté listo
       
@@ -113,8 +115,8 @@ export default function PreloadPage({ onContinue }) {
       
       setProgress(finalProgress);
       
-      // Actualizar la frase basada en el progreso
-      const phraseIndex = Math.floor(finalProgress / 20);
+      // Actualizar la frase basada en el tiempo
+      const phraseIndex = Math.floor(Date.now() / 800) % magicPhrases.length; // 5 frases, cada una cada 800ms
       if (phraseIndex !== currentPhrase && phraseIndex < magicPhrases.length) {
         setCurrentPhrase(phraseIndex);
       }
@@ -136,7 +138,7 @@ export default function PreloadPage({ onContinue }) {
     // Dar tiempo para que la animación del dragón se inicialice completamente
     setTimeout(() => {
       setAnimationLoaded(true);
-    }, 1000);
+    }, 100);
   };
 
   // Manejar mensajes del iframe del dragón
