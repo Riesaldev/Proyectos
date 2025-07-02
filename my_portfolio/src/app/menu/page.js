@@ -8,13 +8,20 @@ import IPortal from '../../../public/assets/videos/IPortal.webm';
 
 export default function Menu() {
   const videoRef = useRef(null);
-  const secondVideoRef = useRef(null); // Segundo video para transiciones suaves
+  const secondVideoRef = useRef(null);
   const [currentPortal, setCurrentPortal] = useState("main");
   const [videoSource, setVideoSource] = useState(Main);
   const [mainVideoPlayed, setMainVideoPlayed] = useState(false);
   const [isRewinding, setIsRewinding] = useState(false);
   const rewindIntervalRef = useRef(null);
-  const [activeVideoRef, setActiveVideoRef] = useState('primary'); // Controla qué video está activo
+  const [activeVideoRef, setActiveVideoRef] = useState('primary');
+  const [videoTransitionComplete, setVideoTransitionComplete] = useState(false); // Cambiado a false inicialmente
+  // Añadir un nuevo estado para controlar la carga previa de videos
+  const [videosPreloaded, setVideosPreloaded] = useState({
+    main: false,
+    dportal: false,
+    iportal: false
+  });
 
   // Configuración inicial de los videos
   useEffect(() => {
@@ -29,10 +36,33 @@ export default function Menu() {
       iportal: iportalCached 
     });
 
+    // Función para precargar un video
+    const preloadVideo = (src, key) => {
+      const tempVideo = document.createElement('video');
+      tempVideo.preload = 'auto';
+      tempVideo.src = src;
+      tempVideo.muted = true;
+      tempVideo.style.display = 'none';
+      
+      tempVideo.oncanplaythrough = () => {
+        console.log(`Video ${key} precargado`);
+        setVideosPreloaded(prev => ({...prev, [key]: true}));
+        sessionStorage.setItem(`video_${key}_cached`, 'true');
+        document.body.removeChild(tempVideo);
+      };
+      
+      document.body.appendChild(tempVideo);
+    };
+
+    // Precargar videos si no están en caché
+    if (!mainCached) preloadVideo(Main, 'main');
+    if (!dportalCached) preloadVideo(DPortal, 'dportal');
+    if (!iportalCached) preloadVideo(IPortal, 'iportal');
+    
     if (videoRef.current && secondVideoRef.current) {
       videoRef.current.playbackRate = 0.30;
       secondVideoRef.current.playbackRate = 0.30;
-      
+
       // Configuración para mejorar el uso de caché
       videoRef.current.preload = 'auto';
       secondVideoRef.current.preload = 'auto';
@@ -57,11 +87,14 @@ export default function Menu() {
   const handleVideoEnded = () => {
     if (videoSource === Main) {
       setMainVideoPlayed(true);
+      setVideoTransitionComplete(true); // Mostrar contenido cuando el video principal termine
     }
   };
 
   const playVideoInReverse = (originalSource) => {
     setIsRewinding(true);
+    // Ocultamos el contenido durante el rebobinado
+    setVideoTransitionComplete(false);
     
     const currentVideoRef = activeVideoRef === 'primary' ? videoRef.current : secondVideoRef.current;
     
@@ -69,7 +102,7 @@ export default function Menu() {
       const videoDuration = currentVideoRef.duration;
       currentVideoRef.currentTime = videoDuration;
       
-      const rewindStep = 0.03; // Ajustado para una velocidad de rewind más fluida
+      const rewindStep = 0.01; // Ajustado para una velocidad de rewind más fluida
       rewindIntervalRef.current = setInterval(() => {
         if (currentVideoRef.currentTime <= rewindStep) {
           clearInterval(rewindIntervalRef.current);
@@ -102,6 +135,9 @@ export default function Menu() {
             setCurrentPortal("main");
             setMainVideoPlayed(true);
             setIsRewinding(false);
+            
+            // Mostramos el contenido después de completar el rebobinado
+            setVideoTransitionComplete(true);
           }, 50);
           
         } else {
@@ -120,6 +156,9 @@ export default function Menu() {
   const playPortalVideo = (portal) => {
     if (isRewinding) return;
     
+    // Ocultamos el contenido durante la transición
+    setVideoTransitionComplete(false);
+    
     if (portal === "main" && (currentPortal === "Right" || currentPortal === "Left")) {
       const currentVideo = currentPortal === "Right" ? DPortal : IPortal;
       playVideoInReverse(currentVideo);
@@ -137,14 +176,21 @@ export default function Menu() {
     const currentVideoRef = activeVideoRef === 'primary' ? videoRef.current : secondVideoRef.current;
     const nextVideoRef = activeVideoRef === 'primary' ? secondVideoRef.current : videoRef.current;
     
-    // Cargamos el nuevo video en el buffer inactivo
+    // Aseguramos que el nuevo video esté completamente cargado antes de iniciar la transición
     nextVideoRef.src = source;
     nextVideoRef.style.opacity = '0';
-    nextVideoRef.play().then(() => {
+    
+    // Función para iniciar la transición cuando el video esté listo
+    const startTransition = () => {
       // Iniciamos la transición suave
-      nextVideoRef.style.transition = 'opacity 0.3s';
+      nextVideoRef.style.transition = 'opacity 0.5s ease-in-out'; // Aumentado a 0.5s para suavizar
+      currentVideoRef.style.transition = 'opacity 0.5s ease-in-out';
+      
       nextVideoRef.style.opacity = '1';
-      currentVideoRef.style.opacity = '0';
+      // Mantenemos el video actual visible un poco más
+      setTimeout(() => {
+        currentVideoRef.style.opacity = '0';
+      }, 100);
       
       // Cambiamos la referencia activa
       setActiveVideoRef(activeVideoRef === 'primary' ? 'secondary' : 'primary');
@@ -159,8 +205,23 @@ export default function Menu() {
         } else {
           setCurrentPortal("main");
         }
+        
+        // Mostramos el contenido después de la transición
+        setVideoTransitionComplete(true);
       }, 1000);
-    });
+    };
+    
+    // Aseguramos que el video esté cargado antes de reproducirlo
+    nextVideoRef.oncanplay = () => {
+      nextVideoRef.oncanplay = null; // Evitar múltiples activaciones
+      nextVideoRef.play().then(startTransition);
+    };
+    
+    // Si el video ya está en buffer, podemos reproducirlo inmediatamente
+    if (nextVideoRef.readyState >= 3) {
+      nextVideoRef.oncanplay = null;
+      nextVideoRef.play().then(startTransition);
+    }
   };
 
   // Renderizado condicional según el portal actual
@@ -183,6 +244,12 @@ export default function Menu() {
               />
               <div className="Portal flex flex-col items-center justify-center">
                 <p className="text-[#812286] text-xl font-black text-center justify-around items-center relative bottom-6">Portal Central <br/><span>(Inicio)</span></p>
+                {/* Zona clicable del portal central */}
+                <Link href="/">
+                  <div className="w-40 h-40 border-4 border-[#812286] rounded-full bg-black bg-opacity-20 hover:bg-opacity-40 cursor-pointer transition-all duration-300 flex items-center justify-center">
+                    <span className="text-[#fddbff] text-lg font-bold">Inicio</span>
+                  </div>
+                </Link>
               </div>
               <img 
                 src="/assets/images/arrow1.png" 
@@ -211,6 +278,12 @@ export default function Menu() {
               />
               <div className="Portal flex flex-col items-center justify-center">
                 <p className="text-[#812286] text-xl font-black text-center justify-around items-center relative bottom-6">Portal Dimensión <br/><span>(Proyectos)</span></p>
+                {/* Zona clicable del portal de proyectos */}
+                <Link href="/projects">
+                  <div className="w-40 h-40 border-4 border-[#812286] rounded-full bg-black bg-opacity-20 hover:bg-opacity-40 cursor-pointer transition-all duration-300 flex items-center justify-center">
+                    <span className="text-[#fddbff] text-lg font-bold">Proyectos</span>
+                  </div>
+                </Link>
               </div>
             </div>
           </>
@@ -227,6 +300,12 @@ export default function Menu() {
             <div className="absolute bottom-1/2 flex space-x-54 items-center justify-center">
               <div className="Portal flex flex-col items-center justify-center">
                 <p className="text-[#812286] text-xl font-black text-center justify-around items-center relative bottom-6">Portal Dimensión <br/><span>(Conocimiento)</span></p>
+                {/* Zona clicable del portal de conocimiento */}
+                <Link href="/skills">
+                  <div className="w-40 h-40 border-4 border-[#812286] rounded-full bg-black bg-opacity-20 hover:bg-opacity-40 cursor-pointer transition-all duration-300 flex items-center justify-center">
+                    <span className="text-[#fddbff] text-lg font-bold">Habilidades</span>
+                  </div>
+                </Link>
               </div>
               <img 
                 src="/assets/images/arrow1.png" 
@@ -244,8 +323,8 @@ export default function Menu() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-4/5 bg-[#000000]">
-      <div className="flex flex-col items-center justify-center z-0 inset-0 absolute">
+    <div className="flex flex-col items-center justify-center h-4/5 bg-black">
+      <div className="flex flex-col items-center justify-center z-0 inset-0 absolute bg-black">
         {/* Video principal */}
         <video 
           ref={videoRef} 
@@ -262,7 +341,8 @@ export default function Menu() {
           }}
           style={{
             opacity: activeVideoRef === 'primary' ? '1' : '0',
-            transition: 'opacity 0.3s'
+            transition: 'opacity 0.5s ease-in-out',
+            backgroundColor: 'black'
           }}
         />
         
@@ -274,11 +354,12 @@ export default function Menu() {
           className='w-full h-full object-cover absolute top-0 left-0'
           style={{
             opacity: activeVideoRef === 'secondary' ? '1' : '0',
-            transition: 'opacity 0.3s'
+            transition: 'opacity 0.5s ease-in-out',
+            backgroundColor: 'black'
           }}
         />
       </div>
-      {renderPortalContent()}
+      {videoTransitionComplete && renderPortalContent()}
     </div>
   );
 }
