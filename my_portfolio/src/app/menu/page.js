@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import Main from '../../../public/assets/videos/Portals.webm';
 import DPortal from '../../../public/assets/videos/DPortal.webm';
@@ -21,16 +21,43 @@ export default function Menu() {
     dportal: false,
     iportal: false
   });
+  const [videoTimeRange, setVideoTimeRange] = useState({
+    main: { start: 0, end: 1.25 }, // Por ejemplo: reproducir solo los primeros 1 segundos
+    dportal: { start: 0, end: null }, // null significa hasta el final
+    iportal: { start: 0, end: null }
+  });
+  const [videoPlaybackSpeed, setVideoPlaybackSpeed] = useState({
+    main: 0.30,
+    dportal: 0.40,
+    iportal: 0.40
+  });
 
-  // Componente para la precarga de videos
+  // Reemplazar el componente VideoPreloader actual con esta implementación
   const VideoPreloader = () => {
-    return (
-      <>
-        <link rel="preload" as="video" href={Main} type="video/webm" />
-        <link rel="preload" as="video" href={DPortal} type="video/webm" />
-        <link rel="preload" as="video" href={IPortal} type="video/webm" />
-      </>
-    );
+    useEffect(() => {
+      const videoSources = [
+        { src: Main, key: 'main' },
+        { src: DPortal, key: 'dportal' },
+        { src: IPortal, key: 'iportal' }
+      ];
+      
+      videoSources.forEach(({src, key}) => {
+        if (sessionStorage.getItem(`video_${key}_cached`) !== 'true') {
+          const preloadVideo = new Audio(src);
+          preloadVideo.preload = 'auto';
+          preloadVideo.muted = true;
+          preloadVideo.oncanplaythrough = () => {
+            console.log(`Video ${key} precargado correctamente`);
+            sessionStorage.setItem(`video_${key}_cached`, 'true');
+            setVideosPreloaded(prev => ({...prev, [key]: true}));
+          };
+        } else {
+          setVideosPreloaded(prev => ({...prev, [key]: true}));
+        }
+      });
+    }, []);
+    
+    return null;
   };
 
   // Configuración inicial de los videos
@@ -83,8 +110,13 @@ export default function Menu() {
     
     // Configuración inicial de los videos
     if (videoRef.current && secondVideoRef.current) {
-      videoRef.current.playbackRate = 0.40;
-      secondVideoRef.current.playbackRate = 0.40;
+      // Establecer la velocidad de reproducción según el tipo de video actual
+      const videoKey = videoSource === Main ? 'main' : 
+                       videoSource === DPortal ? 'dportal' : 
+                       videoSource === IPortal ? 'iportal' : 'main';
+      
+      videoRef.current.playbackRate = videoPlaybackSpeed[videoKey];
+      secondVideoRef.current.playbackRate = videoPlaybackSpeed[videoKey];
 
       // Configuración para mejorar el uso de caché
       videoRef.current.preload = 'auto';
@@ -105,54 +137,57 @@ export default function Menu() {
         clearInterval(rewindIntervalRef.current);
       }
     };
-  }, [currentPortal, mainVideoPlayed, videoSource]);
+  }, [currentPortal, mainVideoPlayed, videoSource, videoPlaybackSpeed]);
 
-  const handleVideoEnded = () => {
+  const handleVideoEnded = useCallback(() => {
     if (videoSource === Main) {
       setMainVideoPlayed(true);
-      // En lugar de mostrar el último fotograma, mantenemos el video 
-      // en su último fotograma naturalmente
       if (videoRef.current) {
-        videoRef.current.currentTime = videoRef.current.duration - 0.01;
+        // Posicionar al final del rango especificado
+        videoRef.current.currentTime = videoTimeRange.main.end - 0.01;
       }
-      setVideoTransitionComplete(true); // Mostrar contenido cuando el video principal termine
+      setVideoTransitionComplete(true);
     }
-  };
+  }, [videoSource, videoTimeRange]);
 
-  const playVideoInReverse = (originalSource) => {
+  const playVideoInReverse = () => {
     setIsRewinding(true);
     setVideoTransitionComplete(false);
     
     const currentVideoRef = activeVideoRef === 'primary' ? videoRef.current : secondVideoRef.current;
     
     if (currentVideoRef && !isNaN(currentVideoRef.duration) && isFinite(currentVideoRef.duration)) {
-      const videoDuration = currentVideoRef.duration;
-      currentVideoRef.currentTime = videoDuration;
+      currentVideoRef.currentTime = currentVideoRef.duration;
       
-      // Reducimos el paso de rebobinado para una transición más suave
-      const rewindStep = 0.015;
-      rewindIntervalRef.current = setInterval(() => {
-        if (currentVideoRef.currentTime <= rewindStep) {
-          clearInterval(rewindIntervalRef.current);
-          
-          // En lugar de cargar nuevamente Main, mantenemos la imagen final del rebobinado
-          // y hacemos una transición directa al contenido del portal central
-          
-          setCurrentPortal("main");
-          setMainVideoPlayed(true);
-          setIsRewinding(false);
-          
-          // Mostramos el contenido del portal central después de un breve retraso
-          setTimeout(() => {
-            setVideoTransitionComplete(true);
-          }, 50);
-
+      // Usar requestAnimationFrame para un rebobinado más suave
+      let lastTimestamp = null;
+      const rewindStep = 0.01;
+      
+      const rewindFrame = (timestamp) => {
+        if (!lastTimestamp) lastTimestamp = timestamp;
+        const elapsed = timestamp - lastTimestamp;
+        
+        if (elapsed > 16) { // ~60fps
+          if (currentVideoRef.currentTime <= rewindStep) {
+            // Finalizar rebobinado
+            setCurrentPortal("main");
+            setMainVideoPlayed(true);
+            setIsRewinding(false);
+            setTimeout(() => setVideoTransitionComplete(true), 50);
+          } else {
+            // Continuar rebobinado
+            currentVideoRef.currentTime -= rewindStep;
+            lastTimestamp = timestamp;
+            requestAnimationFrame(rewindFrame);
+          }
         } else {
-          currentVideoRef.currentTime -= rewindStep;
+          requestAnimationFrame(rewindFrame);
         }
-      }, 33);
+      };
+      
+      requestAnimationFrame(rewindFrame);
     } else {
-      // Fallback si el video no se carga correctamente
+      // Fallback
       setCurrentPortal("main");
       setMainVideoPlayed(true);
       setIsRewinding(false);
@@ -164,75 +199,57 @@ export default function Menu() {
   const playPortalVideo = (portal) => {
     if (isRewinding) return;
     
-    // Ocultamos el contenido durante la transición
     setVideoTransitionComplete(false);
     
     if (portal === "main" && (currentPortal === "Right" || currentPortal === "Left")) {
-      const currentVideo = currentPortal === "Right" ? DPortal : IPortal;
-      playVideoInReverse(currentVideo);
+      playVideoInReverse();
       return;
     }
     
-    let source;
-    switch (portal) {
-      case "right": source = DPortal; break;
-      case "left": source = IPortal; break;
-      default: source = Main;
-    }
+    const portalMap = {
+      "right": { source: DPortal, newPortal: "Right", key: "dportal" },
+      "left": { source: IPortal, newPortal: "Left", key: "iportal" },
+      "main": { source: Main, newPortal: "main", key: "main" }
+    };
     
-    // Preparamos el video inactivo para la transición
-    const currentVideoRef = activeVideoRef === 'primary' ? videoRef.current : secondVideoRef.current;
+    const { source, newPortal, key } = portalMap[portal] || portalMap["main"];
+    
+    // Alternar entre videos para transición suave
     const nextVideoRef = activeVideoRef === 'primary' ? secondVideoRef.current : videoRef.current;
+    const currentVideoRef = activeVideoRef === 'primary' ? videoRef.current : secondVideoRef.current;
     
-    // Aseguramos que el nuevo video esté completamente cargado antes de iniciar la transición
+    // Preparar y reproducir el nuevo video
     nextVideoRef.src = source;
-    nextVideoRef.style.opacity = '0';
+    nextVideoRef.currentTime = videoTimeRange[key].start;
     
-    // Función para iniciar la transición cuando el video esté listo
-    const startTransition = () => {
-      // Iniciamos la transición suave
-      nextVideoRef.style.transition = 'opacity 0.5s ease-in-out'; // Aumentado a 0.5s para suavizar
-      currentVideoRef.style.transition = 'opacity 0.5s ease-in-out';
+    // Iniciar reproducción cuando el video esté listo
+    const handleCanPlay = () => {
+      nextVideoRef.removeEventListener('canplay', handleCanPlay);
       
-      nextVideoRef.style.opacity = '1';
-      // Mantenemos el video actual visible un poco más
-      setTimeout(() => {
-        currentVideoRef.style.opacity = '0';
-      }, 100);
+      // Establecer la velocidad de reproducción antes de iniciar el video
+      nextVideoRef.playbackRate = videoPlaybackSpeed[key];
       
-      // Cambiamos la referencia activa
-      setActiveVideoRef(activeVideoRef === 'primary' ? 'secondary' : 'primary');
-      setVideoSource(source);
-      
-      // Actualizamos el estado después de completar la animación
-      setTimeout(() => {
-        if (portal === "right") {
-          setCurrentPortal("Right");
-        } else if (portal === "left") {
-          setCurrentPortal("Left");
-        } else {
-          setCurrentPortal("main");
-        }
+      nextVideoRef.play().then(() => {
+        // Animación de transición
+        nextVideoRef.style.opacity = '1';
+        setTimeout(() => currentVideoRef.style.opacity = '0', 100);
         
-        // Mostramos el contenido después de la transición
-        setVideoTransitionComplete(true);
-      }, 2400);
+        // Actualizar estados
+        setActiveVideoRef(activeVideoRef === 'primary' ? 'secondary' : 'primary');
+        setVideoSource(source);
+        
+        // Mostrar contenido después de la transición
+        setTimeout(() => {
+          setCurrentPortal(newPortal);
+          setVideoTransitionComplete(true);
+        }, 2400);
+      });
     };
     
-    // Aseguramos que el video esté cargado antes de reproducirlo
-    nextVideoRef.oncanplay = () => {
-      nextVideoRef.oncanplay = null; // Evitar múltiples activaciones
-      
-      // Asegúrate de que el video comience desde el principio
-      nextVideoRef.currentTime = 0;
-      
-      nextVideoRef.play().then(startTransition);
-    };
-    
-    // Si el video ya está en buffer, podemos reproducirlo inmediatamente
     if (nextVideoRef.readyState >= 3) {
-      nextVideoRef.oncanplay = null;
-      nextVideoRef.play().then(startTransition);
+      handleCanPlay();
+    } else {
+      nextVideoRef.addEventListener('canplay', handleCanPlay);
     }
   };
 
@@ -350,9 +367,34 @@ export default function Menu() {
             src={videoSource}
             onEnded={handleVideoEnded}
             onLoadedMetadata={() => {
-              if (videoSource === Main && mainVideoPlayed && 
-                  videoRef.current && !isNaN(videoRef.current.duration) && isFinite(videoRef.current.duration)) {
-                videoRef.current.currentTime = videoRef.current.duration - 0.1;
+              if (videoRef.current && !isNaN(videoRef.current.duration) && isFinite(videoRef.current.duration)) {
+                // Establecer el tiempo inicial según el video actual
+                const videoKey = videoSource === Main ? 'main' : 
+                                 videoSource === DPortal ? 'dportal' : 
+                                 videoSource === IPortal ? 'iportal' : 'main';
+                const startTime = videoTimeRange[videoKey].start;
+                
+                // Si es el video principal y ya se reprodujo, posicionarlo en el punto final menos 0.1s
+                if (videoSource === Main && mainVideoPlayed) {
+                  videoRef.current.currentTime = videoTimeRange.main.end - 0.1;
+                } else {
+                  videoRef.current.currentTime = startTime;
+                }
+              }
+            }}
+            onTimeUpdate={() => {
+              // Controlar el final del video según el rango especificado
+              if (videoRef.current) {
+                const videoKey = videoSource === Main ? 'main' : 
+                                videoSource === DPortal ? 'dportal' : 
+                                videoSource === IPortal ? 'iportal' : 'main';
+                const endTime = videoTimeRange[videoKey].end;
+                
+                // Si se estableció un tiempo final y ya se alcanzó
+                if (endTime !== null && videoRef.current.currentTime >= endTime) {
+                  videoRef.current.pause();
+                  handleVideoEnded();
+                }
               }
             }}
             style={{
@@ -368,6 +410,21 @@ export default function Menu() {
             autoPlay
             muted 
             className='w-full h-full object-cover absolute top-0 left-0'
+            onTimeUpdate={() => {
+              if (secondVideoRef.current) {
+                const videoKey = videoSource === Main ? 'main' : 
+                                videoSource === DPortal ? 'dportal' : 
+                                videoSource === IPortal ? 'iportal' : 'main';
+                const endTime = videoTimeRange[videoKey].end;
+                
+                if (endTime !== null && secondVideoRef.current.currentTime >= endTime) {
+                  secondVideoRef.current.pause();
+                  if (activeVideoRef === 'secondary') {
+                    handleVideoEnded();
+                  }
+                }
+              }
+            }}
             style={{
               opacity: activeVideoRef === 'secondary' ? '1' : '0',
               transition: 'opacity 0.5s ease-in-out',
