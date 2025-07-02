@@ -15,13 +15,23 @@ export default function Menu() {
   const [isRewinding, setIsRewinding] = useState(false);
   const rewindIntervalRef = useRef(null);
   const [activeVideoRef, setActiveVideoRef] = useState('primary');
-  const [videoTransitionComplete, setVideoTransitionComplete] = useState(false); // Cambiado a false inicialmente
-  // Añadir un nuevo estado para controlar la carga previa de videos
+  const [videoTransitionComplete, setVideoTransitionComplete] = useState(false);
   const [videosPreloaded, setVideosPreloaded] = useState({
     main: false,
     dportal: false,
     iportal: false
   });
+
+  // Componente para la precarga de videos
+  const VideoPreloader = () => {
+    return (
+      <>
+        <link rel="preload" as="video" href={Main} type="video/webm" />
+        <link rel="preload" as="video" href={DPortal} type="video/webm" />
+        <link rel="preload" as="video" href={IPortal} type="video/webm" />
+      </>
+    );
+  };
 
   // Configuración inicial de los videos
   useEffect(() => {
@@ -36,32 +46,45 @@ export default function Menu() {
       iportal: iportalCached 
     });
 
-    // Función para precargar un video
-    const preloadVideo = (src, key) => {
-      const tempVideo = document.createElement('video');
-      tempVideo.preload = 'auto';
-      tempVideo.src = src;
-      tempVideo.muted = true;
-      tempVideo.style.display = 'none';
-      
-      tempVideo.oncanplaythrough = () => {
+    // Marcar videos como precargados si ya están en caché
+    setVideosPreloaded({
+      main: mainCached,
+      dportal: dportalCached,
+      iportal: iportalCached
+    });
+    
+    // Monitorear eventos de carga completa para los videos preload
+    const updateCacheStatus = (videoSrc, key) => {
+      const checkVideoLoaded = () => {
         console.log(`Video ${key} precargado`);
         setVideosPreloaded(prev => ({...prev, [key]: true}));
         sessionStorage.setItem(`video_${key}_cached`, 'true');
-        document.body.removeChild(tempVideo);
       };
       
-      document.body.appendChild(tempVideo);
+      // Crear una instancia temporal para verificar si el video ya está en caché
+      if (!sessionStorage.getItem(`video_${key}_cached`)) {
+        const tempVideo = document.createElement('video');
+        tempVideo.preload = 'auto';
+        tempVideo.src = videoSrc;
+        tempVideo.muted = true;
+        tempVideo.style.display = 'none';
+        tempVideo.oncanplaythrough = () => {
+          checkVideoLoaded();
+          document.body.removeChild(tempVideo);
+        };
+        document.body.appendChild(tempVideo);
+      }
     };
 
-    // Precargar videos si no están en caché
-    if (!mainCached) preloadVideo(Main, 'main');
-    if (!dportalCached) preloadVideo(DPortal, 'dportal');
-    if (!iportalCached) preloadVideo(IPortal, 'iportal');
+    // Verificar el estado de precarga de los videos
+    if (!mainCached) updateCacheStatus(Main, 'main');
+    if (!dportalCached) updateCacheStatus(DPortal, 'dportal');
+    if (!iportalCached) updateCacheStatus(IPortal, 'iportal');
     
+    // Configuración inicial de los videos
     if (videoRef.current && secondVideoRef.current) {
-      videoRef.current.playbackRate = 0.30;
-      secondVideoRef.current.playbackRate = 0.30;
+      videoRef.current.playbackRate = 0.40;
+      secondVideoRef.current.playbackRate = 0.40;
 
       // Configuración para mejorar el uso de caché
       videoRef.current.preload = 'auto';
@@ -87,13 +110,17 @@ export default function Menu() {
   const handleVideoEnded = () => {
     if (videoSource === Main) {
       setMainVideoPlayed(true);
+      // En lugar de mostrar el último fotograma, mantenemos el video 
+      // en su último fotograma naturalmente
+      if (videoRef.current) {
+        videoRef.current.currentTime = videoRef.current.duration - 0.01;
+      }
       setVideoTransitionComplete(true); // Mostrar contenido cuando el video principal termine
     }
   };
 
   const playVideoInReverse = (originalSource) => {
     setIsRewinding(true);
-    // Ocultamos el contenido durante el rebobinado
     setVideoTransitionComplete(false);
     
     const currentVideoRef = activeVideoRef === 'primary' ? videoRef.current : secondVideoRef.current;
@@ -102,53 +129,34 @@ export default function Menu() {
       const videoDuration = currentVideoRef.duration;
       currentVideoRef.currentTime = videoDuration;
       
-      const rewindStep = 0.01; // Ajustado para una velocidad de rewind más fluida
+      // Reducimos el paso de rebobinado para una transición más suave
+      const rewindStep = 0.015;
       rewindIntervalRef.current = setInterval(() => {
         if (currentVideoRef.currentTime <= rewindStep) {
           clearInterval(rewindIntervalRef.current);
           
-          // Preparamos el otro video para la transición
-          const nextVideoRef = activeVideoRef === 'primary' ? secondVideoRef.current : videoRef.current;
-          nextVideoRef.src = Main;
+          // En lugar de cargar nuevamente Main, mantenemos la imagen final del rebobinado
+          // y hacemos una transición directa al contenido del portal central
           
-          // Esperar a que los metadatos del video estén cargados antes de establecer currentTime
-          nextVideoRef.addEventListener('loadedmetadata', function onMetadataLoaded() {
-            if (!isNaN(nextVideoRef.duration) && isFinite(nextVideoRef.duration)) {
-              nextVideoRef.currentTime = nextVideoRef.duration - 0.1;
-            }
-            // Eliminar el listener después de usarlo para evitar duplicados
-            nextVideoRef.removeEventListener('loadedmetadata', onMetadataLoaded);
-          }, { once: true });
+          setCurrentPortal("main");
+          setMainVideoPlayed(true);
+          setIsRewinding(false);
           
-          // Configuramos la transición suave
-          nextVideoRef.style.opacity = '0';
-          nextVideoRef.style.transition = 'opacity 0.3s';
-          
-          // Iniciamos la transición
+          // Mostramos el contenido del portal central después de un breve retraso
           setTimeout(() => {
-            nextVideoRef.style.opacity = '1';
-            currentVideoRef.style.opacity = '0';
-            
-            // Cambiamos la referencia activa
-            setActiveVideoRef(activeVideoRef === 'primary' ? 'secondary' : 'primary');
-            setVideoSource(Main);
-            setCurrentPortal("main");
-            setMainVideoPlayed(true);
-            setIsRewinding(false);
-            
-            // Mostramos el contenido después de completar el rebobinado
             setVideoTransitionComplete(true);
           }, 50);
-          
+
         } else {
           currentVideoRef.currentTime -= rewindStep;
         }
       }, 33);
     } else {
-      setVideoSource(Main);
+      // Fallback si el video no se carga correctamente
       setCurrentPortal("main");
       setMainVideoPlayed(true);
       setIsRewinding(false);
+      setVideoTransitionComplete(true);
     }
   };
 
@@ -208,12 +216,16 @@ export default function Menu() {
         
         // Mostramos el contenido después de la transición
         setVideoTransitionComplete(true);
-      }, 1000);
+      }, 2400);
     };
     
     // Aseguramos que el video esté cargado antes de reproducirlo
     nextVideoRef.oncanplay = () => {
       nextVideoRef.oncanplay = null; // Evitar múltiples activaciones
+      
+      // Asegúrate de que el video comience desde el principio
+      nextVideoRef.currentTime = 0;
+      
       nextVideoRef.play().then(startTransition);
     };
     
@@ -323,43 +335,48 @@ export default function Menu() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-4/5 bg-black">
-      <div className="flex flex-col items-center justify-center z-0 inset-0 absolute bg-black">
-        {/* Video principal */}
-        <video 
-          ref={videoRef} 
-          autoPlay={!mainVideoPlayed || videoSource !== Main}
-          muted 
-          className='w-full h-full object-cover'
-          src={videoSource}
-          onEnded={handleVideoEnded}
-          onLoadedMetadata={() => {
-            if (videoSource === Main && mainVideoPlayed && 
-                videoRef.current && !isNaN(videoRef.current.duration) && isFinite(videoRef.current.duration)) {
-              videoRef.current.currentTime = videoRef.current.duration - 0.1;
-            }
-          }}
-          style={{
-            opacity: activeVideoRef === 'primary' ? '1' : '0',
-            transition: 'opacity 0.5s ease-in-out',
-            backgroundColor: 'black'
-          }}
-        />
-        
-        {/* Video secundario para transiciones suaves */}
-        <video 
-          ref={secondVideoRef} 
-          autoPlay
-          muted 
-          className='w-full h-full object-cover absolute top-0 left-0'
-          style={{
-            opacity: activeVideoRef === 'secondary' ? '1' : '0',
-            transition: 'opacity 0.5s ease-in-out',
-            backgroundColor: 'black'
-          }}
-        />
+    <>
+      {/* Componente de precarga que se renderiza al principio */}
+      <VideoPreloader />
+      
+      <div className="flex flex-col items-center justify-center h-4/5 bg-black">
+        <div className="flex flex-col items-center justify-center z-0 inset-0 absolute bg-black">
+          {/* Video principal */}
+          <video 
+            ref={videoRef} 
+            autoPlay={!mainVideoPlayed || videoSource !== Main}
+            muted 
+            className='w-full h-full object-cover'
+            src={videoSource}
+            onEnded={handleVideoEnded}
+            onLoadedMetadata={() => {
+              if (videoSource === Main && mainVideoPlayed && 
+                  videoRef.current && !isNaN(videoRef.current.duration) && isFinite(videoRef.current.duration)) {
+                videoRef.current.currentTime = videoRef.current.duration - 0.1;
+              }
+            }}
+            style={{
+              opacity: activeVideoRef === 'primary' ? '1' : '0',
+              transition: 'opacity 0.5s ease-in-out',
+              backgroundColor: 'black'
+            }}
+          />
+          
+          {/* Video secundario para transiciones suaves */}
+          <video 
+            ref={secondVideoRef} 
+            autoPlay
+            muted 
+            className='w-full h-full object-cover absolute top-0 left-0'
+            style={{
+              opacity: activeVideoRef === 'secondary' ? '1' : '0',
+              transition: 'opacity 0.5s ease-in-out',
+              backgroundColor: 'black'
+            }}
+          />
+        </div>
+        {videoTransitionComplete && renderPortalContent()}
       </div>
-      {videoTransitionComplete && renderPortalContent()}
-    </div>
+    </>
   );
 }
