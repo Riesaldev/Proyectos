@@ -62,7 +62,6 @@ const SendRecoverPassPage = () => {
     return (
         <>
             <Header />
-<<<<<<< HEAD
             <main className='flex flex-col items-center pt-[50px] min-h-screen bg-[#e5f7ff]'>
                 <h2 className='font-bold text-[25px] text-[#083059]'>
                     Recuperacion de contraseña
@@ -88,46 +87,17 @@ const SendRecoverPassPage = () => {
                     />
 
                     <button
-                        className='top-3 relative py-2 px-4 text-accent-blue text-base font-bold overflow-hidden bg-medium-blue rounded-full transition-all duration-400 ease-in-out shadow-lg hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-accent-blue before:to-medium-blue before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
+                        type="submit"
                         disabled={loading}
-=======
-            <main className='bg-[#E5F7FF] flex items-center justify-center min-h-screen p-4'>
-                <div className='bg-white p-8 rounded-lg shadow-md w-full max-w-md'>
-                    <h2 className='font-bold text-[25px] text-[#083059]'>
-                        Recuperacion de contraseña
-                    </h2>
-                    <p className='font-heavy text-[20px] text-[#083059]'>
-                        Por favor introduce el correo electronico registrado.
-                    </p>
-                    <form
-                        onSubmit={handleSendRecoveryPassCode}
-                        className='flex flex-col gap-[30px] p-[30px] font-bold'
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
+                        className={`w-full py-3 font-bold rounded-md transition 
+                                ${ loading
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-[#179DD9] text-white hover:bg-[#083059]'
+                            }`}
                     >
-                        <input
-                            className='w-full p-3 border border-[#3951AA] rounded-md focus:outline-none focus:ring-2 focus:ring-[#179DD9]'
-                            type='email'
-                            id='email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            autoComplete='new-password'
-                            autoFocus
-                            required
-                        />
-
-                        <button
-                            disabled={loading}
-                            className={`w-full py-3 font-bold rounded-md transition 
-                                ${
-                                    loading
-                                        ? 'bg-gray-400 cursor-not-allowed'
-                                        : 'bg-[#179DD9] text-white hover:bg-[#083059]'
-                                }`}
-                        >
-                            {loading ? 'Enviando...' : 'Enviar'}
-                        </button>
-                    </form>
-                </div>
+                        {loading ? 'Enviando...' : 'Enviar'}
+                    </button>
+                </form>
             </main>
         </>
     );

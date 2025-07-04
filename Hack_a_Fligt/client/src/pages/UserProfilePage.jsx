@@ -30,16 +30,10 @@ const UserProfilePage = () => {
             return;
         }
 
-<<<<<<< HEAD
         const fetchUserData = async () => {
             setProfileLoading( true );
             try
             {
-=======
-        const getUserData = async () => {
-            setProfileLoading(true);
-            try {
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                 // Realizamos una precisión a la API para la información del usuario
                 const response = await fetch(
                     `${ VITE_API_URL }/api/users/profile`,
@@ -65,13 +59,8 @@ const UserProfilePage = () => {
             }
         };
 
-<<<<<<< HEAD
         fetchUserData();
     }, [ authToken, navigate ] );
-=======
-        getUserData();
-    }, [authToken, navigate]);
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
 
     // Mostramos mensajes de perfil cargando...
     if ( profileLoading )
@@ -147,17 +136,10 @@ const UserProfilePage = () => {
                             </div>
                         </div>
 
-<<<<<<< HEAD
                         <div className='flex justify-around mt-6'>
                             <button
                                 onClick={() => navigate( '/users/profile/edit' )}
                                 className='top-3 relative py-2 px-4 text-accent-blue text-base font-bold overflow-hidden bg-medium-blue rounded-full transition-all duration-400 ease-in-out shadow-lg hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-accent-blue before:to-medium-blue before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
-=======
-                        <div className='mt-6 space-y-4 lg:flex lg:space-y-0 lg:space-x-4 lg:mt-10'>
-                            <button
-                                onClick={() => navigate('/users/profile/edit')}
-                                className='w-full py-2 font-button rounded-md transition-colors duration-300 bg-dark-blue text-white hover:bg-medium-blue'
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                             >
                                 Editar perfil
                             </button>
@@ -165,11 +147,7 @@ const UserProfilePage = () => {
                                 onClick={() =>
                                     navigate( '/users/profile/password' )
                                 }
-<<<<<<< HEAD
                                 className='top-3 relative py-2 px-4 text-accent-blue text-base font-bold overflow-hidden bg-medium-blue rounded-full transition-all duration-400 ease-in-out shadow-lg hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-accent-blue before:to-medium-blue before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
-=======
-                                className='w-full py-2 font-button  rounded-md transition-colors duration-300 bg-dark-blue text-white hover:bg-medium-blue'
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                             >
                                 Cambiar contraseña
                             </button>

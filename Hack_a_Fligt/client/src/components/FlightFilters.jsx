@@ -74,26 +74,14 @@ const FlightFilters = ({ onFilterChange, visibleAirlines }) => {
     }, [filters]);
 
     return (
-<<<<<<< HEAD
         <section className="flex justify-center items-center top-10  text-white sticky z-20 py-6">
             <div className=" p-4 bg-medium-blue rounded-lg border-4 border-accent-blue space-y-4">
                 <h2 className="text-xl  font-semibold text-center mb-4 underline">
-=======
-        <section className='flex justify-center w-full py-6 bg-gradient-to-b from-dark-blue to-light-blue'>
-            <div className='w-full max-w-lg mx-auto p-4 bg-white rounded-lg shadow-md space-y-4'>
-                <h2 className='text-xl sm:text-2xl font-semibold text-center text-dark-blue mb-4'>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                     Filtros de Búsqueda
                 </h2>
                 <div className='space-y-3'>
                     <div>
-<<<<<<< HEAD
                         <label className="block text-base font-medium">Paradas</label>
-=======
-                        <label className='block text-base font-medium text-gray-700'>
-                            Paradas
-                        </label>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                         <select
                             name='stops'
                             value={filters.stops}
@@ -107,13 +95,7 @@ const FlightFilters = ({ onFilterChange, visibleAirlines }) => {
                         </select>
                     </div>
                     <div>
-<<<<<<< HEAD
                         <label className="block text-base font-medium">Aerolíneas</label>
-=======
-                        <label className='block text-base font-medium text-gray-700'>
-                            Aerolíneas
-                        </label>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                         <input
                             type='text'
                             name='airline'
@@ -141,13 +123,7 @@ const FlightFilters = ({ onFilterChange, visibleAirlines }) => {
                         )}
                     </div>
                     <div>
-<<<<<<< HEAD
                         <label className="block text-base font-medium">Precio Mínimo</label>
-=======
-                        <label className='block text-base font-medium text-gray-700'>
-                            Precio Mínimo
-                        </label>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                         <input
                             type='number'
                             name='minPrice'
@@ -157,13 +133,7 @@ const FlightFilters = ({ onFilterChange, visibleAirlines }) => {
                         />
                     </div>
                     <div>
-<<<<<<< HEAD
                         <label className="block text-base font-medium ">Precio Máximo</label>
-=======
-                        <label className='block text-base font-medium text-gray-700'>
-                            Precio Máximo
-                        </label>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                         <input
                             type='number'
                             name='maxPrice'
@@ -173,13 +143,7 @@ const FlightFilters = ({ onFilterChange, visibleAirlines }) => {
                         />
                     </div>
                     <div>
-<<<<<<< HEAD
                         <label className="block text-base font-medium ">Ordenar por</label>
-=======
-                        <label className='block text-base font-medium text-gray-700'>
-                            Ordenar por
-                        </label>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                         <select
                             name='sortByPrice'
                             value={filters.sortByPrice}
@@ -194,17 +158,9 @@ const FlightFilters = ({ onFilterChange, visibleAirlines }) => {
                     <div className='text-center'>
                         <button
                             onClick={applyFilters}
-<<<<<<< HEAD
                             className='top-3 relative mb-3 py-2 px-4 text-dark-blue text-base font-extrabold overflow-hidden bg-light-blue rounded-full transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-accent-blue before:to-medium-blue before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
                         >Aplicar Filtros</button>
                     </div>
-=======
-                            className='top-3 relative py-2 px-4 text-white text-base font-bold overflow-hidden bg-medium-blue rounded-full transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 '
-                        >
-                            Aplicar Filtros
-                        </button>
-                    </div>                    
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                 </div>
             </div>
         </section>

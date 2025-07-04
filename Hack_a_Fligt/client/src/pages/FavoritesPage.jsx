@@ -118,7 +118,6 @@ const FavoritesPage = () => {
                         tipoViaje: favorite.returnDate ? 'ida-vuelta' : 'ida',
                     },
                 },
-<<<<<<< HEAD
             } );
         } catch ( err )
         {
@@ -127,14 +126,6 @@ const FavoritesPage = () => {
         } finally
         {
             setLoading( false );
-=======
-            });
-        } catch (err) {
-            console.error('Error al buscar vuelos:', err);
-            toast.error(err.message || 'Error al buscar vuelos, inténtelo de nuevo más tarde.');
-        } finally {
-            setLoading(false);
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
         }
     };
 
@@ -166,16 +157,12 @@ const FavoritesPage = () => {
             } );
         }
     };
-<<<<<<< HEAD
 
     if ( loading ) return <LogoAnimation />;
 
-=======
-  
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
     return (
         <div className="flex flex-col min-h-screen">
-             {loading && (
+            {loading && (
                     <div className='fixed inset-0 bg-dark-blue bg-opacity-90 flex items-center justify-center z-50'>
                         <div className='bg-white p-8 rounded-md shadow-lg max-w-xs mx-auto'>
                             <div className='w-16 h-16 border-8 border-dark-blue border-dashed rounded-full animate-spin mx-auto mb-4'></div>
@@ -190,23 +177,6 @@ const FavoritesPage = () => {
                 )}
             {/* Header */}
             <Header />
-<<<<<<< HEAD
-
-=======
-            {loading && (
-            <div className='fixed inset-0 bg-dark-blue bg-opacity-90 flex items-center justify-center z-50'>
-                <div className='bg-white p-8 rounded-md shadow-lg max-w-xs mx-auto'>
-                    <div className='w-16 h-16 border-8 border-dark-blue border-dashed rounded-full animate-spin mx-auto mb-4'></div>
-                    <h2 className='text-dark-blue text-2xl font-bold text-center'>
-                        Cargando...
-                    </h2>
-                    <p className='text-dark-blue text-center mt-2'>
-                        Hackeando tu vuelo...
-                    </p>
-                </div>
-            </div>
-        )}
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
             {/* Contenido Principal (ocupa el espacio restante) */}
             <main className="flex-grow w-full max-w-4xl mx-auto mt-6 p-4 sm:p-6 bg-white rounded-lg shadow-md mb-10">
                 <h2 className="text-2xl sm:text-3xl font-semibold text-center text-dark-blue mb-4 sm:mb-6">
@@ -253,15 +223,8 @@ const FavoritesPage = () => {
 
                                 <div className="mt-3 flex flex-wrap gap-2">
                                     <button
-<<<<<<< HEAD
                                         onClick={() => handleFavoriteSearch( favorite )}
                                         className='top-3 relative py-2 px-4 text-accent-blue text-base font-bold overflow-hidden bg-medium-blue rounded-full transition-all duration-400 ease-in-out shadow-lg hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-accent-blue before:to-medium-blue before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
-=======
-                                        onClick={(e) => {
-                                            e.preventDefault()
-                                            handleFavoriteSearch(favorite)}}
-                                        className="bg-medium-blue text-white px-4 py-2 rounded-md hover:bg-dark-blue transition text-sm sm:text-base"
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                                     >
                                         Ver Vuelos
                                     </button>

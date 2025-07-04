@@ -22,7 +22,6 @@ const PopularDestinations = () => {
     }, [images.length]);
 
     return (
-<<<<<<< HEAD
         <section className="bg-medium-blue text-center h-80 p-4" style={{
             backgroundImage: 'url(./public/ticket.png)', backgroundSize: 'auto',
         }}>
@@ -37,27 +36,6 @@ const PopularDestinations = () => {
             ) : (
                 <p className='text-white'><strong>EJEMPLO:</strong> Madrid - Nueva York, Londres - Tokio, Paris - Londres</p>
             )}
-=======
-        <section className='my-8 px-0,4'>
-            <h2 className='text-3xl font-light text-center text-dark-blue font-heading mb-6'>
-                DESTINOS POPULARES
-            </h2>
-            <div className='relative w-full h-96 overflow-hidden shadow-lg rounded-lg'>
-                {images.map((img, index) => (
-                    <img
-                        key={img}
-                        src={img}
-                        alt='Destino'
-                        className={`absolute inset-0 object-cover w-full h-full transition-opacity duration-1000
-                                ${
-                                    index === currentImage
-                                        ? 'opacity-100'
-                                        : 'opacity-0'
-                                }`}
-                    />
-                ))}
-            </div>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
         </section>
     );
 };

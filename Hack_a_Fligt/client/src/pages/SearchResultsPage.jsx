@@ -210,7 +210,6 @@ const SearchResultsPage = () => {
     return (
         <>
             <Header />
-<<<<<<< HEAD
             <div className=" w-full grid grid-cols-2  bg-light-blue">
                 <aside>
                     <FlightFilters onFilterChange={handleFilterChange} />
@@ -252,97 +251,6 @@ const SearchResultsPage = () => {
                 </section>
             </div>
 
-=======
-            <section className='bg-light-blue'>
-                <FlightFilters
-                    onFilterChange={handleFilterChange}
-                    visibleAirlines={visibleAirlines}
-                />
-
-                {authToken && (
-                    <div className='w-full max-w-lg mx-auto mt-4 p-4 sm:p-6 ' >
-                        {/* Titulo de la búsqueda */}
-                        <input
-                            type='text'
-                            placeholder='Titulo de la búsqueda'
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            name='title'
-                            className='w-full p-3 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-medium-blue focus:border-medium-blue mb-4'
-                        />
-                        {/* Botón de guardar y lista de parametros */}
-                        <ul className='space-y-4'>
-                            <li
-                                key={searchParams.favoriteId}
-                                className='bg-gray-100 p-4 rounded-lg shadow-sm mb-3'
-                            >
-                                <p className='text-base sm:text-lg font-medium text-gray-800'>
-                                    Desde{' '}
-                                    <span className='text-medium-blue'>
-                                        {searchParams.origin}
-                                    </span>{' '}
-                                    a{' '}
-                                    <span className='text-medium-blue'>
-                                        {searchParams.destination}
-                                    </span>
-                                </p>
-                                <p className='text-sm text-gray-600'>
-                                    Fecha de salida:{' '}
-                                    {new Date(
-                                        searchParams.departureDate,
-                                    ).toLocaleDateString('es-ES', {
-                                        day: '2-digit',
-                                        month: 'long',
-                                        year: 'numeric',
-                                    })}{' '}
-                                    {searchParams.returnDate
-                                        ? `- Fecha de retorno: ${new Date(
-                                              searchParams.returnDate,
-                                          ).toLocaleDateString('es-ES', {
-                                              day: '2-digit',
-                                              month: 'long',
-                                              year: 'numeric',
-                                          })}  `
-                                        : ''}
-                                    | Adultos: {searchParams.adults}
-                                </p>
-                            </li>
-                        </ul>
-                        <div className='text-center'>
-                            <button
-                                onClick={handleSave}
-                                disabled={isSaved}
-                                className={`${
-                                    isSaved ? 'bg-gray-400' : 'bg-medium-blue'
-                                } text-white px-6 py-2 rounded-md hover:bg-dark-blue transition-all text-sm sm:text-base`}
-                            >
-                                {isSaved ? 'Guardado' : 'Guardar Búsqueda'}
-                            </button>
-                        </div>
-                    </div>
-                )}
-                <section>
-                    <h2 className='text-2xl sm:text-3xl font-semibold text-center text-dark-blue bg-light-blue'>
-                        Resultados de la Búsqueda
-                    </h2>
-                    <section className='flight-cards-container items-center justify-center align-middle flex flex-col bg-gradient-to-b from-light-blue to-dark-blue'>
-                        {flights.length > 0 ? (
-                            flights.map((flight, index) => (
-                                <FlightCard
-                                    key={`${flight.id}-${index}`}
-                                    flight={flight}
-                                    searchParams={searchParams}
-                                />
-                                
-                            ))
-                        ) : (
-                            <p>No hay vuelos que coincidan con los filtros.</p>
-                        )}
-                        <ScrollToTopButton />
-                    </section>
-                </section>
-            </section>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
         </>
     );
 };

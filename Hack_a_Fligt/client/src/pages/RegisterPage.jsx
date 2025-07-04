@@ -112,18 +112,12 @@ const RegisterPage = () => {
                                 type='text'
                                 id='firstName'
                                 value={firstName}
-<<<<<<< HEAD
                                 onChange={( e ) => setFirstName( e.target.value )}
                                 className='w-full p-3 border border-[#3951AA] rounded-md focus:outline-none focus:ring-2 focus:ring-[#179DD9]'
-=======
-                                onChange={(e) => setFirstName(e.target.value)}
-                                className='w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue'
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                                 required
                             />
                         </div>
                         <div>
-<<<<<<< HEAD
                             <div>
                                 <label
                                     htmlFor='lastName'
@@ -142,24 +136,6 @@ const RegisterPage = () => {
                                     required
                                 />
                             </div>
-=======
-                            <label
-                                htmlFor='lastName'
-                                className='block text-dark-blue font-body'
-                            >
-                                Apellidos
-                            </label>
-                            <input
-                                type='text'
-                                id='lastName'
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                className='w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue'
-                                required
-                            />
-                        </div>
-                        <div className='md:col-span-2'>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                             <label
                                 htmlFor='username'
                                 className='block text-dark-blue font-body'
@@ -170,13 +146,8 @@ const RegisterPage = () => {
                                 type='text'
                                 id='username'
                                 value={username}
-<<<<<<< HEAD
                                 onChange={( e ) => setUsername( e.target.value )}
                                 className='w-full p-3 border border-[#3951AA] rounded-md focus:outline-none focus:ring-2 focus:ring-[#179DD9]'
-=======
-                                onChange={(e) => setUsername(e.target.value)}
-                                className='w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue'
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                                 required
                             />
                         </div>
@@ -192,13 +163,8 @@ const RegisterPage = () => {
                                 type='email'
                                 id='email'
                                 value={email}
-<<<<<<< HEAD
                                 onChange={( e ) => setEmail( e.target.value )}
                                 className='w-full p-3 border border-[#3951AA] rounded-md focus:outline-none focus:ring-2 focus:ring-[#179DD9]'
-=======
-                                onChange={(e) => setEmail(e.target.value)}
-                                className='w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue'
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                                 required
                             />
                         </div>
@@ -214,13 +180,8 @@ const RegisterPage = () => {
                                 type='password'
                                 id='password'
                                 value={password}
-<<<<<<< HEAD
                                 onChange={( e ) => setPassword( e.target.value )}
                                 className='w-full p-3 border border-[#3951AA] rounded-md focus:outline-none focus:ring-2 focus:ring-[#179DD9]'
-=======
-                                onChange={(e) => setPassword(e.target.value)}
-                                className='w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue'
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                                 required
                             />
                         </div>
@@ -236,13 +197,8 @@ const RegisterPage = () => {
                                 type='password'
                                 id='passConfirm'
                                 value={passConfirm}
-<<<<<<< HEAD
                                 onChange={( e ) => setPassConfirm( e.target.value )}
                                 className='w-full p-3 border border-[#3951AA] rounded-md focus:outline-none focus:ring-2 focus:ring-[#179DD9]'
-=======
-                                onChange={(e) => setPassConfirm(e.target.value)}
-                                className='w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue'
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                                 required
                             />
                         </div>
@@ -257,7 +213,6 @@ const RegisterPage = () => {
                                 type='date'
                                 id='birthdate'
                                 value={birthdate}
-<<<<<<< HEAD
                                 onChange={( e ) => setBirthdate( e.target.value )}
                                 className='w-full p-3 border border-[#3951AA] rounded-md focus:outline-none focus:ring-2 focus:ring-[#179DD9]'
                                 required
@@ -271,27 +226,6 @@ const RegisterPage = () => {
                         >
                             {loading ? 'Registrando...' : 'Registrarse'}
                         </button>
-=======
-                                onChange={(e) => setBirthdate(e.target.value)}
-                                className='w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue'
-                                required
-                            />
-                        </div>
-                        <div className='md:col-span-2'>
-                            <button
-                                type='submit'
-                                disabled={loading}
-                                className={`w-full py-3 font-button font-bold rounded-md transition 
-                            ${
-                                loading
-                                    ? 'bg-gray-400 cursor-not-allowed'
-                                    : 'bg-dark-blue text-white hover:bg-medium-blue'
-                            }`}
-                            >
-                                {loading ? 'Registrando...' : 'Registrarse'}
-                            </button>
-                        </div>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                     </form>
 
                     <p className='text-center text-dark-blue mt-4'>

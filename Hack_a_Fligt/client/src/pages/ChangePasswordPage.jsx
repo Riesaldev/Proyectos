@@ -19,15 +19,11 @@ const ChangePasswordPage = () => {
     const [ newPassword, setNewPassword ] = useState( '' );
     const [ confirmPassword, setConfirmPassword ] = useState( '' );
     // cargando
-<<<<<<< HEAD
-    const [ loading, setLoading ] = useState( false );
-=======
     const [loading, setLoading] = useState(false);
     // Estados independientes para mostrar y ocultar cada contraseña
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
 
     const handlePasswordChange = async ( e ) => {
         e.preventDefault();
@@ -74,7 +70,6 @@ const ChangePasswordPage = () => {
     return (
         <>
             <Header />
-<<<<<<< HEAD
             <main className=' bg-gradient-to-b from-dark-blue to-thite min-h-screen flex items-center justify-center p-4'>
                 <div className='bg-white p-6 border-2 border-accent-blue rounded-lg shadow-md w-full max-w-sm'>
                     <h2 className='text-3xl mb-6 pl-6'>Cambiar Contraseña</h2>
@@ -82,17 +77,6 @@ const ChangePasswordPage = () => {
                         <div>
                             <label className='block text-[#083059] font-medium text-sm mb-1'>
                                 Contraseña Actual
-=======
-            <main className='bg-gradient-to-b from-dark-blue to-white min-h-screen flex flex-col justify-center p-4'>
-                <div className='bg-white p-6 sm:p-8 rounded-lg shadow-md w-full max-w-sm lg:max-w-4xl mx-auto transition transform hover:scale-[1.008]'>
-                    <h2 className='text-3xl sm:text-4xl font-heading font-light text-dark-blue text-center mb-6'>
-                        CAMBIAR CONTRASEÑA
-                    </h2>
-                    <form onSubmit={handlePasswordChange} className='space-y-4'>
-                        <div className='relative w-full lg:w-1/2 mx-auto'>
-                            <label className='block text-dark-blue font-medium text-sm mb-1 font-body'>
-                                Contraseña Actual:
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                             </label>
                             <input
                                 type={showCurrentPassword ? 'text' : 'password'}
@@ -119,15 +103,9 @@ const ChangePasswordPage = () => {
                                 )}
                             </button>
                         </div>
-<<<<<<< HEAD
                         <div>
                             <label className='block text-[#083059] font-medium text-sm mb-1'>
                                 Nueva Contraseña
-=======
-                        <div className='relative w-full lg:w-1/2 mx-auto'>
-                            <label className='block text-dark-blue font-medium text-sm mb-1 font-body'>
-                                Nueva Contraseña:
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                             </label>
                             <input
                                 type={showNewPassword ? 'text' : 'password'}
@@ -152,15 +130,9 @@ const ChangePasswordPage = () => {
                                 )}
                             </button>
                         </div>
-<<<<<<< HEAD
                         <div>
                             <label className='block text-[#083059] font-medium text-sm mb-1'>
                                 Confirmar Contraseña
-=======
-                        <div className='relative w-full lg:w-1/2 mx-auto'>
-                            <label className='block text-dark-blue font-medium text-sm mb-1 font-body'>
-                                Confirmar Contraseña:
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                             </label>
                             <input
                                 type={showConfirmPassword ? 'text' : 'password'}
@@ -206,7 +178,6 @@ const ChangePasswordPage = () => {
                                 Cancelar
                             </button>
                         </div>
-<<<<<<< HEAD
                         <div className='flex justify-around '>
                             <button
                                 type='submit'
@@ -223,8 +194,6 @@ const ChangePasswordPage = () => {
                                 Cancelar
                             </button>
                         </div>
-=======
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                     </form>
                 </div>
             </main >

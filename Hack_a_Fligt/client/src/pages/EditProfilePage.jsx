@@ -26,14 +26,8 @@ const EditProfilePage = () => {
     const [ email, setEmail ] = useState( '' );
 
     // cargando
-<<<<<<< HEAD
     const [ loading, setLoading ] = useState( false );
     const [ profileLoading, setProfileLoading ] = useState( true );
-=======
-    const [loading, setLoading] = useState(false);
-    const [profileLoading, setProfileLoading] = useState(true);
-    const [avatarLoading, setAvatarLoading] = useState(false);
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
 
     const inputFileRef = useRef( null );
     // obtenemos los datos del usuario al cargar la página
@@ -87,16 +81,10 @@ const EditProfilePage = () => {
         if ( e.target.files && e.target.files[ 0 ] )
         {
             const formData = new FormData();
-<<<<<<< HEAD
             formData.append( 'avatar', e.target.files[ 0 ] );
 
             try
             {
-=======
-            formData.append('avatar', e.target.files[0]);
-            setAvatarLoading(true);
-            try {
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                 const response = await fetch(
                     `${ VITE_API_URL }/api/users/avatar`,
                     {
@@ -118,18 +106,10 @@ const EditProfilePage = () => {
                 }
                 toast.success( 'Avatar actualizado' );
                 // Actualizamos el avatar en el estado
-<<<<<<< HEAD
                 setUserData( { ...userData, avatar: result.data.user.avatar } );
             } catch ( error )
             {
                 toast.error( `Error: ${ error.message }` );
-=======
-                setUserData({ ...userData, avatar: result.data.user.avatar });
-            } catch (error) {
-                toast.error(`Error: ${error.message}`);
-            } finally {
-                setAvatarLoading(false);
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
             }
         }
     };
@@ -218,12 +198,7 @@ const EditProfilePage = () => {
                         <button
                             type='button'
                             onClick={() => inputFileRef.current.click()}
-<<<<<<< HEAD
                             className='top-3 relative py-2 px-4 text-accent-blue text-base font-bold overflow-hidden bg-medium-blue rounded-full transition-all duration-400 ease-in-out shadow-lg hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-accent-blue before:to-medium-blue before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0'
-=======
-                            disabled={avatarLoading}
-                            className='w-full py-2 font-button rounded-md transition-colors duration-300 bg-dark-blue text-white hover:bg-medium-blue'
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                         >
                             {avatarLoading
                                 ? 'Cambiando avatar...'
@@ -312,11 +287,7 @@ const EditProfilePage = () => {
                                 className='w-full p-3 border border-gray-300 rounded-md bg-gray-100 text-gray-600 font-body'
                             />
                         </div>
-<<<<<<< HEAD
                         <div className='flex flex-col space-y-4'>
-=======
-                        <div className='flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-4 mt-6'>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                             <button
                                 type='submit'
                                 disabled={loading}

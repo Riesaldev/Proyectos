@@ -7,7 +7,6 @@ import moment from 'moment';
 //iniciamos el componente
 const RatingListItem = ( { title, rate, comment, createdAt, username } ) => {
     return (
-<<<<<<< HEAD
         <li className='bg-light-blue border-2 border-accent-blue p-4 rounded-lg shadow-[10px_10px_25px_rgb()] shadow-accent-blue text-dark-blue'>
             <header>
                 <h3 className='font-bold'>{title}</h3>
@@ -27,30 +26,6 @@ const RatingListItem = ( { title, rate, comment, createdAt, username } ) => {
                 </p>
             </footer>
         </li>
-=======
-        <>
-            <div className='bg-white p-4 rounded-lg shadow-md border-l-4 border-dark-blue hover:scale-[1.008] mb-3'>
-                <div className='text-right'>
-                    <p>{'⭐'.repeat(rate)}</p>
-                </div>
-                <div className='text-left mb-3'>
-                    <h3 className='font-bold text-xl text-dark-blue'>
-                        {title}
-                    </h3>
-                </div>
-
-                <div className='text-center mb-5'>
-                    <p className='text-base text-dark-blue'>{comment}</p>
-                </div>
-                <div className='flex flex-col items-end'>
-                    <p className='font-light text-sm text-medium-blue'>
-                        {moment(createdAt).format('DD/MM/YYYY [a las] HH:mm')}
-                    </p>
-                    <p className='text-sm text-accent-blue'>@{username}</p>
-                </div>
-            </div>
-        </>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
     );
 };
 

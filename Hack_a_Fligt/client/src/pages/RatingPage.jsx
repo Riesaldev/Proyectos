@@ -9,7 +9,6 @@ import RatingListItem from '../components/RatingListItem';
 const { VITE_API_URL } = import.meta.env;
 
 const RatingPage = () => {
-<<<<<<< HEAD
     //obtenemos el token de autorización
     const { authToken, authUser, authLoading } = useContext( AuthContext );
 
@@ -41,25 +40,6 @@ const RatingPage = () => {
 
             //Obtenemos la respuesta
             const res = await fetch( `${ VITE_API_URL }/api/users/ratings`, {
-=======
-    const { authToken, authUser, authLoading } = useContext(AuthContext);
-    const navigate = useNavigate();
-
-    const [title, setTitle] = useState('');
-    const [rate, setRate] = useState('');
-    const [comment, setComment] = useState('');
-
-    const { ratings } = useRatingList();
-    const [loading, setLoading] = useState(false);
-    const [hover, setHover] = useState(null);
-
-    const handleRating = async (e) => {
-        try {
-            e.preventDefault();
-            setLoading(true);
-
-            const res = await fetch(`${VITE_API_URL}/api/users/ratings`, {
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                 method: 'POST',
                 headers: {
                     Authorization: authToken,
@@ -74,7 +54,6 @@ const RatingPage = () => {
 
             const body = await res.json();
 
-<<<<<<< HEAD
             //si hay algún error lo lanzamos
             if ( body.status === 'error' )
             {
@@ -82,18 +61,10 @@ const RatingPage = () => {
             }
             //si todo va bien
             toast.success( body.message, {
-=======
-            if (body.status === 'error') {
-                throw new Error(body.message);
-            }
-
-            toast.success(body.message, {
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                 id: 'rating',
                 duration: 5000,
             } );
 
-<<<<<<< HEAD
             //redirigimos al home
             navigate( '/' );
         } catch ( err )
@@ -113,28 +84,12 @@ const RatingPage = () => {
     //si no estamos logueados, redirigimos a la pagina principal
     if ( !authUser || !authToken )
     {
-=======
-            navigate('/');
-        } catch (err) {
-            toast.error(err.message, { id: 'rating', duration: 5000 });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (authLoading && authToken) {
-        return <div>Loading...</div>;
-    }
-
-    if (!authUser || !authToken) {
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
         return <Navigate to='/login' />;
     }
 
     return (
         <>
             <Header />
-<<<<<<< HEAD
             <main className='bg-[#E5F7FF] flex flex-col items-center justify-center min-h-screen p-6'>
                 <section className='bg-white p-8 rounded-lg shadow-md w-full max-w-fit mx-auto'>
                     <h2 className='text-2xl font-bold text-[#083059] text-center mb-6'>
@@ -264,92 +219,6 @@ const RatingPage = () => {
                                     </div>
                                 ) )}
                         </div>
-=======
-            <main className='bg-gradient-to-b from-dark-blue to-white min-h-screen flex flex-col justify-between'>
-                <div className='flex flex-col items-center justify-center flex-1 p-4'>
-                    <section className='bg-white p-8 sm:p-10 rounded-lg shadow-md w-full max-w-lg lg:max-w-4xl transition transform hover:scale-[1.008]'>
-                        <h2 className='text-3xl sm:text-4xl font-heading font-light text-dark-blue text-center mb-6'>
-                            DÉJANOS UN COMENTARIO
-                        </h2>
-                        <p className='text-gray-600 text-center mb-8'>
-                            Ayúdanos a mejorar nuestra plataforma para poder
-                            llevarte cada día más lejos al mejor precio.
-                        </p>
-                        <form onSubmit={handleRating} className='space-y-6'>
-                            <div>
-                                <label
-                                    htmlFor='title'
-                                    className='block text-[#083059] font-medium mb-2'
-                                >
-                                    Título:
-                                </label>
-                                <input
-                                    type='text'
-                                    id='title'
-                                    className='w-full p-3 border border-[#3951AA] rounded-md focus:outline-none focus:ring-2 focus:ring-[#179DD9]'
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    required
-                                />
-                            </div>
-
-                            <div className='flex flex-col space-y-2'>
-                                <label className='block text-[#083059] font-medium'>
-                                    Valoración:
-                                </label>
-                                <div className='flex space-x-2'>
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                        <button
-                                            key={star}
-                                            type='button'
-                                            onClick={() => setRate(star)}
-                                            onMouseEnter={() => setHover(star)}
-                                            onMouseLeave={() => setHover(null)}
-                                            className={`text-3xl transition ${
-                                                (hover || rate) >= star
-                                                    ? 'text-medium-blue' // Color cuando se selecciona o pasa el mouse
-                                                    : 'text-gray-400'
-                                            }`}
-                                        >
-                                            ★
-                                        </button>
-                                    ))}
-                                </div>
-                                <p className='text-[#083059] font-medium'>
-                                    {rate
-                                        ? `Has seleccionado ${rate} estrellas`
-                                        : 'Selecciona una valoración'}
-                                </p>
-                            </div>
-
-                            <div>
-                                <label
-                                    htmlFor='comment'
-                                    className='block text-[#083059] font-medium mb-2'
-                                >
-                                    Descripción:
-                                </label>
-                                <textarea
-                                    name='comment'
-                                    id='comment'
-                                    className='w-full p-3 border border-[#3951AA] rounded-md focus:outline-none focus:ring-2 focus:ring-[#179DD9] min-h-[100px] mb-6'
-                                    value={comment}
-                                    onChange={(e) => setComment(e.target.value)}
-                                >
-                                    DÉJANOS UN COMENTARIO
-                                </textarea>
-
-                                <button
-                                    disabled={loading}
-                                    className='w-full bg-[#083059] text-white py-3 px-4 rounded-md hover:bg-[#3951AA] transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed'
-                                >
-                                    {loading
-                                        ? 'Enviando...'
-                                        : 'Enviar valoración'}
-                                </button>
-                            </div>
-                        </form>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                     </section>
 
                     <section className='mt-6'>
@@ -380,7 +249,7 @@ const RatingPage = () => {
                             </div>
                         </section>
                     </section>
-                </div>
+                </section>
             </main>
         </>
     );

@@ -82,17 +82,10 @@ const RatingsListPage = () => {
     return (
         <>
             <Header />
-<<<<<<< HEAD
             <main className='bg-[#E5F7FF] flex flex-col items-center justify-center min-h-screen p-6 '>
                 <section className='bg-white border-2 border-accent-blue p-8 rounded-lg w-full max-w-fit mx-auto'>
                     <h2 className='text-2xl font-bold text-[#083059] text-center mb-6'>
                         Todas las valoraciones
-=======
-            <main className='bg-gradient-to-b from-dark-blue to-white flex flex-col items-center justify-center min-h-screen p-6 '>
-                <section className='bg-white p-8 rounded-lg shadow-md w-full max-w-5xl mx-auto'>
-                    <h2 className='text-4xl font-light font-heading text-[#083059] text-center mb-6'>
-                        VALORACIONES
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                     </h2>
                     {/* formulario de búsqueda */}
                     <form
@@ -119,18 +112,12 @@ const RatingsListPage = () => {
                         </button>
                     </form>
                     {/* Listado de valoraciones */}
-<<<<<<< HEAD
                     <ul className='list-none '>
                         {currentRatings.map( ( rating ) => (
                             <div
                                 key={rating.id}
                                 className='p-6 mb-4 mt-4 rounded-lg shadow-sm list-none'
                             >
-=======
-                    <ul className='grid grid-cols-1 md:grid-cols-2 gap-4 list-none '>
-                        {currentRatings.map((rating) => (
-                            <div key={rating.id} className='p-1 mb-1 mt-1 '>
->>>>>>> 24711dae5f05c6d30a66e20bb9384f657dfbebc1
                                 <RatingListItem
                                     ratingId={rating.id}
                                     title={rating.title}
