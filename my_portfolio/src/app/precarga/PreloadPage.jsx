@@ -47,6 +47,9 @@ export default function PreloadPage({ onContinue }) {
       { url: DPortal, key: 'dportal' },
       { url: IPortal, key: 'iportal' },
       { url: PuertaVideo, key: 'puerta' },
+      { url: Lake, key: 'lake' },
+      { url: Lab, key: 'lab' },
+      { url: Sword, key: 'sword' }
     ];
 
     videos.forEach(({ url, key }) => {

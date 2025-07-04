@@ -31,7 +31,7 @@ const Header = () => {
     <div className={`flex items-center z-30 transition-all h-24 duration-300 ${isScrolled ? 'bg-[#a842b1]/60 backdrop-blur-xs' : 'bg-[#a842b1]'}`}>
       <nav className="flex items-center justify-center w-full">
         <div className="flex items-start">
-          <Link href="/" className="flex items-center">
+          <Link href="/menu" className="flex items-center">
             <Image
             src="assets/images/logo2.svg"
             alt="Logo"
@@ -53,8 +53,8 @@ const Header = () => {
               </Link>
             </li>
             <li className="mx-4">
-              <Link href="/projects" className="text-[#fddbff] hover:underline">
-                Projects
+              <Link href="/portfolio" className="text-[#fddbff] hover:underline">
+                Portfolio
               </Link>
             </li>
             <li className="mx-4">
