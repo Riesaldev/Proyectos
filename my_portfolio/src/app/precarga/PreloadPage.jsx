@@ -5,6 +5,10 @@ import Main from '../../../public/assets/videos/Portals.webm';
 import DPortal from '../../../public/assets/videos/DPortal.webm';
 import IPortal from '../../../public/assets/videos/IPortal.webm';
 import PuertaVideo from '../../../public/assets/videos/puerta.mp4';
+import Lake from '../../../public/assets/videos/Lake.webm';
+import Lab from '../../../public/assets/videos/Lab.webm';
+import Sword from '../../../public/assets/videos/Sword.webm';
+
 
 export default function PreloadPage({ onContinue }) {
   const [progress, setProgress] = useState(0);
@@ -16,6 +20,9 @@ export default function PreloadPage({ onContinue }) {
     dportal: false,
     iportal: false,
     puerta: false,
+    lake: false,
+    lab: false,
+    sword: false,
   });
   // Nuevo estado para seguir el progreso de carga de cada video
   const [videoLoadProgress, setVideoLoadProgress] = useState({
@@ -94,7 +101,7 @@ export default function PreloadPage({ onContinue }) {
   // Función para actualizar el progreso general
   useEffect(() => {
     const updateProgress = () => {
-      const totalVideos = 4; // Número total de videos a cargar
+      const totalVideos = 7; // Número total de videos a cargar
       const loadedVideos = Object.values(videosLoaded).filter(loaded => loaded).length;
       
       // Calcular el progreso basado tanto en videos completos como en progreso parcial
