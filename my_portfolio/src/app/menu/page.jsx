@@ -22,12 +22,12 @@ export default function Menu () {
     iportal: false
   } );
   const [ videoTimeRange, setVideoTimeRange ] = useState( {
-    main: { start: 0, end: 1.25 }, // Por ejemplo: reproducir solo los primeros 1 segundos
+    main: { start: 0.25, end: 1.25 }, // Por ejemplo: reproducir solo los primeros 1 segundos
     dportal: { start: 0, end: null }, // null significa hasta el final
     iportal: { start: 0, end: null }
   } );
   const [ videoPlaybackSpeed, setVideoPlaybackSpeed ] = useState( {
-    main: 0.30,
+    main: 0.40,
     dportal: 0.40,
     iportal: 0.40
   } );
@@ -285,7 +285,7 @@ export default function Menu () {
       case "main":
         return (
           <>
-            <div className="relative text-center flex flex-col items-center justify-center -right-8  -top-6">
+            <div className="relative text-center flex flex-col items-center justify-center -right-8">
               <h1 className="text-4xl font-extrabold text-[#8653a8]">Bienvenido a la sala de los portales!!</h1>
               <p className="text-lg text-[#fddbff] w-1/2">Desde esta sala puedes acceder a diferentes portales y explorar nuevas dimensiones en busca de "la Espada del Destino" capaz de traer la paz al multiverso y felicidad a sus habitantes.</p>
               <span className="mt-6  relative text-[#fddbff] text-lg">Pulsa en un portal para continuar tu aventura<br />Sigamosle la pista a La Espada del Destino hasta el Lago de La Dama</span>
@@ -299,9 +299,9 @@ export default function Menu () {
               />
               <div className="Portal flex flex-col top-[400px] -right-8 relative">
                 <p className="text-[#812286] text-xl top-40 font-black text-center items-center relative">Portal al Lago<br /><span className='font-normal text-base'> (Proyectos)</span></p>
-                {/* Zona clicable del portal central */}
-                <Link href="/projects">
-                  <div className="w-84 h-160 cursor-pointer flex  justify-center items-center border-4 border-[#812286]">
+                
+                <Link href="/portfolio">
+                  <div className="w-84 h-160 cursor-pointer flex  justify-center items-center">
                   </div>
                 </Link>
               </div>
@@ -319,21 +319,21 @@ export default function Menu () {
         return (
           <>
             <div className=" text-center flex flex-col items-center justify-center">
-              <p className="text-[#812286] text-xl right-44 font-black text-center items-center relative">Portal del Bosque de las Hadas<br /><span className='text-lg text-[#fddbff] w-1/2'>¿Encontraremos la espada en  el Bosque Encantado de las Hadas? </span><br /><span className='font-normal text-base'> (contacto)</span></p>
+              <p className="text-[#812286] text-xl right-40 top-20 font-black text-center items-center relative">Portal del Bosque de las Hadas<br /><span className='text-lg text-[#fddbff] flex mt-12'>¿Encontraremos la espada en  el Bosque Encantado de las Hadas?</span><br /><span className='font-normal text-base flex flex-col mt-12'> (contacto)</span></p>
               <div className="absolute bottom-1/2 top-[680px] flex space-x-54 items-center justify-center">
-                <img
-                  src="/assets/images/arrow1.png"
-                  alt="Volver"
-                  className="w-24 h-24 rotate-180 right-98 relative cursor-pointer hover:scale-110 transition-transform duration-300 ease-in-out"
-                  onClick={() => playPortalVideo( "main" )}
-                />
-                <div className="Portal flex flex-col">
-                  {/* Zona clicable del portal de proyectos */}
-                  <Link href="/contact">
-                    <div className="w-84 h-200 border-4 border-[#812286] cursor-pointer relative right-82">
-                    </div>
-                  </Link>
-                </div>
+          <img
+            src="/assets/images/arrow1.png"
+            alt="Volver"
+            className="w-24 h-24 rotate-180  relative cursor-pointer right-84"
+            onClick={() => playPortalVideo( "main" )}
+          />
+          <div className="Portal flex flex-col">
+            
+            <Link href="/contact">
+              <div className="w-94 h-200 cursor-pointer relative right-82">
+              </div>
+            </Link>
+          </div>
               </div>
             </div>
           </>
@@ -343,12 +343,12 @@ export default function Menu () {
         return (
           <>
             <div className=" text-center flex flex-col items-center justify-center">
-              <p className="text-[#812286] text-xl -right-40 -top-14 font-black text-center items-center relative">Portal al Laboratorio<br /><span className='text-lg text-[#fddbff] w-1/2'>Investiguemos en el laboratorio alguna pista sobre la ubicacion de La Espada</span><br /><span className='font-normal text-base'> (about-me)</span></p>
+              <p className="text-[#812286] text-xl -right-40 top-20 font-black text-center items-center relative">Portal al Laboratorio<br /><span className='text-lg text-[#fddbff] flex mt-12'>Investiguemos en el laboratorio alguna pista sobre la ubicacion de La Espada</span><br /><span className='font-normal text-base flex flex-col mt-12'> (about-me)</span></p>
               <div className="absolute bottom-1/2 top-[680px] flex space-x-54 items-center justify-center">
                 <div className="Portal flex flex-col">
-                  {/* Zona clicable del portal de proyectos */}
-                  <Link href="/about-me">
-                    <div className="w-94 h-200 border-4 border-[#812286] cursor-pointer relative -right-82">
+                  
+                  <Link href="/about">
+                    <div className="w-94 h-200 cursor-pointer relative -right-82">
                     </div>
                   </Link>
                 </div>
