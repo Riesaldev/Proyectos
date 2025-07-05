@@ -1,13 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import './preload.css';
-import Main from '../../../public/assets/videos/Portals.webm';
-import DPortal from '../../../public/assets/videos/DPortal.webm';
-import IPortal from '../../../public/assets/videos/IPortal.webm';
-import PuertaVideo from '../../../public/assets/videos/puerta.mp4';
-import Lake from '../../../public/assets/videos/Lake.webm';
-import Lab from '../../../public/assets/videos/Lab.webm';
-import Sword from '../../../public/assets/videos/Sword.webm';
+import Main from '../../../public/videos/Portals.webm';
+import DPortal from '../../../public/videos/DPortal.webm';
+import IPortal from '../../../public/videos/IPortal.webm';
+import PuertaVideo from '../../../public/videos/puerta.mp4';
+import Lake from '../../../public/videos/Lake.webm';
+import Lab from '../../../public/videos/Lab.webm';
+import Sword from '../../../public/videos/Sword.webm';
 
 
 export default function PreloadPage({ onContinue }) {
@@ -30,6 +30,9 @@ export default function PreloadPage({ onContinue }) {
     dportal: 0,
     iportal: 0,
     puerta: 0,
+    lake: 0,
+    lab: 0,
+    sword: 0,
   });
 
   const magicPhrases = [
@@ -173,7 +176,7 @@ export default function PreloadPage({ onContinue }) {
       {/* Animación del dragón en iframe */}
       <div className="dragon-section">
         <iframe
-          src="/assets/dragon/dragon.html"
+          src="/dragon/dragon.html"
           className="dragon-iframe"
           onLoad={handleIframeLoad}
           title="Dragon Animation"
