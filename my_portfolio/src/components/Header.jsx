@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +32,7 @@ const Header = () => {
         <div className="flex items-start">
           <Link href="/menu" className="flex items-center">
             <Image
-            src="assets/images/logo2.svg"
+            src="/assets/logo2.svg"
             alt="Logo"
             width={20}
             height={10}
