@@ -11,10 +11,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const oldStandardTT = Old_Standard_TT({
-  variable: "--font-old-standard-tt",
+const oldEnglish = Old_Standard_TT({
+  variable: "--font-old-english",
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["700"],
 });
 
 export const metadata = {
@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${oldStandardTT.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${oldEnglish.variable} antialiased`}>
         {children}
       </body>
     </html>
