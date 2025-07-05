@@ -1,9 +1,9 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from 'next/navigation'; // Importar useRouter
+import { useRouter } from 'next/navigation';
 import PreloadPage from "./precarga/PreloadPage";
 import LavenderFog from "../components/Three/LavenderFog";
-import VideoSource from "../../public/assets/videos/puerta.mp4";
+import VideoSource from "../../public/videos/puerta.mp4";
 import Header from "@/components/Header";
 
 export default function Home () {

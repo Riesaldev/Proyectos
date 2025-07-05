@@ -1,9 +1,9 @@
 "use client";
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import Main from '../../../public/assets/videos/Portals.webm';
-import DPortal from '../../../public/assets/videos/DPortal.webm';
-import IPortal from '../../../public/assets/videos/IPortal.webm';
+import Main from '../../../public/videos/Portals.webm';
+import DPortal from '../../../public/videos/DPortal.webm';
+import IPortal from '../../../public/videos/IPortal.webm';
 
 
 export default function Menu () {
@@ -22,8 +22,8 @@ export default function Menu () {
     iportal: false
   } );
   const [ videoTimeRange, setVideoTimeRange ] = useState( {
-    main: { start: 0.25, end: 1.25 }, // Por ejemplo: reproducir solo los primeros 1 segundos
-    dportal: { start: 0, end: null }, // null significa hasta el final
+    main: { start: 0.25, end: 1.25 },
+    dportal: { start: 0, end: null },
     iportal: { start: 0, end: null }
   } );
   const [ videoPlaybackSpeed, setVideoPlaybackSpeed ] = useState( {
@@ -32,7 +32,6 @@ export default function Menu () {
     iportal: 0.40
   } );
 
-  // Reemplazar el componente VideoPreloader actual con esta implementación
   const VideoPreloader = () => {
     useEffect( () => {
       const videoSources = [
@@ -70,7 +69,6 @@ export default function Menu () {
     return null;
   };
 
-  // Configuración inicial de los videos
   useEffect( () => {
     // Verificar si los videos ya están en caché
     const mainCached = sessionStorage.getItem( 'video_main_cached' ) === 'true';
@@ -83,14 +81,12 @@ export default function Menu () {
       iportal: iportalCached
     } );
 
-    // Marcar videos como precargados si ya están en caché
     setVideosPreloaded( {
       main: mainCached,
       dportal: dportalCached,
       iportal: iportalCached
     } );
 
-    // Monitorear eventos de carga completa para los videos preload
     const updateCacheStatus = ( videoSrc, key ) => {
       const checkVideoLoaded = () => {
         console.log( `Video ${ key } precargado` );
@@ -98,7 +94,6 @@ export default function Menu () {
         sessionStorage.setItem( `video_${ key }_cached`, 'true' );
       };
 
-      // Crear una instancia temporal para verificar si el video ya está en caché
       if ( !sessionStorage.getItem( `video_${ key }_cached` ) )
       {
         const tempVideo = document.createElement( 'video' );
@@ -114,15 +109,12 @@ export default function Menu () {
       }
     };
 
-    // Verificar el estado de precarga de los videos
     if ( !mainCached ) updateCacheStatus( Main, 'main' );
     if ( !dportalCached ) updateCacheStatus( DPortal, 'dportal' );
     if ( !iportalCached ) updateCacheStatus( IPortal, 'iportal' );
 
-    // Configuración inicial de los videos
     if ( videoRef.current && secondVideoRef.current )
     {
-      // Establecer la velocidad de reproducción según el tipo de video actual
       const videoKey = videoSource === Main ? 'main' :
         videoSource === DPortal ? 'dportal' :
           videoSource === IPortal ? 'iportal' : 'main';
@@ -130,11 +122,9 @@ export default function Menu () {
       videoRef.current.playbackRate = videoPlaybackSpeed[ videoKey ];
       secondVideoRef.current.playbackRate = videoPlaybackSpeed[ videoKey ];
 
-      // Configuración para mejorar el uso de caché
       videoRef.current.preload = 'auto';
       secondVideoRef.current.preload = 'auto';
 
-      // Aseguramos que ambos videos estén muteados
       videoRef.current.muted = true;
       secondVideoRef.current.muted = true;
 
@@ -159,7 +149,6 @@ export default function Menu () {
       setMainVideoPlayed( true );
       if ( videoRef.current )
       {
-        // Posicionar al final del rango especificado
         videoRef.current.currentTime = videoTimeRange.main.end - 0.01;
       }
       setVideoTransitionComplete( true );
@@ -176,7 +165,6 @@ export default function Menu () {
     {
       currentVideoRef.currentTime = currentVideoRef.duration;
 
-      // Usar requestAnimationFrame para un rebobinado más suave
       let lastTimestamp = null;
       const rewindStep = 0.01;
 
@@ -185,17 +173,15 @@ export default function Menu () {
         const elapsed = timestamp - lastTimestamp;
 
         if ( elapsed > 16 )
-        { // ~60fps
+        {
           if ( currentVideoRef.currentTime <= rewindStep )
           {
-            // Finalizar rebobinado
             setCurrentPortal( "main" );
             setMainVideoPlayed( true );
             setIsRewinding( false );
             setTimeout( () => setVideoTransitionComplete( true ), 50 );
           } else
           {
-            // Continuar rebobinado
             currentVideoRef.currentTime -= rewindStep;
             lastTimestamp = timestamp;
             requestAnimationFrame( rewindFrame );
@@ -209,7 +195,6 @@ export default function Menu () {
       requestAnimationFrame( rewindFrame );
     } else
     {
-      // Fallback
       setCurrentPortal( "main" );
       setMainVideoPlayed( true );
       setIsRewinding( false );
@@ -217,7 +202,6 @@ export default function Menu () {
     }
   };
 
-  // Función mejorada para cambiar entre portales
   const playPortalVideo = ( portal ) => {
     if ( isRewinding ) return;
 
@@ -237,31 +221,24 @@ export default function Menu () {
 
     const { source, newPortal, key } = portalMap[ portal ] || portalMap[ "main" ];
 
-    // Alternar entre videos para transición suave
     const nextVideoRef = activeVideoRef === 'primary' ? secondVideoRef.current : videoRef.current;
     const currentVideoRef = activeVideoRef === 'primary' ? videoRef.current : secondVideoRef.current;
 
-    // Preparar y reproducir el nuevo video
     nextVideoRef.src = source;
     nextVideoRef.currentTime = videoTimeRange[ key ].start;
 
-    // Iniciar reproducción cuando el video esté listo
     const handleCanPlay = () => {
       nextVideoRef.removeEventListener( 'canplay', handleCanPlay );
 
-      // Establecer la velocidad de reproducción antes de iniciar el video
       nextVideoRef.playbackRate = videoPlaybackSpeed[ key ];
 
       nextVideoRef.play().then( () => {
-        // Animación de transición
         nextVideoRef.style.opacity = '1';
         setTimeout( () => currentVideoRef.style.opacity = '0', 100 );
 
-        // Actualizar estados
         setActiveVideoRef( activeVideoRef === 'primary' ? 'secondary' : 'primary' );
         setVideoSource( source );
 
-        // Mostrar contenido después de la transición
         setTimeout( () => {
           setCurrentPortal( newPortal );
           setVideoTransitionComplete( true );
@@ -278,7 +255,6 @@ export default function Menu () {
     }
   };
 
-  // Renderizado condicional según el portal actual
   const renderPortalContent = () => {
     switch ( currentPortal )
     {
@@ -292,7 +268,7 @@ export default function Menu () {
             </div>
             <div className="absolute bottom-5/12 flex space-x-54 items-center justify-center">
               <img
-                src="/assets/images/arrow1.png"
+                src="/assets/arrow1.png"
                 alt="Flecha Izquierda"
                 className="w-24 h-24 rotate-180 top-[480px] relative cursor-pointer hover:scale-110 transition-transform duration-300 ease-in-out"
                 onClick={() => playPortalVideo( "left" )}
@@ -306,7 +282,7 @@ export default function Menu () {
                 </Link>
               </div>
               <img
-                src="/assets/images/arrow1.png"
+                src="/assets/arrow1.png"
                 alt="Flecha Derecha"
                 className="w-24 h-24 top-[480px] relative cursor-pointer hover:scale-110 transition-transform duration-300 ease-in-out"
                 onClick={() => playPortalVideo( "right" )}
@@ -322,7 +298,7 @@ export default function Menu () {
               <p className="text-[#812286] text-xl right-40 top-20 font-black text-center items-center relative">Portal del Bosque de las Hadas<br /><span className='text-lg text-[#fddbff] flex mt-12'>¿Encontraremos la espada en  el Bosque Encantado de las Hadas?</span><br /><span className='font-normal text-base flex flex-col mt-12'> (contacto)</span></p>
               <div className="absolute bottom-1/2 top-[680px] flex space-x-54 items-center justify-center">
           <img
-            src="/assets/images/arrow1.png"
+            src="/assets/arrow1.png"
             alt="Volver"
             className="w-24 h-24 rotate-180  relative cursor-pointer right-84"
             onClick={() => playPortalVideo( "main" )}
@@ -353,7 +329,7 @@ export default function Menu () {
                   </Link>
                 </div>
                 <img
-                  src="/assets/images/arrow1.png"
+                  src="/assets/arrow1.png"
                   alt="Volver"
                   className="w-24 h-24  relative cursor-pointer left-84"
                   onClick={() => playPortalVideo( "main" )}
@@ -370,12 +346,10 @@ export default function Menu () {
 
   return (
     <>
-      {/* Componente de precarga que se renderiza al principio */}
       <VideoPreloader />
 
       <div className="flex flex-col items-center justify-center h-4/5 bg-black">
         <div className="flex flex-col items-center justify-center z-0 inset-0 absolute bg-black">
-          {/* Video principal */}
           <video
             ref={videoRef}
             autoPlay={!mainVideoPlayed || videoSource !== Main}
@@ -386,13 +360,11 @@ export default function Menu () {
             onLoadedMetadata={() => {
               if ( videoRef.current && !isNaN( videoRef.current.duration ) && isFinite( videoRef.current.duration ) )
               {
-                // Establecer el tiempo inicial según el video actual
                 const videoKey = videoSource === Main ? 'main' :
                   videoSource === DPortal ? 'dportal' :
                     videoSource === IPortal ? 'iportal' : 'main';
                 const startTime = videoTimeRange[ videoKey ].start;
 
-                // Si es el video principal y ya se reprodujo, posicionarlo en el punto final menos 0.1s
                 if ( videoSource === Main && mainVideoPlayed )
                 {
                   videoRef.current.currentTime = videoTimeRange.main.end - 0.1;
@@ -403,7 +375,6 @@ export default function Menu () {
               }
             }}
             onTimeUpdate={() => {
-              // Controlar el final del video según el rango especificado
               if ( videoRef.current )
               {
                 const videoKey = videoSource === Main ? 'main' :
@@ -411,7 +382,6 @@ export default function Menu () {
                     videoSource === IPortal ? 'iportal' : 'main';
                 const endTime = videoTimeRange[ videoKey ].end;
 
-                // Si se estableció un tiempo final y ya se alcanzó
                 if ( endTime !== null && videoRef.current.currentTime >= endTime )
                 {
                   videoRef.current.pause();
@@ -426,7 +396,6 @@ export default function Menu () {
             }}
           />
 
-          {/* Video secundario para transiciones suaves */}
           <video
             ref={secondVideoRef}
             autoPlay
