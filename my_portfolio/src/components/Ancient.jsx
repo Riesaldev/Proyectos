@@ -1,98 +1,173 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Fleur_De_Leah } from 'next/font/google';
+import { The_Nautigal } from 'next/font/google';
+import Image from 'next/image';
+
+const fleurDeLeah = Fleur_De_Leah({
+  weight: '400',
+  subsets: ['latin'],
+});
+
+const theNautigal = The_Nautigal({
+  weight: '400',
+  subsets: ['latin'],
+});
 
 
-const AncientScroll = ({ 
-  title, 
-  content, 
-  autoOpen = false, 
-  width = "760px",
-  height = "168px"
-}) => {
-  const [isOpen, setIsOpen] = React.useState(autoOpen);
-  
+export default function AncientScroll ( {
+  title,
+  content,
+  autoOpen = false,
+  width = "645px",
+  height = "145px",
+  currentPage = 0,
+  totalPages = 1,
+  onChangePage = () => {},
+  onGoToPage = () => {},
+  scrollContents = [],
+  transitionActive = false,
+  ...rest
+} ) {
+  const [ isOpen, setIsOpen ] = React.useState( autoOpen );
+
   // Precarga las imágenes para mejor rendimiento
   const preloadImages = () => {
+    if (typeof window === 'undefined') return;
     const images = [
       '/assets/ancient1.png',
       '/assets/ancient2.png',
       '/assets/ancient3.png'
     ];
-    
     images.forEach(src => {
-      new Image().src = src;
+      const img = new window.Image();
+      img.src = src;
     });
   };
 
-  React.useEffect(() => {
+  React.useEffect( () => {
     preloadImages();
-    
-    if (autoOpen) {
-      const timer = setTimeout(() => setIsOpen(true), 500);
-      return () => clearTimeout(timer);
-    }
-  }, [autoOpen]);
 
-  const toggleScroll = () => setIsOpen(!isOpen);
+    if ( autoOpen )
+    {
+      const timer = setTimeout( () => setIsOpen( true ), 500 );
+      return () => clearTimeout( timer );
+    }
+  }, [ autoOpen ] );
+
+  const toggleScroll = () => setIsOpen( !isOpen );
 
   return (
-    <div 
+    <div
       className="flex justify-center items-center"
       aria-expanded={isOpen}
       aria-label="Pergamino animado"
+      {...rest}
     >
       <div className="relative">
+        {/* Indicador de página */}
+        {scrollContents.length > 1 && (
+          <div className="flex justify-center gap-2">
+            {scrollContents.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => onGoToPage( index )}
+                className={`h-6 w-6 rounded-full mt-4 cursor-pointer transition-all duration-300 hover:scale-115 \
+                  ${currentPage === index ? 'bg-fuchsia-500' : 'bg-fuchsia-800/50'}`}
+                aria-label={`Ir a pergamino ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
+
         {/* Parte superior del pergamino */}
-        <div 
+        <div
           className="mx-auto bg-[url('/assets/ancient1.png')] bg-cover bg-center cursor-pointer"
           style={{ width, height }}
           onClick={toggleScroll}
           role="button"
           tabIndex="0"
-          onKeyDown={(e) => e.key === 'Enter' && toggleScroll()}
+          onKeyDown={( e ) => e.key === 'Enter' && toggleScroll()}
           aria-hidden="true"
-        />
-        
+        >
+        <h2 className={`text-center font-bold text-5xl leading-[130px] ${fleurDeLeah.className}`}>
+          {title}
+        </h2>
+        </div>
+
         {/* Parte central expandible */}
         <div
-          className={`mx-auto bg-[url('/assets/ancient2.png')] bg-cover bg-top overflow-hidden transition-all duration-1000 ease-in-out ${isOpen ? 'h-[525px]' : 'h-[10px]'}`}
+          className={`mx-auto bg-[url('/assets/ancient2.png')] bg-cover bg-top overflow-hidden transition-all duration-1000 ease-in-out ${ isOpen ? 'h-[525px]' : 'h-[10px]' }`}
           style={{ width }}
         >
-          <div 
-            className={`h-full p-8 overflow-y-auto scrollbar transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+          <div
+            className={`h-full p-8 overflow-y-auto scrollbar transition-opacity duration-500 ${ isOpen ? 'opacity-100' : 'opacity-0' }`}
             style={{
               scrollbarWidth: 'thin',
               scrollbarColor: '#a67c52 #f3e7d3'
             }}
           >
-            <div 
-              className="text-black text-justify text-[15px] font-normal font-satisfy leading-[140%] pr-[10px]"
+            <div
+              className="text-black text-justify px-7"
               onClick={toggleScroll}
               role="button"
               tabIndex="0"
-              onKeyDown={(e) => e.key === 'Enter' && toggleScroll()}
+              onKeyDown={( e ) => e.key === 'Enter' && toggleScroll()}
             >
-              <h2 className="text-left font-bold text-[18px] mb-[10px]">
-                {title}
-              </h2>
-              <div className="text-left">
-                {content}
-              </div>
+
+              <div 
+                className={`text-left ${theNautigal.className} text-4xl leading-10 m-3`}
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
             </div>
           </div>
         </div>
-        
+
         {/* Parte inferior del pergamino */}
-        <div 
+        <div
           className="mx-auto -mt-[6px] bg-[url('/assets/ancient3.png')] bg-cover bg-center cursor-pointer"
           style={{ width, height }}
           onClick={toggleScroll}
           role="button"
           tabIndex="0"
-          onKeyDown={(e) => e.key === 'Enter' && toggleScroll()}
+          onKeyDown={( e ) => e.key === 'Enter' && toggleScroll()}
           aria-hidden="true"
         />
-        
+
+        {/* Flechas de navegación */}
+        {scrollContents.length > 1 && (
+          <div className="flex justify-between w-full absolute top-1/2 -translate-y-1/2 -p-44">
+            <button
+              onClick={() => onChangePage( 'prev' )}
+              className="bg-amber-800/60 hover:bg-amber-700/80 hover:scale-125 p-3 rounded-full transition-all"
+              aria-label="Pergamino anterior"
+            >
+              <div className="w-12 h-12 relative transform rotate-180">
+                <Image
+                  src="/assets/arrow2.png"
+                  alt="Flecha izquierda"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </button>
+            <button
+              onClick={() => onChangePage( 'next' )}
+              className="bg-amber-800/60 hover:bg-amber-700/80 hover:scale-125 p-3 rounded-full transition-all"
+              aria-label="Siguiente pergamino"
+            >
+              <div className="w-12 h-12 relative">
+                <Image
+                  src="/assets/arrow2.png"
+                  alt="Flecha derecha"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </button>
+          </div>
+        )}
+
         {/* Instrucción accesible */}
         <p className="sr-only">
           Presiona Enter o haz clic para {isOpen ? 'cerrar' : 'abrir'} el pergamino
@@ -123,12 +198,19 @@ const AncientScroll = ({
 
 AncientScroll.propTypes = {
   title: PropTypes.string.isRequired,
-  content: PropTypes.oneOfType([
+  content: PropTypes.oneOfType( [
     PropTypes.string,
-    PropTypes.node
-  ]).isRequired,
+    PropTypes.arrayOf( PropTypes.oneOfType( [
+      PropTypes.string
+    ] ) )
+  ] ).isRequired,
   autoOpen: PropTypes.bool,
-  width: PropTypes.string
+  width: PropTypes.string,
+  height: PropTypes.string,
+  currentPage: PropTypes.number,
+  totalPages: PropTypes.number,
+  onChangePage: PropTypes.func,
+  onGoToPage: PropTypes.func,
+  scrollContents: PropTypes.array,
+  transitionActive: PropTypes.bool
 };
-
-export default AncientScroll;
