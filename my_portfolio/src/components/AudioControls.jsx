@@ -7,10 +7,8 @@ const AudioControls = () => {
   const { t } = useI18n();
   
   const {
-    audioRef,
     isPlaying,
     isMuted,
-    currentTrackInfo,
     autoplayBlocked,
     togglePlay,
     toggleMute,
