@@ -75,7 +75,7 @@ export default function Page () {
       "<p>El objetivo es recrear la estética y funcionalidad de la web oficial, utilizando tecnologías modernas como React y Tailwind CSS para ofrecer una experiencia de usuario fluida y atractiva.</p>" +
       "<p>El clon es uno de los tutoriales de Midudev, un reconocido youtuber español especializado en desarrollo web, y me ha permitido aprender mucho sobre la creación de interfaces de usuario atractivas y funcionales.</p>" +
       "<p>Este proyecto me ha permitido profundizar en el desarrollo de aplicaciones web complejas y en la implementación de diseños responsivos y atractivos. Aun no he terminado de pulir todos los detalles, pero estoy satisfecho con el resultado hasta ahora.</p>",
-      imageSrc: "/images/GTA.png",
+      imageSrc: "/images/gta.png",
       imageAlt: "GTA VI"
     },
     {
