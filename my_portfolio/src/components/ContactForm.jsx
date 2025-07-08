@@ -1,29 +1,39 @@
 "use client";
 import { useState } from 'react';
+import { useFormValidation } from '../hooks/useFormValidation';
+import { FormField, SubmitButton, ErrorMessage, SuccessMessage } from './FormComponents';
 
 export default function ContactForm() {
-  const [formData, setFormData] = useState({
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
+  
+  const {
+    formData,
+    fieldErrors,
+    touched,
+    isFormValid,
+    validateAllFields,
+    resetForm,
+    getFieldProps
+  } = useFormValidation({
     name: '',
     email: '',
     message: ''
   });
-  
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
+    
+    const validation = validateAllFields();
+    
+    if (!validation.isValid) {
+      setSubmitting(false);
+      setError('Por favor corrige los errores en el formulario');
+      return;
+    }
     
     try {
       const response = await fetch('/api/contact', {
@@ -31,14 +41,14 @@ export default function ContactForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(validation.sanitizedData),
       });
       
       const result = await response.json();
       
       if (response.ok) {
         setSubmitted(true);
-        setFormData({ name: '', email: '', message: '' });
+        resetForm();
       } else {
         setError(result.error || 'Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.');
       }
@@ -50,68 +60,63 @@ export default function ContactForm() {
     }
   };
 
+  const hasTouchedFields = Object.keys(touched).length > 0;
+
   return (
     <div className="mt-4 p-4 bg-amber-50/30 rounded-lg border border-amber-800/20">
       {submitted ? (
-        <div className="text-center py-4">
-          <p className="text-green-700 font-medium">¡Gracias por tu mensaje! Me pondré en contacto contigo pronto.</p>
-          <button 
-            onClick={() => setSubmitted(false)}
-            className="mt-3 px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors"
-          >
-            Enviar otro mensaje
-          </button>
-        </div>
+        <SuccessMessage 
+          message="¡Gracias por tu mensaje! Me pondré en contacto contigo pronto."
+          onDismiss={() => setSubmitted(false)}
+          actionText="Enviar otro mensaje"
+        />
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-amber-900 mb-1 font-medium">Nombre</label>
-            <input 
-              type="text" 
-              id="name" 
-              name="name" 
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 bg-amber-50/70 border border-amber-700/30 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" 
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-amber-900 mb-1 font-medium">Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              name="email" 
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 bg-amber-50/70 border border-amber-700/30 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" 
-            />
-          </div>
-          <div>
-            <label htmlFor="message" className="block text-amber-900 mb-1 font-medium">Mensaje</label>
-            <textarea 
-              id="message" 
-              name="message" 
-              rows="4" 
-              value={formData.message}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 bg-amber-50/70 border border-amber-700/30 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-            ></textarea>
-          </div>
-          {error && (
-            <div className="text-red-600 text-sm">{error}</div>
-          )}
-          <div>
-            <button 
-              type="submit" 
-              className="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors disabled:opacity-50"
-              disabled={submitting}
-            >
-              {submitting ? 'Enviando...' : 'Enviar mensaje'}
-            </button>
-          </div>
+          <FormField
+            label="Nombre"
+            name="name"
+            type="text"
+            required
+            maxLength={50}
+            minLength={2}
+            placeholder="Tu nombre completo"
+            fieldProps={getFieldProps('name')}
+            error={fieldErrors.name}
+          />
+          
+          <FormField
+            label="Email"
+            name="email"
+            type="email"
+            required
+            placeholder="tu@email.com"
+            fieldProps={getFieldProps('email')}
+            error={fieldErrors.email}
+          />
+          
+          <FormField
+            label="Mensaje"
+            name="message"
+            type="textarea"
+            required
+            rows={4}
+            maxLength={1000}
+            minLength={10}
+            placeholder="Escribe tu mensaje aquí..."
+            fieldProps={getFieldProps('message')}
+            error={fieldErrors.message}
+          />
+          
+          <ErrorMessage error={error} />
+          
+          <SubmitButton 
+            isSubmitting={submitting}
+            isFormValid={isFormValid}
+            hasTouchedFields={hasTouchedFields}
+            submittingText="Enviando..."
+          >
+            Enviar mensaje
+          </SubmitButton>
         </form>
       )}
     </div>
