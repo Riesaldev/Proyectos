@@ -5,7 +5,7 @@ import Lab from "../../../public/videos/Lab.webm";
 import Ancient from "@/components/Ancient";
 
 export default function Page () {
-  const [ videoSpeed, setVideoSpeed ] = useState( 0.8 );
+  const [ videoSpeed, setVideoSpeed ] = useState( 1.0 );
   const [ videoLoaded, setVideoLoaded ] = useState( false );
   const [ isEnded, setIsEnded ] = useState( false );
   const [ fadeIn, setFadeIn ] = useState( false );

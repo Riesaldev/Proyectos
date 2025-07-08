@@ -6,7 +6,7 @@ import Ancient from "@/components/Ancient";
 import ContactForm from "@/components/ContactForm";
 
 export default function Page () {
-  const [ videoSpeed, setVideoSpeed ] = useState( 0.5 );
+  const [ videoSpeed, setVideoSpeed ] = useState( 0.75 );
   const [ videoLoaded, setVideoLoaded ] = useState( false );
   const [ isEnded, setIsEnded ] = useState( false );
   const [ fadeIn, setFadeIn ] = useState(false);
