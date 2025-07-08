@@ -1,10 +1,19 @@
 import { useState, useEffect } from 'react';
-import { preloadConfig } from '@/data/preloadConfig';
 
 export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgress) => {
   const [progress, setProgress] = useState(0);
   const [currentPhrase, setCurrentPhrase] = useState(0);
   const [showButton, setShowButton] = useState(false);
+
+  // Configuración de precarga
+  const preloadConfig = {
+    totalVideos: 7,
+    dragonProgressWeight: 30,
+    videoProgressWeight: 70,
+    phraseChangeInterval: 3000,
+    progressUpdateInterval: 200,
+    totalPhrases: 5
+  };
 
   // Función para actualizar el progreso general
   useEffect(() => {
@@ -30,8 +39,8 @@ export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgr
       setProgress(finalProgress);
       
       // Actualizar la frase basada en el tiempo
-      const phraseIndex = Math.floor(Date.now() / preloadConfig.phraseChangeInterval) % preloadConfig.magicPhrases.length;
-      if (phraseIndex !== currentPhrase && phraseIndex < preloadConfig.magicPhrases.length) {
+      const phraseIndex = Math.floor(Date.now() / preloadConfig.phraseChangeInterval) % preloadConfig.totalPhrases;
+      if (phraseIndex !== currentPhrase && phraseIndex < preloadConfig.totalPhrases) {
         setCurrentPhrase(phraseIndex);
       }
       

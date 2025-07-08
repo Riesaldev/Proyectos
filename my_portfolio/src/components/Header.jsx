@@ -3,9 +3,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Menu from './Menu';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useI18n } from './I18nProvider';
 import { useEffect, useState } from 'react';
 
 const Header = () => {
+  const { t } = useI18n();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -26,9 +29,9 @@ const Header = () => {
 
   return (
     <>
-    <div className="top-0 sticky z-0 bg-[#a842b1] h-24 w-screen">
-    <div className={`flex items-center z-30 transition-all h-24 duration-300 ${isScrolled ? 'bg-[#a842b1]/60 backdrop-blur-xs' : 'bg-[#a842b1]'}`}>
-      <nav className="flex items-center justify-center w-full">
+    <div className="top-0 sticky z-40 bg-[#a842b1] h-24 w-screen">
+    <div className={`flex items-center z-40 transition-all h-24 duration-300 ${isScrolled ? 'bg-[#a842b1]/60 backdrop-blur-xs' : 'bg-[#a842b1]'}`}>
+      <nav className="flex items-center justify-between w-full px-4">
         <div className="flex items-start">
           <Link href="/menu" className="flex items-center">
             <Image
@@ -40,7 +43,8 @@ const Header = () => {
             />
           </Link>
         </div>
-        {/* Mostrar Menu en pantallas pequeñas y ul en pantallas medianas/grandes */}
+        
+        {/* Menú central */}
         <div className="flex flex-col items-center justify-center transition-all duration-200 cursor-pointer">
           <div className="block md:hidden w-full">
             <Menu />
@@ -48,20 +52,25 @@ const Header = () => {
           <ul className="hidden md:flex items-center justify-center">
             <li className="mx-4">
               <Link href="/about" className="text-[#fddbff] hover:underline">
-                About Me
+                {t('navigation.about')}
               </Link>
             </li>
             <li className="mx-4">
               <Link href="/portfolio" className="text-[#fddbff] hover:underline">
-                Portfolio
+                {t('navigation.portfolio')}
               </Link>
             </li>
             <li className="mx-4">
               <Link href="/contact" className="text-[#fddbff] hover:underline">
-                Contact
+                {t('navigation.contact')}
               </Link>
             </li>
           </ul>
+        </div>
+        
+        {/* Selector de idioma */}
+        <div className="flex items-center relative z-50">
+          <LanguageSwitcher />
         </div>
       </nav>
     </div>

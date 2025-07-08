@@ -4,9 +4,13 @@ import Lake from "../../../public/videos/Lake.webm";
 import Ancient from "@/components/Ancient";
 import { useVideoPlayer } from "@/hooks/useVideoPlayer";
 import { usePageNavigation } from "@/hooks/usePageNavigation";
-import { portfolioScrollContents } from "@/data/portfolioScrollContents";
+import { useI18n } from "@/components/I18nProvider";
+import { getPortfolioScrollContents } from "@/lib/scrollContentTranslations";
 
 export default function Page() {
+  const { t } = useI18n();
+  const portfolioScrollContents = getPortfolioScrollContents(t);
+
   // Hook para manejar la lógica del video con velocidad personalizada
   const {
     videoRef,
@@ -37,7 +41,7 @@ export default function Page() {
           ref={videoRef}
         >
           <source src={Lake} type="video/webm" />
-          Tu navegador no soporta el elemento video.
+          {t('video.unsupported')}
         </video>
         
         {/* Overlay clickeable para saltar el video */}
@@ -48,14 +52,14 @@ export default function Page() {
           >
             {skipHintVisible && (
               <div className="bg-fuchsia-500/60 text-white px-4 py-2 rounded-full text-sm font-medium transition-opacity duration-500 hover:bg-opacity-70">
-                Clic para saltar la intro
+                {t('video.skipIntro')}
               </div>
             )}
           </div>
         )}
       </div>
-      <div className="relative z-10">
-        <div className="opacity-80">
+      <div className="relative z-20">
+        <div className="opacity-80 relative z-40">
           <Header />
         </div>
         {isEnded && (

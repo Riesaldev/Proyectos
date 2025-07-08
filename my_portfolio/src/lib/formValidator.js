@@ -1,6 +1,7 @@
 /**
  * Utilidades para validación de formularios
  */
+import { getValidationMessage, getCurrentLocale } from './validationMessages';
 
 // Patrones de validación
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -12,20 +13,22 @@ const NAME_REGEX = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/;
  * @returns {Object} - Objeto con isValid y error
  */
 export function validateName(name) {
+  const locale = getCurrentLocale();
+  
   if (!name || name.trim() === '') {
-    return { isValid: false, error: 'El nombre es requerido' };
+    return { isValid: false, error: getValidationMessage('name.required', {}, locale) };
   }
   
   if (name.trim().length < 2) {
-    return { isValid: false, error: 'El nombre debe tener al menos 2 caracteres' };
+    return { isValid: false, error: getValidationMessage('name.minLength', {}, locale) };
   }
   
   if (name.trim().length > 50) {
-    return { isValid: false, error: 'El nombre no puede tener más de 50 caracteres' };
+    return { isValid: false, error: getValidationMessage('name.maxLength', {}, locale) };
   }
   
   if (!NAME_REGEX.test(name.trim())) {
-    return { isValid: false, error: 'El nombre solo puede contener letras y espacios' };
+    return { isValid: false, error: getValidationMessage('name.invalid', {}, locale) };
   }
   
   return { isValid: true, error: '' };
@@ -37,16 +40,18 @@ export function validateName(name) {
  * @returns {Object} - Objeto con isValid y error
  */
 export function validateEmail(email) {
+  const locale = getCurrentLocale();
+  
   if (!email || email.trim() === '') {
-    return { isValid: false, error: 'El email es requerido' };
+    return { isValid: false, error: getValidationMessage('email.required', {}, locale) };
   }
   
   if (!EMAIL_REGEX.test(email.trim())) {
-    return { isValid: false, error: 'Por favor ingresa un email válido' };
+    return { isValid: false, error: getValidationMessage('email.invalid', {}, locale) };
   }
   
   if (email.trim().length > 254) {
-    return { isValid: false, error: 'El email es demasiado largo' };
+    return { isValid: false, error: getValidationMessage('email.maxLength', {}, locale) };
   }
   
   return { isValid: true, error: '' };
@@ -58,16 +63,18 @@ export function validateEmail(email) {
  * @returns {Object} - Objeto con isValid y error
  */
 export function validateMessage(message) {
+  const locale = getCurrentLocale();
+  
   if (!message || message.trim() === '') {
-    return { isValid: false, error: 'El mensaje es requerido' };
+    return { isValid: false, error: getValidationMessage('message.required', {}, locale) };
   }
   
   if (message.trim().length < 10) {
-    return { isValid: false, error: 'El mensaje debe tener al menos 10 caracteres' };
+    return { isValid: false, error: getValidationMessage('message.minLength', {}, locale) };
   }
   
   if (message.trim().length > 1000) {
-    return { isValid: false, error: 'El mensaje no puede tener más de 1000 caracteres' };
+    return { isValid: false, error: getValidationMessage('message.maxLength', {}, locale) };
   }
   
   return { isValid: true, error: '' };

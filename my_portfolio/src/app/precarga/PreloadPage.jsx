@@ -3,10 +3,11 @@ import './preload.css';
 import { useVideoPreload } from '@/hooks/useVideoPreload';
 import { useLoadingProgress } from '@/hooks/useLoadingProgress';
 import { useDragonAnimation } from '@/hooks/useDragonAnimation';
-import { preloadConfig } from '@/data/preloadConfig';
-
+import { useI18n } from '@/components/I18nProvider';
 
 export default function PreloadPage({ onContinue }) {
+  const { t } = useI18n();
+  
   // Hook para manejar la precarga de videos
   const { videosLoaded, videoLoadProgress } = useVideoPreload();
   
@@ -28,7 +29,7 @@ export default function PreloadPage({ onContinue }) {
           src="/dragon/dragon.html"
           className="dragon-iframe"
           onLoad={handleIframeLoad}
-          title="Dragon Animation"
+          title={t('preload.title')}
           loading="eager"
         />
       </div>
@@ -42,12 +43,12 @@ export default function PreloadPage({ onContinue }) {
       </div>
 
       <div id="loading-text">
-        {preloadConfig.magicPhrases[currentPhrase]}
+        {t(`preload.phrases.${currentPhrase}`)}
       </div>
 
       {showButton && (
         <button id="continue-button" onClick={onContinue}>
-          ¡Continuar la aventura!
+          {t('preload.continue')}
         </button>
       )}
     </div>

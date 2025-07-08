@@ -2,9 +2,13 @@
 import Header from "@/components/Header";
 import Ancient from "@/components/Ancient";
 import { useStaticPage } from "@/hooks/useStaticPage";
-import { farewellScrollContents } from "@/data/farewellScrollContents";
+import { useI18n } from "@/components/I18nProvider";
+import { getFarewellScrollContents } from "@/lib/scrollContentTranslations";
 
 export default function Page() {
+  const { t } = useI18n();
+  const farewellScrollContents = getFarewellScrollContents(t);
+
   // Hook para manejar páginas estáticas
   const {
     currentPage,
@@ -21,8 +25,8 @@ export default function Page() {
         className="absolute top-64 inset-0 z-0 bg-fill bg-center bg-no-repeat bg-[url('/assets/LOGO.svg')]"
       />
 
-      <div className="relative ">
-        <div className="opacity-80">
+      <div className="relative z-20">
+        <div className="opacity-80 relative z-40">
           <Header />
         </div>
         {isEnded && (

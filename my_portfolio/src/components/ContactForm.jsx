@@ -1,9 +1,11 @@
 "use client";
 import { useState } from 'react';
+import { useI18n } from './I18nProvider';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { FormField, SubmitButton, ErrorMessage, SuccessMessage } from './FormComponents';
 
 export default function ContactForm() {
+  const { t } = useI18n();
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
@@ -31,7 +33,7 @@ export default function ContactForm() {
     
     if (!validation.isValid) {
       setSubmitting(false);
-      setError('Por favor corrige los errores en el formulario');
+      setError(t('contact.error'));
       return;
     }
     
@@ -50,10 +52,10 @@ export default function ContactForm() {
         setSubmitted(true);
         resetForm();
       } else {
-        setError(result.error || 'Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.');
+        setError(result.error || t('contact.error'));
       }
     } catch (err) {
-      setError('Error de conexión. Por favor, verifica tu conexión a internet e inténtalo de nuevo.');
+      setError(t('contact.error'));
       console.error('Error al enviar formulario:', err);
     } finally {
       setSubmitting(false);
@@ -66,43 +68,43 @@ export default function ContactForm() {
     <div className="mt-4 p-4 bg-amber-50/30 rounded-lg border border-amber-800/20">
       {submitted ? (
         <SuccessMessage 
-          message="¡Gracias por tu mensaje! Me pondré en contacto contigo pronto."
+          message={t('contact.success')}
           onDismiss={() => setSubmitted(false)}
-          actionText="Enviar otro mensaje"
+          actionText={t('contact.send')}
         />
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <FormField
-            label="Nombre"
+            label={t('contact.name')}
             name="name"
             type="text"
             required
             maxLength={50}
             minLength={2}
-            placeholder="Tu nombre completo"
+            placeholder={t('contact.placeholder.name')}
             fieldProps={getFieldProps('name')}
             error={fieldErrors.name}
           />
           
           <FormField
-            label="Email"
+            label={t('contact.email')}
             name="email"
             type="email"
             required
-            placeholder="tu@email.com"
+            placeholder={t('contact.placeholder.email')}
             fieldProps={getFieldProps('email')}
             error={fieldErrors.email}
           />
           
           <FormField
-            label="Mensaje"
+            label={t('contact.message')}
             name="message"
             type="textarea"
             required
             rows={4}
             maxLength={1000}
             minLength={10}
-            placeholder="Escribe tu mensaje aquí..."
+            placeholder={t('contact.placeholder.message')}
             fieldProps={getFieldProps('message')}
             error={fieldErrors.message}
           />
@@ -113,9 +115,9 @@ export default function ContactForm() {
             isSubmitting={submitting}
             isFormValid={isFormValid}
             hasTouchedFields={hasTouchedFields}
-            submittingText="Enviando..."
+            submittingText={t('contact.sending')}
           >
-            Enviar mensaje
+            {t('contact.send')}
           </SubmitButton>
         </form>
       )}

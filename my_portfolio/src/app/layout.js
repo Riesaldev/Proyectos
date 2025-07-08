@@ -1,4 +1,6 @@
 import { Geist, Geist_Mono} from "next/font/google";
+import { I18nProvider } from "@/components/I18nProvider";
+import DynamicLayout from "@/components/DynamicLayout";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -11,8 +13,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
-
 export const metadata = {
   title: "My Portfolio",
   description: "A showcase of my work and skills as a web developer.",
@@ -23,7 +23,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <body className={`${geistSans.variable} ${geistMono.variable}antialiased`}>
-        {children}
+        <I18nProvider>
+          <DynamicLayout>
+            {children}
+          </DynamicLayout>
+        </I18nProvider>
       </body>
     </html>
   );

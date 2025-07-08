@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Fleur_De_Leah } from 'next/font/google';
 import { The_Nautigal } from 'next/font/google';
 import Image from 'next/image';
+import { useI18n } from './I18nProvider';
 
 const fleurDeLeah = Fleur_De_Leah( {
   weight: '400',
@@ -33,6 +34,7 @@ export default function AncientScroll ( {
   imageAlt = "",
   ...rest
 } ) {
+  const { t } = useI18n();
   const [ isOpen, setIsOpen ] = React.useState( autoOpen );
   // Añadir referencia al contenedor de scroll
   const scrollContainerRef = React.useRef(null);
@@ -218,7 +220,7 @@ export default function AncientScroll ( {
 
         {/* Instrucción accesible */}
         <p className="sr-only">
-          Presiona Enter o haz clic para {isOpen ? 'cerrar' : 'abrir'} el pergamino
+          {t(isOpen ? 'ancient.closeScroll' : 'ancient.openScroll')}
         </p>
       </div>
 

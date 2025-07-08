@@ -2,6 +2,7 @@
 import { useVideoPreloader } from '@/hooks/useVideoPreloader';
 import { useVideoPortals } from '@/hooks/useVideoPortals';
 import PortalContent from '@/components/PortalContent';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { videoSources } from '@/data/portalConfig';
 
 
@@ -27,6 +28,11 @@ export default function Menu() {
   return (
     <>
       <VideoPreloader />
+
+      {/* Language Switcher en la esquina superior derecha */}
+      <div className="fixed top-4 right-4 z-[100]">
+        <LanguageSwitcher />
+      </div>
 
       <div className="flex flex-col items-center justify-center h-4/5 bg-black">
         <div className="flex flex-col items-center justify-center z-0 inset-0 absolute bg-black">
