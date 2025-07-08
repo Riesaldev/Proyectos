@@ -34,6 +34,8 @@ export default function AncientScroll ( {
   ...rest
 } ) {
   const [ isOpen, setIsOpen ] = React.useState( autoOpen );
+  // Añadir referencia al contenedor de scroll
+  const scrollContainerRef = React.useRef(null);
 
   // Precarga las imágenes para mejor rendimiento
   const preloadImages = () => {
@@ -58,6 +60,14 @@ export default function AncientScroll ( {
       return () => clearTimeout( timer );
     }
   }, [ autoOpen ] );
+
+  // Nuevo efecto para resetear la posición del scroll al cambiar de página
+  React.useEffect(() => {
+    // Verifica si el contenedor existe y resetea su posición
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [currentPage]); // Se ejecuta cuando cambia la página actual
 
   const toggleScroll = () => setIsOpen( !isOpen );
 
@@ -110,6 +120,7 @@ export default function AncientScroll ( {
               scrollbarWidth: 'thin',
               scrollbarColor: '#a67c52 #f3e7d3'
             }}
+            ref={scrollContainerRef} // Añadir la referencia aquí
           >
             <div
               className="text-black text-justify px-7"
