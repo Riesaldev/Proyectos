@@ -4,15 +4,15 @@ import { Fleur_De_Leah } from 'next/font/google';
 import { The_Nautigal } from 'next/font/google';
 import Image from 'next/image';
 
-const fleurDeLeah = Fleur_De_Leah({
+const fleurDeLeah = Fleur_De_Leah( {
   weight: '400',
-  subsets: ['latin'],
-});
+  subsets: [ 'latin' ],
+} );
 
-const theNautigal = The_Nautigal({
+const theNautigal = The_Nautigal( {
   weight: '400',
-  subsets: ['latin'],
-});
+  subsets: [ 'latin' ],
+} );
 
 
 export default function AncientScroll ( {
@@ -23,26 +23,30 @@ export default function AncientScroll ( {
   height = "145px",
   currentPage = 0,
   totalPages = 1,
-  onChangePage = () => {},
-  onGoToPage = () => {},
+  onChangePage = () => { },
+  onGoToPage = () => { },
   scrollContents = [],
   transitionActive = false,
+  customComponent = null,
+  videoSrc = null,
+  imageSrc = null,
+  imageAlt = "",
   ...rest
 } ) {
   const [ isOpen, setIsOpen ] = React.useState( autoOpen );
 
   // Precarga las imágenes para mejor rendimiento
   const preloadImages = () => {
-    if (typeof window === 'undefined') return;
+    if ( typeof window === 'undefined' ) return;
     const images = [
       '/assets/ancient1.png',
       '/assets/ancient2.png',
       '/assets/ancient3.png'
     ];
-    images.forEach(src => {
+    images.forEach( src => {
       const img = new window.Image();
       img.src = src;
-    });
+    } );
   };
 
   React.useEffect( () => {
@@ -68,15 +72,15 @@ export default function AncientScroll ( {
         {/* Indicador de página */}
         {scrollContents.length > 1 && (
           <div className="flex justify-center gap-2">
-            {scrollContents.map((_, index) => (
+            {scrollContents.map( ( _, index ) => (
               <button
                 key={index}
                 onClick={() => onGoToPage( index )}
                 className={`h-6 w-6 rounded-full mt-4 cursor-pointer transition-all duration-300 hover:scale-115 \
-                  ${currentPage === index ? 'bg-fuchsia-500' : 'bg-fuchsia-800/50'}`}
-                aria-label={`Ir a pergamino ${index + 1}`}
+                  ${ currentPage === index ? 'bg-fuchsia-500' : 'bg-fuchsia-800/50' }`}
+                aria-label={`Ir a pergamino ${ index + 1 }`}
               />
-            ))}
+            ) )}
           </div>
         )}
 
@@ -90,9 +94,9 @@ export default function AncientScroll ( {
           onKeyDown={( e ) => e.key === 'Enter' && toggleScroll()}
           aria-hidden="true"
         >
-        <h2 className={`text-center font-bold text-5xl leading-[130px] ${fleurDeLeah.className}`}>
-          {title}
-        </h2>
+          <h2 className={`text-center font-bold text-5xl leading-[130px] ${ fleurDeLeah.className }`}>
+            {title}
+          </h2>
         </div>
 
         {/* Parte central expandible */}
@@ -109,16 +113,49 @@ export default function AncientScroll ( {
           >
             <div
               className="text-black text-justify px-7"
-              onClick={toggleScroll}
               role="button"
               tabIndex="0"
               onKeyDown={( e ) => e.key === 'Enter' && toggleScroll()}
             >
+              <div className={`text-left ${ theNautigal.className } text-4xl leading-10 m-3`}>
+                {/* Renderizar contenido HTML */}
+                <div dangerouslySetInnerHTML={{ __html: content.replace( '<ContactForm />', '' ) }} />
 
-              <div 
-                className={`text-left ${theNautigal.className} text-4xl leading-10 m-3`}
-                dangerouslySetInnerHTML={{ __html: content }}
-              />
+                {/* Mostrar video si existe */}
+                {videoSrc && (
+                  <div className="my-6 flex justify-center">
+                    <video
+                      src={videoSrc}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="w-full h-auto rounded-lg shadow-[0_20px_20px_10px_rgba(0,0,0,0.8)] pointer-events-none"
+                      style={{ pointerEvents: 'none' }}
+                    />
+                  </div>
+                )}
+
+                {/* Mostrar imagen si existe */}
+                {imageSrc && (
+                  <div className="my-6 flex justify-center">
+                    <Image
+                      src={imageSrc}
+                      alt={imageAlt}
+                      width={500}
+                      height={300}
+                      className="max-w-full h-auto rounded-lg shadow-[0_20px_20px_10px_rgba(0,0,0,0.8)] object-contain"
+                    />
+                  </div>
+                )}
+
+                {/* Renderizar componente personalizado si existe */}
+                {customComponent && (
+                  <div className="my-4">
+                    {customComponent}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -136,10 +173,10 @@ export default function AncientScroll ( {
 
         {/* Flechas de navegación */}
         {scrollContents.length > 1 && (
-          <div className="flex justify-between w-full absolute top-1/2 -translate-y-1/2 -p-44">
+          <div className="flex justify-between w-full absolute top-1/2 -translate-y-1/2 ">
             <button
               onClick={() => onChangePage( 'prev' )}
-              className="bg-amber-800/60 hover:bg-amber-700/80 hover:scale-125 p-3 rounded-full transition-all"
+              className="bg-amber-800/60 hover:bg-amber-700/80 relative -left-20 hover:scale-125 p-3 rounded-full transition-all"
               aria-label="Pergamino anterior"
             >
               <div className="w-12 h-12 relative transform rotate-180">
@@ -153,7 +190,7 @@ export default function AncientScroll ( {
             </button>
             <button
               onClick={() => onChangePage( 'next' )}
-              className="bg-amber-800/60 hover:bg-amber-700/80 hover:scale-125 p-3 rounded-full transition-all"
+              className="bg-amber-800/60 hover:bg-amber-700/80 relative left-20 hover:scale-125 p-3 rounded-full transition-all"
               aria-label="Siguiente pergamino"
             >
               <div className="w-12 h-12 relative">
@@ -212,5 +249,9 @@ AncientScroll.propTypes = {
   onChangePage: PropTypes.func,
   onGoToPage: PropTypes.func,
   scrollContents: PropTypes.array,
-  transitionActive: PropTypes.bool
+  transitionActive: PropTypes.bool,
+  customComponent: PropTypes.node,
+  videoSrc: PropTypes.string,
+  imageSrc: PropTypes.string,
+  imageAlt: PropTypes.string
 };
