@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Menu from './Menu';
 import LanguageSwitcher from './LanguageSwitcher';
+import AudioControls from './AudioControls';
 import { useI18n } from './I18nProvider';
 import { useEffect, useState } from 'react';
 
@@ -68,8 +69,9 @@ const Header = () => {
           </ul>
         </div>
         
-        {/* Selector de idioma */}
-        <div className="flex items-center relative z-50">
+        {/* Controles de audio y selector de idioma - solo en pantallas grandes */}
+        <div className="hidden md:flex items-center gap-4 relative z-50">
+          <AudioControls />
           <LanguageSwitcher />
         </div>
       </nav>

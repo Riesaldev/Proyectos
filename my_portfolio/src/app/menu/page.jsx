@@ -3,6 +3,7 @@ import { useVideoPreloader } from '@/hooks/useVideoPreloader';
 import { useVideoPortals } from '@/hooks/useVideoPortals';
 import PortalContent from '@/components/PortalContent';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import AudioControls from '@/components/AudioControls';
 import { videoSources } from '@/data/portalConfig';
 
 
@@ -29,8 +30,9 @@ export default function Menu() {
     <>
       <VideoPreloader />
 
-      {/* Language Switcher en la esquina superior derecha */}
-      <div className="fixed top-4 right-4 z-[100]">
+      {/* Controles superiores: Audio y Language Switcher */}
+      <div className="fixed top-4 right-4 z-[100] flex items-center gap-4">
+        <AudioControls />
         <LanguageSwitcher />
       </div>
 

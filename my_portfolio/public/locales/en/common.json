@@ -187,5 +187,20 @@
         "content": "** 3D Model ** Regarding my 3D modeling projects, I have worked on a variety of models using tools like Blender, ZBrush and 3ds Max. These projects include from character and creature models to environments and objects, each with its own style and modeling technique. Proof of this are the renders used in this web portfolio. 3D modeling is one of my passions and I love exploring new techniques and styles to create models, unique and detailed animations. Although I don't have a specific web portfolio for my 3D modeling projects, I'm working on creating one that showcases my work and skills in this area."
       }
     }
+  },
+  "audio": {
+    "show": "Show player",
+    "hide": "Hide player",
+    "unknown": "Unknown",
+    "shuffle": "Shuffle",
+    "repeat": "Repeat",
+    "volume": "Volume",
+    "track": "Track",
+    "playing": "Play",
+    "paused": "Pause",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "next": "Next track",
+    "clickToPlay": "Click to play music"
   }
 }

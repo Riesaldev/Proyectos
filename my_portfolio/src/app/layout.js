@@ -1,5 +1,7 @@
 import { Geist, Geist_Mono} from "next/font/google";
 import { I18nProvider } from "@/components/I18nProvider";
+import { AudioProvider } from "@/components/AudioProvider";
+import GlobalAudioPlayer from "@/components/GlobalAudioPlayer";
 import DynamicLayout from "@/components/DynamicLayout";
 import "./globals.css";
 
@@ -24,9 +26,12 @@ export default function RootLayout({ children }) {
     <html lang="es">
       <body className={`${geistSans.variable} ${geistMono.variable}antialiased`}>
         <I18nProvider>
-          <DynamicLayout>
-            {children}
-          </DynamicLayout>
+          <AudioProvider>
+            <GlobalAudioPlayer />
+            <DynamicLayout>
+              {children}
+            </DynamicLayout>
+          </AudioProvider>
         </I18nProvider>
       </body>
     </html>
