@@ -43,8 +43,8 @@ export default function PreloadPage({ onContinue }) {
     "Implorando a los Dioses Antiguos..."
   ];
 
-  // Función para precargar videos
-  const preloadVideos = () => {
+  // Función para precargar videos usando la API Cache
+  const preloadVideos = async () => {
     const videos = [
       { url: Main, key: 'main' },
       { url: DPortal, key: 'dportal' },
@@ -55,53 +55,64 @@ export default function PreloadPage({ onContinue }) {
       { url: Sword, key: 'sword' }
     ];
 
-    videos.forEach(({ url, key }) => {
-      const video = document.createElement('video');
+    try {
+      // Intentar abrir o crear una caché específica para los videos
+      const videoCache = await caches.open('video-cache-v1');
       
-      // Añadir un listener para el progreso de carga
-      video.addEventListener('progress', () => {
-        if (video.buffered.length > 0) {
-          try {
-            // Calcula cuánto se ha cargado del video
-            const loadedPercentage = (video.buffered.end(0) / video.duration) * 100;
-            console.log(`${key} video loaded: ${loadedPercentage.toFixed(2)}%`);
+      // Para cada video, verificar si ya está en caché, y si no, añadirlo
+      for (const { url, key } of videos) {
+        try {
+          // Convertir el import a string para obtener la URL real
+          const videoUrl = url.toString();
+          
+          // Verificar si el video ya está en caché
+          const cachedResponse = await videoCache.match(videoUrl);
+          
+          if (!cachedResponse) {
+            console.log(`Cargando y guardando en caché: ${key}`);
             
-            // Actualizar el progreso de este video específico
+            // Hacer una solicitud para el video
+            const response = await fetch(videoUrl);
+            
+            if (response.ok) {
+              // Guardar en caché
+              await videoCache.put(videoUrl, response.clone());
+              console.log(`${key} guardado en caché correctamente`);
+              
+              // Marcar como completamente cargado
+              setVideosLoaded(prev => ({
+                ...prev,
+                [key]: true
+              }));
+              
+              setVideoLoadProgress(prev => ({
+                ...prev,
+                [key]: 100
+              }));
+            } else {
+              console.error(`Error cargando ${key}: ${response.statusText}`);
+            }
+          } else {
+            console.log(`${key} ya está en caché`);
+            
+            // Si ya está en caché, marcarlo como cargado
+            setVideosLoaded(prev => ({
+              ...prev,
+              [key]: true
+            }));
+            
             setVideoLoadProgress(prev => ({
               ...prev,
-              [key]: loadedPercentage
+              [key]: 100
             }));
-          } catch (error) {
-            console.error(`Error calculando progreso para ${key}:`, error);
           }
+        } catch (error) {
+          console.error(`Error procesando ${key}:`, error);
         }
-      });
-      
-      // Añadir listener para cuando el video esté completamente cargado
-      video.addEventListener('canplaythrough', () => {
-        console.log(`${key} video fully loaded`);
-        setVideosLoaded(prev => ({
-          ...prev,
-          [key]: true
-        }));
-        
-        // Marcar este video como 100% cargado
-        setVideoLoadProgress(prev => ({
-          ...prev,
-          [key]: 100
-        }));
-      });
-      
-      // Agregar un manejador para los errores de carga
-      video.addEventListener('error', (error) => {
-        console.error(`Error cargando ${key} video:`, error);
-      });
-      
-      // Configura la fuente del video y comienza la carga
-      video.preload = "auto";
-      video.src = url;
-      video.load(); // Esto es crucial para iniciar la carga
-    });
+      }
+    } catch (error) {
+      console.error("Error accediendo a la caché:", error);
+    }
   };
 
   // Función para actualizar el progreso general
@@ -123,7 +134,7 @@ export default function PreloadPage({ onContinue }) {
       // Progreso total
       const totalProgress = Math.min(dragonProgress + videosProgress, 99); // Limitamos a 99% hasta que todo esté listo
       
-      // Solo mostramos 100% cuando todo esté realmente cargado
+      // Solo mostramos 100% cuando todo está realmente cargado
       const finalProgress = (animationLoaded && loadedVideos === totalVideos) ? 100 : totalProgress;
       
       setProgress(finalProgress);
