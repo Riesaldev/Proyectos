@@ -2,7 +2,7 @@
 import Header from "@/components/Header";
 import Sword from "../../../public/videos/Sword.webm";
 import Ancient from "@/components/Ancient";
-import ContactForm from "@/components/ContactForm";
+import ContactSection from "@/components/ContactSection";
 import { useVideoPlayer } from "@/hooks/useVideoPlayer";
 import { usePageNavigation } from "@/hooks/usePageNavigation";
 import { useI18n } from "@/components/I18nProvider";
@@ -79,7 +79,7 @@ export default function Page() {
                 onChangePage={changePage}
                 onGoToPage={goToPage}
                 transitionActive={transitionActive}
-                customComponent={contactScrollContents[currentPage].hasCustomComponent ? <ContactForm /> : null}
+                customComponent={contactScrollContents[currentPage].hasCustomComponent ? <ContactSection /> : null}
               />
             </div>
           </div>

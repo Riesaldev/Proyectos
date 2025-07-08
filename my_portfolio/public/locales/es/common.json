@@ -32,6 +32,11 @@
       "name": "Ingresa tu nombre completo",
       "email": "tu@email.com",
       "message": "Escribe tu mensaje aquí..."
+    },
+    "social": {
+      "title": "Sígueme en mis redes",
+      "description": "Conecta conmigo en mis redes sociales profesionales",
+      "visitProfile": "Visitar perfil de"
     }
   },
   "validation": {

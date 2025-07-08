@@ -32,6 +32,11 @@
       "name": "Enter your full name",
       "email": "your@email.com",
       "message": "Write your message here..."
+    },
+    "social": {
+      "title": "Follow me on social media",
+      "description": "Connect with me on my professional social networks",
+      "visitProfile": "Visit profile on"
     }
   },
   "about": {
