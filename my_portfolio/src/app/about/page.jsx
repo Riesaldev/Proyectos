@@ -5,25 +5,26 @@ import Lab from "../../../public/videos/Lab.webm";
 import Ancient from "@/components/Ancient";
 
 export default function Page () {
-  const [ videoSpeed, setVideoSpeed ] = useState( 0.5 );
+  const [ videoSpeed, setVideoSpeed ] = useState( 0.8 );
   const [ videoLoaded, setVideoLoaded ] = useState( false );
   const [ isEnded, setIsEnded ] = useState( false );
-  const [ fadeIn, setFadeIn ] = useState(false);
-  const [ currentPage, setCurrentPage ] = useState(0);
-  const [ transitionActive, setTransitionActive ] = useState(false);
-  const [ skipHintVisible, setSkipHintVisible ] = useState(false);
+  const [ fadeIn, setFadeIn ] = useState( false );
+  const [ currentPage, setCurrentPage ] = useState( 0 );
+  const [ transitionActive, setTransitionActive ] = useState( false );
+  const [ skipHintVisible, setSkipHintVisible ] = useState( false );
 
   const videoRef = useRef( null );
 
   // Función para terminar el video al hacer clic
   const handleSkipVideo = () => {
     const video = videoRef.current;
-    if (video && !isEnded) {
+    if ( video && !isEnded )
+    {
       // Pausar el video y marcarlo como terminado
       video.pause();
-      setIsEnded(true);
+      setIsEnded( true );
       // Iniciar la animación de entrada
-      setTimeout(() => setFadeIn(true), 200);
+      setTimeout( () => setFadeIn( true ), 200 );
     }
   };
 
@@ -34,50 +35,53 @@ export default function Page () {
       content: "<p>Tras incontables días de investigación, sumergido en cada libro a su alcance, el Mago por fin ha descubierto la manera de abrir un portal al mundo de los sueños, donde habita la misteriosa Dama del Lago.</p> " +
         "<p>Con la ayuda de su fiel asistente, ha preparado todos los ingredientes necesarios para llevar a cabo el ritual.</p> " +
         "<p>El laboratorio rebosa de frascos, pociones y artefactos mágicos, cada uno con una función específica dentro de este proceso arcano.</p>" +
-        "<p>En el aire se respira una mezcla de misterio y expectación mientras ambos se disponen a dar el siguiente paso en su viaje onírico, con la esperanza de encontrar la Espada del Destino y, con ella, la salvación de su mundo.</p>",
+        "<p>En el aire se respira una mezcla de misterio y expectación mientras ambos se disponen a dar el siguiente paso en su viaje onírico, con la esperanza de encontrar la Espada del Destino y, con ella, la salvación de su mundo.</p>" +
+        "<p>Con la <strong>llave alada</strong> volveremos a la Sala de los Portales para continuar nuestro viaje.</p>",
     },
     {
       title: "Sobre mi",
-      content: "<p>Soy un desarrollador web apasionado por la tecnología, el diseño y la narrativa interactiva.</p>"+
-      "<p>Mi vocación es crear experiencias únicas que no solo sean funcionales, sino también visualmente impactantes y emocionalmente significativas.</p>"+
-      "<p>Aunque mi experiencia laboral comenzó en 2004, fue en 2018 cuando inicié un camino de formación en modelado 3D, especializándome en herramientas como Blender, ZBrush y 3ds Max.</p>"+
-      "<p>Cursé estudios como Técnico Superior en Escultura, pero por giros inesperados de la vida, terminé dedicándome a la construcción como soldador y montador de estructuras metálicas. Sin embargo, esa etapa me llevó a replantear mi rumbo.</p>"+
-      "<p>Decidí dar un giro de 180 grados y reenfocar mi futuro en lo que realmente me apasiona: la tecnología y la creatividad. En 2024 me formé como desarrollador web full stack a través de un bootcamp intensivo, complementando mi aprendizaje con certificaciones en frameworks de JavaScript y CSS, TypeScript, y metodologías ágiles como Scrum. Hoy fusiono toda esa experiencia para construir proyectos que cuentan historias, despiertan emociones y dan vida a ideas.</p>"+
-      "<p>Aunque mi experiencia profesional en desarrollo web es reciente, mi pasión por la tecnología y el diseño es de larga data y suplo con mi dedicación y creatividad lo que me falta en años de experiencia. También aporto mi experiencia previa en el ámbito de la construcción, la hostelería (12 años en puestos de responsabilidad en cocina y eventos; desde trabajar en el World Travel Market de Londres a ser jefe de sección en hoteles de 5 estrellas gran lujo o aprender de mano de estrellas Michelin y trabajar con ellos) e incluso en el Ejercito Español, donde aprendí disciplina, trabajo en equipo y liderazgo. Todo ello me ha permitido desarrollar una mentalidad resiliente y una capacidad de adaptación que considero esenciales en el mundo del desarrollo web.</p>",
+      content: "<p>Soy un desarrollador web apasionado por la tecnología, el diseño y la narrativa interactiva.</p>" +
+        "<p>Mi vocación es crear experiencias únicas que no solo sean funcionales, sino también visualmente impactantes y emocionalmente significativas.</p>" +
+        "<p>Aunque mi experiencia laboral comenzó en 2004, fue en 2018 cuando inicié un camino de formación en modelado 3D, especializándome en herramientas como Blender, ZBrush y 3ds Max.</p>" +
+        "<p>Cursé estudios como Técnico Superior en Escultura, pero por giros inesperados de la vida, terminé dedicándome a la construcción como soldador y montador de estructuras metálicas. Sin embargo, esa etapa me llevó a replantear mi rumbo.</p>" +
+        "<p>Decidí dar un giro de 180 grados y reenfocar mi futuro en lo que realmente me apasiona: la tecnología y la creatividad. En 2024 me formé como desarrollador web full stack a través de un bootcamp intensivo, complementando mi aprendizaje con certificaciones en frameworks de JavaScript y CSS, TypeScript, y metodologías ágiles como Scrum. Hoy fusiono toda esa experiencia para construir proyectos que cuentan historias, despiertan emociones y dan vida a ideas.</p>" +
+        "<p>Aunque mi experiencia profesional en desarrollo web es reciente, mi pasión por la tecnología y el diseño es de larga data y suplo con mi dedicación y creatividad lo que me falta en años de experiencia. También aporto mi experiencia previa en el ámbito de la construcción, la hostelería (12 años en puestos de responsabilidad en cocina y eventos; desde trabajar en el World Travel Market de Londres a ser jefe de sección en hoteles de 5 estrellas gran lujo o aprender de mano de estrellas Michelin y trabajar con ellos) e incluso en el Ejercito Español, donde aprendí disciplina, trabajo en equipo y liderazgo. Todo ello me ha permitido desarrollar una mentalidad resiliente y una capacidad de adaptación que considero esenciales en el mundo del desarrollo web.</p>",
     },
-    
+
   ];
 
   // Función para cambiar de página
-  const changePage = (direction) => {
-    setTransitionActive(true);
-    
-    setTimeout(() => {
-      if (direction === 'next') {
-        setCurrentPage(prev => (prev + 1) % scrollContents.length);
-      } else {
-        setCurrentPage(prev => (prev - 1 + scrollContents.length) % scrollContents.length);
+  const changePage = ( direction ) => {
+    setTransitionActive( true );
+
+    setTimeout( () => {
+      if ( direction === 'next' )
+      {
+        setCurrentPage( prev => ( prev + 1 ) % scrollContents.length );
+      } else
+      {
+        setCurrentPage( prev => ( prev - 1 + scrollContents.length ) % scrollContents.length );
       }
-      
-      setTimeout(() => {
-        setTransitionActive(false);
-      }, 50);
-    }, 500);
+
+      setTimeout( () => {
+        setTransitionActive( false );
+      }, 50 );
+    }, 500 );
   };
 
   // Función para cambiar a una página específica
-  const goToPage = (pageIndex) => {
-    if (currentPage === pageIndex) return;
-    
-    setTransitionActive(true);
-    
-    setTimeout(() => {
-      setCurrentPage(pageIndex);
-      
-      setTimeout(() => {
-        setTransitionActive(false);
-      }, 50);
-    }, 500);
+  const goToPage = ( pageIndex ) => {
+    if ( currentPage === pageIndex ) return;
+
+    setTransitionActive( true );
+
+    setTimeout( () => {
+      setCurrentPage( pageIndex );
+
+      setTimeout( () => {
+        setTransitionActive( false );
+      }, 50 );
+    }, 500 );
   };
 
   useEffect( () => {
@@ -98,16 +102,16 @@ export default function Page () {
       video.addEventListener( "ended", () => {
         setIsEnded( true );
         // Pequeño retraso antes de iniciar la animación de entrada
-        setTimeout(() => setFadeIn(true), 200);
+        setTimeout( () => setFadeIn( true ), 200 );
       } );
 
       // Mostrar mensaje de "Clic para saltar" después de 2 segundos
-      const skipHintTimer = setTimeout(() => {
-        setSkipHintVisible(true);
-      }, 2000);
+      const skipHintTimer = setTimeout( () => {
+        setSkipHintVisible( true );
+      }, 2000 );
 
       return () => {
-        clearTimeout(skipHintTimer);
+        clearTimeout( skipHintTimer );
       };
     }
     return () => {
@@ -131,10 +135,10 @@ export default function Page () {
           <source src={Lab} type="video/webm" />
           Tu navegador no soporta el elemento video.
         </video>
-        
+
         {/* Overlay clickeable para saltar el video */}
         {!isEnded && (
-          <div 
+          <div
             className="absolute inset-0 cursor-pointer flex items-center justify-center"
             onClick={handleSkipVideo}
           >
@@ -151,17 +155,17 @@ export default function Page () {
           <Header />
         </div>
         {isEnded && (
-          <div 
+          <div
             className="transition-all duration-1500 ease-in-out"
-            style={{ 
+            style={{
               opacity: fadeIn ? 1 : 0,
               transform: fadeIn ? 'translateY(0)' : 'translateY(20px)'
             }}
           >
             <div className="relative">
               <Ancient
-                title={scrollContents[currentPage].title}
-                content={scrollContents[currentPage].content}
+                title={scrollContents[ currentPage ].title}
+                content={scrollContents[ currentPage ].content}
                 currentPage={currentPage}
                 scrollContents={scrollContents}
                 onChangePage={changePage}
