@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useState, useRef, useEffect } from 'react';
 import { Fleur_De_Leah } from 'next/font/google';
 import { The_Nautigal } from 'next/font/google';
 import Image from 'next/image';
@@ -34,9 +35,9 @@ export default function AncientScroll ( {
   ...rest
 } ) {
   const { t } = useI18n();
-  const [ isOpen, setIsOpen ] = React.useState( autoOpen );
+  const [ isOpen, setIsOpen ] = useState( autoOpen );
   // Añadir referencia al contenedor de scroll
-  const scrollContainerRef = React.useRef(null);
+  const scrollContainerRef = useRef(null);
 
   // Precarga las imágenes para mejor rendimiento
   const preloadImages = () => {
@@ -52,7 +53,7 @@ export default function AncientScroll ( {
     } );
   };
 
-  React.useEffect( () => {
+  useEffect( () => {
     preloadImages();
 
     if ( autoOpen )
@@ -63,7 +64,7 @@ export default function AncientScroll ( {
   }, [ autoOpen ] );
 
   // Nuevo efecto para resetear la posición del scroll al cambiar de página
-  React.useEffect(() => {
+  useEffect(() => {
     // Verifica si el contenedor existe y resetea su posición
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
