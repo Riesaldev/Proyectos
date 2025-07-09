@@ -9,27 +9,27 @@ import MagicCard from './MagicCard';
 const portalPositions = {
   main: {
     // Posición del portal principal en la imagen
-    top: '45%', // Ajustar según la posición en la imagen
-    left: '50%',
+    top: '60%',
+    left: '51.5%',
     transform: 'translate(-50%, -50%)',
-    width: 'w-32 sm:w-40 md:w-48 lg:w-56 xl:w-64',
-    height: 'h-48 sm:h-60 md:h-72 lg:h-84 xl:h-96'
+    width: 'w-32 sm:w-40 md:w-48 lg:w-56 xl:w-76',
+    height: 'h-48 sm:h-60 md:h-72 lg:h-84 xl:h-170'
   },
   right: {
     // Posición del portal derecho en la imagen
-    top: '50%', // Ajustar según la posición en la imagen
-    right: '25%', // Ajustar según la posición en la imagen
+    top: '58%',
+    right: '48.5%',
     transform: 'translateY(-50%)',
-    width: 'w-28 sm:w-36 md:w-44 lg:w-52 xl:w-60',
-    height: 'h-40 sm:h-52 md:h-64 lg:h-76 xl:h-88'
+    width: 'w-28 sm:w-36 md:w-44 lg:w-52 xl:w-100',
+    height: 'h-40 sm:h-52 md:h-64 lg:h-76 xl:h-150'
   },
   left: {
     // Posición del portal izquierdo en la imagen
-    top: '50%', // Ajustar según la posición en la imagen
-    left: '25%', // Ajustar según la posición en la imagen
+    top: '62%',
+    left: '50%',
     transform: 'translateY(-50%)',
-    width: 'w-24 sm:w-32 md:w-40 lg:w-48 xl:w-56',
-    height: 'h-36 sm:h-48 md:h-60 lg:h-72 xl:h-84'
+    width: 'w-24 sm:w-32 md:w-40 lg:w-48 xl:w-80',
+    height: 'h-36 sm:h-48 md:h-60 lg:h-72 xl:h-150'
   }
 };
 
@@ -68,6 +68,57 @@ const PortalContent = ({ currentPortal, onPortalClick }) => {
 
   const closeCard = () => {
     setShowCard(false);
+  };
+
+  // Alternar entre posicionamiento relativo y absoluto
+  const usePrecisePositioning = true; // Cambiar a false para usar posicionamiento relativo
+
+  // Función para crear áreas clicables con posicionamiento absoluto preciso
+  const createPrecisePortalArea = (portalType, href) => {
+    const config = portalPositions[portalType];
+    if (!config) return null;
+
+    const style = {
+      top: config.top,
+      left: config.left,
+      right: config.right,
+      transform: config.transform
+    };
+
+    return (
+      <Link href={href}>
+        <div 
+          className={`absolute ${config.width} ${config.height} border-2 border-fuchsia-500 border-opacity-70 cursor-pointer transition-all duration-300 ease-in-out  hover:shadow-2xl hover:shadow-fuchsia-500 z-10`}
+          style={style}
+        >
+        </div>
+      </Link>
+    );
+  };
+
+  // Función para crear portales con posicionamiento preciso usando portalPositions
+  const createAbsolutePortalArea = (portalType, href) => {
+    const config = portalPositions[portalType];
+    if (!config) return null;
+
+    const style = {
+      position: 'absolute',
+      top: config.top,
+      left: config.left,
+      right: config.right,
+      transform: config.transform,
+      zIndex: 40
+    };
+
+    return (
+      <Link href={href} key={`portal-${portalType}`}>
+        <div 
+          className={`${config.width} ${config.height} border-2 border-fuchsia-500 border-opacity-70 hover:border-opacity-100 cursor-pointer transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-fuchsia-500/50`}
+          style={style}
+        >
+        </div>
+      </Link>
+    );
   };
 
   const renderPortalContent = () => {
@@ -115,19 +166,14 @@ const PortalContent = ({ currentPortal, onPortalClick }) => {
             </div>
 
             {/* Portal Central */}
-            <div className="absolute top-1/12 sm:top-1/10 md:top-1/12 lg:top-1/12 flex w-full justify-center items-center overflow-hidden px-4 sm:px-6 md:px-8 lg:px-12">
+            <div className="absolute h-screen top-1/12 sm:top-1/10 md:top-1/12 lg:top-1/12 flex w-full justify-center items-center overflow-hidden px-4 sm:px-6 md:px-8 lg:px-12">
               <div className="Portal flex flex-col items-center justify-center">
-                <div className="text-[#812286] text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-black text-center">
+                <div className="text-[#812286] flex flex-col pl-15 text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-black text-center">
                   {t('portals.main.portalText')}<br />
                   <span className='font-normal text-xs sm:text-sm md:text-base lg:text-lg'>{t('portals.main.portalSubtext')}</span>
                 </div>
                 {/* Área clicable del portal principal - posicionada sobre el portal en la imagen */}
-                <Link href={portalContent.main.href}>
-                  <div className="relative mt-8 sm:mt-12 md:mt-16 lg:mt-20 xl:mt-24">
-                    <div className="w-32 h-48 sm:w-40 sm:h-60 md:w-48 md:h-72 lg:w-56 lg:h-84 xl:w-64 xl:h-96 border-2 border-fuchsia-500 border-opacity-70 hover:border-opacity-100 cursor-pointer transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-fuchsia-500/50">
-                    </div>
-                  </div>
-                </Link>
+                {createPrecisePortalArea("main", portalContent.main.href)}
               </div>
             </div>
           </>
@@ -158,17 +204,14 @@ const PortalContent = ({ currentPortal, onPortalClick }) => {
             </div>
 
             {/* Portal Right */}
-            <div className="absolute top-1/10 sm:top-1/12 md:top-1/10 lg:top-1/10 flex w-full justify-center items-center overflow-hidden px-4 sm:px-6 md:px-8 lg:px-12">
+            <div className="absolute h-screen top-1/10 sm:top-1/12 md:top-1/10 lg:top-1/10 flex w-full justify-center items-center overflow-hidden px-4 sm:px-6 md:px-8 lg:px-12">
               <div className="Portal flex flex-col items-center justify-center">
-                <div className="text-[#812286] text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-black text-center mb-4 sm:mb-6 md:mb-8 lg:mb-12">
+                <div className="text-[#812286] flex flex-col pr-85 text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-black text-center mb-4 sm:mb-6 md:mb-8 lg:mb-12">
                   {t('portals.right.portalText')}<br />
                   <span className='font-normal text-xs sm:text-sm md:text-base lg:text-lg'>{t('portals.right.portalSubtext')}</span>
                 </div>
                 {/* Área clicable del portal derecho - posicionada sobre el portal en la imagen */}
-                <Link href={portalContent.Right.href}>
-                  <div className="w-28 h-40 sm:w-36 sm:h-52 md:w-44 md:h-64 lg:w-52 lg:h-76 xl:w-60 xl:h-88 border-2 border-fuchsia-500 border-opacity-70 hover:border-opacity-100 cursor-pointer transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-fuchsia-500/50">
-                  </div>
-                </Link>
+                {createPrecisePortalArea("right", portalContent.Right.href)}
               </div>
             </div>
           </>
@@ -199,17 +242,14 @@ const PortalContent = ({ currentPortal, onPortalClick }) => {
             </div>
 
             {/* Portal Left */}
-            <div className="absolute top-1/14 sm:top-1/12 md:top-1/14 lg:top-1/14 flex w-full justify-center items-center overflow-hidden px-4 sm:px-6 md:px-8 lg:px-12">
+            <div className="absolute h-screen top-1/14 sm:top-1/12 md:top-1/14 lg:top-1/14 flex w-full justify-center items-center overflow-hidden px-4 sm:px-6 md:px-8 lg:px-12">
               <div className="Portal flex flex-col items-center justify-center">
-                <div className="text-[#812286] text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-black text-center mb-2 sm:mb-3 md:mb-4 lg:mb-4">
+                <div className="text-[#812286] flex flex-col pl-85 text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-black text-center mb-2 sm:mb-3 md:mb-4 lg:mb-4">
                   {t('portals.left.portalText')}<br />
                   <span className='font-normal text-xs sm:text-sm md:text-base lg:text-lg'>{t('portals.left.portalSubtext')}</span>
                 </div>
                 {/* Área clicable del portal izquierdo - posicionada sobre el portal en la imagen */}
-                <Link href={portalContent.Left.href}>
-                  <div className="w-24 h-36 sm:w-32 sm:h-48 md:w-40 md:h-60 lg:w-48 lg:h-72 xl:w-56 xl:h-84 cursor-pointer border-2 border-fuchsia-500 border-opacity-70 hover:border-opacity-100 mt-2 sm:mt-4 md:mt-6 lg:mt-8 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-fuchsia-500/50">
-                  </div>
-                </Link>
+                {createPrecisePortalArea("left", portalContent.Left.href)}
               </div>
             </div>
           </>
@@ -223,6 +263,15 @@ const PortalContent = ({ currentPortal, onPortalClick }) => {
   return (
     <div className="relative w-full h-full min-h-screen flex items-center justify-center overflow-hidden">
       {renderPortalContent()}
+      
+      {/* Posicionamiento absoluto preciso de portales - DESACTIVADO para evitar zonas clicables duplicadas */}
+      {false && usePrecisePositioning && (
+        <>
+          {currentPortal === "main" && createAbsolutePortalArea('main', portalContent.main.href)}
+          {currentPortal === "Right" && createAbsolutePortalArea('right', portalContent.Right.href)}
+          {currentPortal === "Left" && createAbsolutePortalArea('left', portalContent.Left.href)}
+        </>
+      )}
       
       <MagicCard
         isOpen={showCard}
