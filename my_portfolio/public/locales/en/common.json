@@ -91,12 +91,16 @@
       "title": "Portal to the Fairy Forest",
       "description": "Will we find the sword in the Enchanted Fairy Forest?",
       "subtitle": "(contact)",
+      "portalText": "Portal to the Forest",
+      "portalSubtext": "(Contact)",
       "href": "/contact"
     },
     "left": {
       "title": "Portal to the Laboratory",
       "description": "Let's investigate in the laboratory for some clue about the location of The Sword",
       "subtitle": "(about-me)",
+      "portalText": "Portal to the Laboratory",
+      "portalSubtext": "(About me)",
       "href": "/about"
     }
   },

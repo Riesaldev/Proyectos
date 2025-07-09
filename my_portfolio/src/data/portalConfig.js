@@ -1,6 +1,10 @@
 import Main from '../../public/videos/Portals.webm';
 import DPortal from '../../public/videos/DPortal.webm';
 import IPortal from '../../public/videos/IPortal.webm';
+import PuertaVideo from '../../public/videos/puerta.mp4';
+import Lake from '../../public/videos/Lake.webm';
+import Lab from '../../public/videos/Lab.webm';
+import Sword from '../../public/videos/Sword.webm';
 
 export const videoSources = {
   Main,
@@ -26,35 +30,61 @@ export const videoConfig = {
   }
 };
 
+// Configuración completa de precarga de videos
+export const preloadConfig = {
+  videos: [
+    { url: Main, key: 'main' },
+    { url: DPortal, key: 'dportal' },
+    { url: IPortal, key: 'iportal' },
+    { url: PuertaVideo, key: 'puerta' },
+    { url: Lake, key: 'lake' },
+    { url: Lab, key: 'lab' },
+    { url: Sword, key: 'sword' }
+  ],
+  
+  initialVideoStates: {
+    main: false,
+    dportal: false,
+    iportal: false,
+    puerta: false,
+    lake: false,
+    lab: false,
+    sword: false,
+  },
+  
+  initialProgressStates: {
+    main: 0,
+    dportal: 0,
+    iportal: 0,
+    puerta: 0,
+    lake: 0,
+    lab: 0,
+    sword: 0,
+  },
+  
+  magicPhrases: [
+    "Conjurando el código...",
+    "Elaborando pociones de UI...",
+    "Invocando las animaciones...",
+    "Domesticando bugs...",
+    "Implorando a los Dioses Antiguos..."
+  ],
+  
+  totalVideos: 7,
+  dragonProgressWeight: 30, // 30% del progreso total
+  videoProgressWeight: 70,  // 70% del progreso total
+  dragonLoadDelay: 1000,
+};
+
 export const portalMap = {
   "right": { source: DPortal, newPortal: "Right", key: "dportal" },
   "left": { source: IPortal, newPortal: "Left", key: "iportal" },
   "main": { source: Main, newPortal: "main", key: "main" }
 };
 
-export const portalContent = {
-  main: {
-    title: "Bienvenido a la sala de los portales!!",
-    description: "Desde esta sala puedes acceder a diferentes portales y explorar nuevas dimensiones en busca de \"la Espada del Destino\" capaz de traer la paz al multiverso y felicidad a sus habitantes.",
-    subtitle: "Pulsa en un portal para continuar tu aventura\nSigamosle la pista a La Espada del Destino hasta el Lago de La Dama",
-    portalText: "Portal al Lago",
-    portalSubtext: "(Portfolio)",
-    href: "/portfolio"
-  },
-  Right: {
-    title: "Portal del Bosque de las Hadas",
-    description: "¿Encontraremos la espada en el Bosque Encantado de las Hadas?",
-    subtitle: "(contacto)",
-    portalText: "Portal al Bosque",
-    portalSubtext: "(Contacto)",
-    href: "/contact"
-  },
-  Left: {
-    title: "Portal al Laboratorio",
-    description: "Investiguemos en el laboratorio alguna pista sobre la ubicacion de La Espada",
-    subtitle: "(about-me)",
-    portalText: "Portal al Laboratorio",
-    portalSubtext: "(Sobre mí)",
-    href: "/about"
-  }
+// Configuración de rutas de navegación para los portales
+export const portalRoutes = {
+  main: "/portfolio",
+  Right: "/contact", 
+  Left: "/about"
 };

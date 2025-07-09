@@ -12,7 +12,7 @@ export default function LavenderFog() {
 
     // Configurar y limpiar Three.js
     useEffect(() => {
-        console.log("Montando LavenderFog - Movimiento unificado");
+        // Inicialización del componente LavenderFog
         
         // Esperar a que el DOM esté listo
         if (!mountRef.current) {
@@ -232,7 +232,6 @@ export default function LavenderFog() {
         // Función de animación (con comprobaciones de seguridad)
         function animate() {
             if (!scene || !renderer || !material || !clockRef.current) {
-                console.log("Animación cancelada: falta algún componente");
                 return;
             }
             
@@ -326,7 +325,7 @@ export default function LavenderFog() {
         setIsInitialized(true);
         
         return () => {
-            console.log("Desmontando LavenderFog");
+            // Cleanup al desmontar el componente
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('resize', handleResize);
             

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { preloadConfig } from '@/data/preloadConfig';
+import { preloadConfig } from '@/data/portalConfig';
 
 export const useVideoPreload = () => {
   const [videosLoaded, setVideosLoaded] = useState(preloadConfig.initialVideoStates);
@@ -21,15 +21,12 @@ export const useVideoPreload = () => {
           const cachedResponse = await videoCache.match(videoUrl);
           
           if (!cachedResponse) {
-            console.log(`Cargando y guardando en caché: ${key}`);
-            
             // Hacer una solicitud para el video
             const response = await fetch(videoUrl);
             
             if (response.ok) {
               // Guardar en caché
               await videoCache.put(videoUrl, response.clone());
-              console.log(`${key} guardado en caché correctamente`);
               
               // Marcar como completamente cargado
               setVideosLoaded(prev => ({
@@ -45,8 +42,6 @@ export const useVideoPreload = () => {
               console.error(`Error cargando ${key}: ${response.statusText}`);
             }
           } else {
-            console.log(`${key} ya está en caché`);
-            
             // Si ya está en caché, marcarlo como cargado
             setVideosLoaded(prev => ({
               ...prev,

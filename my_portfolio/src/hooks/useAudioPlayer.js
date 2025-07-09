@@ -36,42 +36,61 @@ export function useAudioPlayer(tracks, options = {}) {
   // Configurar el audio cuando cambia la pista
   useEffect(() => {
     if (audioRef.current && tracks.length > 0) {
-      audioRef.current.src = tracks[currentTrack].src;
-      audioRef.current.volume = isMuted ? 0 : initialVolume;
-      audioRef.current.playbackRate = playbackRate;
-      audioRef.current.loop = loop && tracks.length === 1;
+      const audio = audioRef.current;
+      
+      // Pausar el audio actual antes de cambiar la fuente
+      audio.pause();
+      setIsPlaying(false);
+      
+      audio.src = tracks[currentTrack].src;
+      audio.volume = isMuted ? 0 : initialVolume;
+      audio.playbackRate = playbackRate;
+      audio.loop = loop && tracks.length === 1;
       
       const handleLoadedMetadata = () => {
-        setDuration(audioRef.current.duration);
-        if (autoPlay) {
+        setDuration(audio.duration);
+        if (autoPlay && !autoplayBlocked) {
           tryAutoPlay();
         }
       };
       
       const handleEnded = () => {
-        if (!loop || tracks.length === 1) return;
-        handleNextTrack();
-      };
-
-      const handleCanPlay = () => {
-        if (autoPlay && !isPlaying && !autoplayBlocked) {
-          tryAutoPlay();
+        setIsPlaying(false);
+        if (loop && tracks.length > 1) {
+          handleNextTrack();
         }
       };
 
-      audioRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
-      audioRef.current.addEventListener('ended', handleEnded);
-      audioRef.current.addEventListener('canplay', handleCanPlay);
+      const handlePlay = () => {
+        setIsPlaying(true);
+        setAutoplayBlocked(false);
+      };
+
+      const handlePause = () => {
+        setIsPlaying(false);
+      };
+
+      const handleError = (e) => {
+        console.error('Error al cargar el audio:', e);
+        setIsPlaying(false);
+        setAutoplayBlocked(true);
+      };
+
+      audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.addEventListener('ended', handleEnded);
+      audio.addEventListener('play', handlePlay);
+      audio.addEventListener('pause', handlePause);
+      audio.addEventListener('error', handleError);
 
       return () => {
-        if (audioRef.current) {
-          audioRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
-          audioRef.current.removeEventListener('ended', handleEnded);
-          audioRef.current.removeEventListener('canplay', handleCanPlay);
-        }
+        audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        audio.removeEventListener('ended', handleEnded);
+        audio.removeEventListener('play', handlePlay);
+        audio.removeEventListener('pause', handlePause);
+        audio.removeEventListener('error', handleError);
       };
     }
-  }, [currentTrack, isMuted, initialVolume, playbackRate, loop, autoPlay, isPlaying, autoplayBlocked]);
+  }, [currentTrack, isMuted, initialVolume, playbackRate, loop]);
 
   // Función para intentar reproducir automáticamente
   const tryAutoPlay = async () => {
@@ -81,7 +100,8 @@ export function useAudioPlayer(tracks, options = {}) {
         setIsPlaying(true);
         setAutoplayBlocked(false);
       } catch (error) {
-        console.log('Autoplay bloqueado por el navegador. Se requiere interacción del usuario.');
+        // Manejo silencioso del bloqueo de autoplay
+        // El navegador requiere interacción del usuario para reproducir audio
         setAutoplayBlocked(true);
         setIsPlaying(false);
       }

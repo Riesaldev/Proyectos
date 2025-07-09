@@ -1,5 +1,5 @@
 "use client";
-import { useVideoPreloader } from '@/hooks/useVideoPreloader';
+import { useVideoPreload } from '@/hooks/useVideoPreload';
 import { useVideoPortals } from '@/hooks/useVideoPortals';
 import PortalContent from '@/components/PortalContent';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -9,7 +9,7 @@ import { videoSources } from '@/data/portalConfig';
 
 export default function Menu() {
   // Hook para precarga de videos
-  const { videosPreloaded, VideoPreloader } = useVideoPreloader();
+  const { videosLoaded, videoLoadProgress } = useVideoPreload();
   
   // Hook para manejo de portales de video
   const {
@@ -28,8 +28,6 @@ export default function Menu() {
 
   return (
     <>
-      <VideoPreloader />
-
       {/* Controles superiores: Audio y Language Switcher */}
       <div className="fixed top-4 right-4 z-[100] flex items-center gap-4">
         <AudioControls />

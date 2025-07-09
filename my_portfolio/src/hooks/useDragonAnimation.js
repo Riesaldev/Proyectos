@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { preloadConfig } from '@/data/preloadConfig';
+import { preloadConfig } from '@/data/portalConfig';
 
 export const useDragonAnimation = () => {
   const [animationLoaded, setAnimationLoaded] = useState(false);
