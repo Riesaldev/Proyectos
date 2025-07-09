@@ -23,7 +23,7 @@ export default function WelcomeContent() {
         {t('welcome.enjoy')}
       </p>
       
-      <p className="mt-4 text-lg" dangerouslySetInnerHTML={{ __html: t('welcome.portal') }}>
+      <p className="mt-4 text-lg" dangerouslySetInnerHTML={{ __html: String(t('welcome.portal') || '') }}>
       </p>
     </div>
   );

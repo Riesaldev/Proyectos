@@ -38,7 +38,6 @@ export const preloadResourcesConfig = {
   
   // Recursos críticos del sistema
   criticalResources: [
-    '/favicon.ico',
     '/dragon/dragon.css',
     '/dragon/dragon.js'
   ],

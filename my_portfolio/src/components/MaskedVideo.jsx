@@ -1,7 +1,4 @@
-/**
- * Componente para mostrar un video con efectos de máscara
- * Maneja la visualización del video con estilos de máscara radial
- */
+
 export default function MaskedVideo({ 
   videoRef, 
   onClick, 

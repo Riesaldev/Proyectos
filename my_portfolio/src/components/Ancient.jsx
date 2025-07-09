@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Fleur_De_Leah } from 'next/font/google';
 import { The_Nautigal } from 'next/font/google';
@@ -58,7 +57,7 @@ export default function AncientScroll ( {
 
     if ( autoOpen )
     {
-      const timer = setTimeout( () => setIsOpen( true ), 500 );
+      const timer = setTimeout( () => setIsOpen( true ), 300 );
       return () => clearTimeout( timer );
     }
   }, [ autoOpen ] );
@@ -132,7 +131,7 @@ export default function AncientScroll ( {
             >
               <div className={`text-left ${ theNautigal.className } text-4xl leading-10 m-3`}>
                 {/* Renderizar contenido HTML */}
-                <div dangerouslySetInnerHTML={{ __html: content.replace( '<ContactForm />', '' ) }} />
+                <div dangerouslySetInnerHTML={{ __html: String(content || '').replace( '<ContactForm />', '' ) }} />
 
                 {/* Mostrar video si existe */}
                 {videoSrc && (
@@ -189,7 +188,7 @@ export default function AncientScroll ( {
           <div className="flex justify-between w-full absolute top-1/2 -translate-y-1/2 ">
             <button
               onClick={() => onChangePage( 'prev' )}
-              className="bg-amber-800/60 hover:bg-amber-700/80 relative -left-20 hover:scale-125 p-3 rounded-full transition-all"
+              className="bg-amber-800/60 hover:bg-amber-700/80 cursor-pointer relative -left-20 hover:scale-125 p-3 rounded-full transition-all"
               aria-label="Pergamino anterior"
             >
               <div className="w-12 h-12 relative transform rotate-180">
@@ -203,7 +202,7 @@ export default function AncientScroll ( {
             </button>
             <button
               onClick={() => onChangePage( 'next' )}
-              className="bg-amber-800/60 hover:bg-amber-700/80 relative left-20 hover:scale-125 p-3 rounded-full transition-all"
+              className="bg-amber-800/60 hover:bg-amber-700/80 cursor-pointer relative left-20 hover:scale-125 p-3 rounded-full transition-all"
               aria-label="Siguiente pergamino"
             >
               <div className="w-12 h-12 relative">

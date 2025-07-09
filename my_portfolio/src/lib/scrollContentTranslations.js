@@ -1,6 +1,3 @@
-/**
- * Helper para obtener contenido de scroll traducido
- */
 
 export function getScrollContent(t, section, key) {
   const content = t(`scrollContents.${section}.${key}.content`);

@@ -65,7 +65,7 @@ export function I18nProvider({ children }) {
   }, []);
 
   const t = (key, params = {}) => {
-    if (isLoading) return key;
+    if (isLoading) return String(key);
     
     const keys = key.split('.');
     let value = translations;
@@ -80,7 +80,7 @@ export function I18nProvider({ children }) {
       return value.replace(/\{\{(\w+)\}\}/g, (match, param) => params[param] || match);
     }
     
-    return key; // Devolver la clave si no se encuentra la traducción
+    return String(key); // Asegurar que siempre devuelva un string
   };
 
   const switchLanguage = (newLocale) => {
@@ -97,7 +97,13 @@ export function I18nProvider({ children }) {
       availableLocales: ['es', 'en'],
       isLoading
     }}>
-      {children}
+      {isLoading ? (
+        <div className="flex items-center justify-center h-screen bg-[#a842b1]">
+          <div className="text-white">Cargando...</div>
+        </div>
+      ) : (
+        children
+      )}
     </I18nContext.Provider>
   );
 }

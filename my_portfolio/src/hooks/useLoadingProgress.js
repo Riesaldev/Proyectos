@@ -24,10 +24,15 @@ export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgr
       let loadedImages = 0;
 
       const imagePromises = resources.images.map(src => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => { // Solo resolver, nunca rechazar
           const img = new Image();
           const timeout = setTimeout(() => {
-            reject(new Error(`Image timeout: ${src}`));
+            console.warn(`Image timeout: ${src}`);
+            loadedImages++;
+            if (loadedImages === totalImages) {
+              setResourcesLoaded(prev => ({ ...prev, images: true }));
+            }
+            resolve(false);
           }, preloadResourcesConfig.timeouts.image);
 
           img.onload = () => {
@@ -37,22 +42,23 @@ export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgr
             if (loadedImages === totalImages) {
               setResourcesLoaded(prev => ({ ...prev, images: true }));
             }
-            resolve(src);
+            resolve(true);
           };
           img.onerror = () => {
             clearTimeout(timeout);
             loadedImages++;
+            console.warn(`Failed to load image: ${src}`);
             // Continuar aunque falle
             if (loadedImages === totalImages) {
               setResourcesLoaded(prev => ({ ...prev, images: true }));
             }
-            reject(new Error(`Failed to load image: ${src}`));
+            resolve(false);
           };
           img.src = src;
         });
       });
 
-      await Promise.allSettled(imagePromises);
+      await Promise.all(imagePromises);
     } catch (error) {
       console.error('Error preloading images:', error);
       setResourcesLoaded(prev => ({ ...prev, images: true }));
@@ -63,26 +69,28 @@ export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgr
   const preloadAudio = async () => {
     try {
       const audioPromises = resources.audio.map(src => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => { // Solo resolver, nunca rechazar
           const audio = new Audio();
           const timeout = setTimeout(() => {
-            reject(new Error(`Audio timeout: ${src}`));
+            console.warn(`Audio timeout: ${src}`);
+            resolve(false);
           }, preloadResourcesConfig.timeouts.audio);
 
           audio.oncanplaythrough = () => {
             clearTimeout(timeout);
-            resolve(src);
+            resolve(true);
           };
           audio.onerror = () => {
             clearTimeout(timeout);
-            reject(new Error(`Failed to load audio: ${src}`));
+            console.warn(`Failed to load audio: ${src}`);
+            resolve(false);
           };
           audio.preload = 'metadata';
           audio.src = src;
         });
       });
 
-      await Promise.allSettled(audioPromises);
+      await Promise.all(audioPromises);
       setResourcesLoaded(prev => ({ ...prev, audio: true }));
     } catch (error) {
       console.error('Error preloading audio:', error);
@@ -94,9 +102,10 @@ export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgr
   const preloadFonts = async () => {
     try {
       const fontPromises = resources.fonts.map(href => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => { // Solo resolver, nunca rechazar
           const timeout = setTimeout(() => {
-            reject(new Error(`Font timeout: ${href}`));
+            console.warn(`Font timeout: ${href}`);
+            resolve(false);
           }, preloadResourcesConfig.timeouts.font);
 
           const link = document.createElement('link');
@@ -104,11 +113,12 @@ export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgr
           link.href = href;
           link.onload = () => {
             clearTimeout(timeout);
-            resolve(href);
+            resolve(true);
           };
           link.onerror = () => {
             clearTimeout(timeout);
-            reject(new Error(`Failed to load font: ${href}`));
+            console.warn(`Failed to load font: ${href}`);
+            resolve(false);
           };
           
           // Verificar si ya existe
@@ -116,12 +126,12 @@ export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgr
             document.head.appendChild(link);
           } else {
             clearTimeout(timeout);
-            resolve(href);
+            resolve(true);
           }
         });
       });
 
-      await Promise.allSettled(fontPromises);
+      await Promise.all(fontPromises);
       setResourcesLoaded(prev => ({ ...prev, fonts: true }));
     } catch (error) {
       console.error('Error preloading fonts:', error);
@@ -133,28 +143,31 @@ export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgr
   const preloadCriticalResources = async () => {
     try {
       const criticalPromises = resources.critical.map(src => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => { // Solo resolver, nunca rechazar
           const timeout = setTimeout(() => {
-            reject(new Error(`Critical resource timeout: ${src}`));
+            console.warn(`Critical resource timeout: ${src}`);
+            resolve(false); // Resolver con false en lugar de rechazar
           }, preloadResourcesConfig.timeouts.critical);
 
           fetch(src)
             .then(response => {
               clearTimeout(timeout);
               if (response.ok) {
-                resolve(src);
+                resolve(true);
               } else {
-                reject(new Error(`Failed to load: ${src}`));
+                console.warn(`Failed to load: ${src}`);
+                resolve(false);
               }
             })
             .catch(error => {
               clearTimeout(timeout);
-              reject(error);
+              console.warn(`Error loading critical resource ${src}:`, error);
+              resolve(false); // Resolver con false en lugar de rechazar
             });
         });
       });
 
-      await Promise.allSettled(criticalPromises);
+      await Promise.all(criticalPromises); // Usar Promise.all ya que no habrá rechazos
       setResourcesLoaded(prev => ({ ...prev, critical: true }));
     } catch (error) {
       console.error('Error preloading critical resources:', error);
@@ -166,14 +179,24 @@ export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgr
   const preloadLocales = async () => {
     try {
       const localePromises = resources.locales.map(src => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => { // Solo resolver, nunca rechazar
           fetch(src)
-            .then(response => response.ok ? resolve(src) : reject(new Error(`Failed to load locale: ${src}`)))
-            .catch(reject);
+            .then(response => {
+              if (response.ok) {
+                resolve(true);
+              } else {
+                console.warn(`Failed to load locale: ${src}`);
+                resolve(false);
+              }
+            })
+            .catch(error => {
+              console.warn(`Error loading locale ${src}:`, error);
+              resolve(false);
+            });
         });
       });
 
-      await Promise.allSettled(localePromises);
+      await Promise.all(localePromises);
       setResourcesLoaded(prev => ({ ...prev, locales: true }));
     } catch (error) {
       console.error('Error preloading locales:', error);
@@ -183,11 +206,21 @@ export const useLoadingProgress = (animationLoaded, videosLoaded, videoLoadProgr
 
   // Iniciar precarga de todos los recursos
   useEffect(() => {
-    preloadImages();
-    preloadAudio();
-    preloadFonts();
-    preloadCriticalResources();
-    preloadLocales();
+    const initializeResources = async () => {
+      try {
+        await Promise.allSettled([
+          preloadImages(),
+          preloadAudio(),
+          preloadFonts(),
+          preloadCriticalResources(),
+          preloadLocales()
+        ]);
+      } catch (error) {
+        console.error('Error during resource initialization:', error);
+      }
+    };
+    
+    initializeResources();
   }, []);
 
   useEffect(() => {

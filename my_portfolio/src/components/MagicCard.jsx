@@ -62,7 +62,7 @@ const MagicCard = ({
       setIsClosing(false);
       setCloseParticles([]);
       onClose?.();
-    }, 700);
+    }, 1000);
   };
 
   const getGlowIntensity = () => {
@@ -82,7 +82,7 @@ const MagicCard = ({
     <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300 ease-in-out`}>
       {/* Backdrop con efecto de vórtice */}
       <div 
-        className={`absolute inset-0 ${isClosing ? 'bg-black/10' : 'bg-black/30'} backdrop-blur-sm transition-all duration-500 ${isClosing ? 'animate-[backdropVortex_0.7s_ease-in-out_forwards]' : ''}`}
+        className={`absolute inset-0 ${isClosing ? 'bg-black/10' : 'bg-black/30'} backdrop-blur-sm transition-all duration-500 ${isClosing ? 'animate-[backdropVortex_1s_ease-in-out_forwards]' : ''}`}
         onClick={handleClose}
       />
       
@@ -98,32 +98,32 @@ const MagicCard = ({
         ${getGlowIntensity()}
         transform transition-all duration-300 ease-out
         ${isVisible && !isClosing ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}
-        ${isClosing ? 'animate-[apparition_0.7s_ease-in-out_forwards]' : ''}
+        ${isClosing ? 'animate-[cardCloseWithScale_1s_ease-in-out_forwards]' : ''}
         ${className}
       `}>
         
         {/* Efectos de brillo mágico con implosión */}
-        <div className={`absolute inset-0 rounded-2xl ${isClosing ? 'animate-[implosion_0.7s_ease-in-out_forwards]' : ''}`}>
+        <div className={`absolute inset-0 rounded-2xl ${isClosing ? 'animate-[implosion_1s_ease-in-out_forwards]' : ''}`}>
           {/* Brillo principal */}
           <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-fuchsia-400/10 to-transparent rounded-2xl ${isClosing ? 'animate-pulse' : 'animate-pulse'}`} />
           
           {/* Brillo de borde */}
-          <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-fuchsia-500/20 via-purple-500/20 to-pink-500/20 blur-sm ${isClosing ? 'animate-[implosion_0.7s_ease-in-out_forwards]' : ''}`} />
+          <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-fuchsia-500/20 via-purple-500/20 to-pink-500/20 blur-sm ${isClosing ? 'animate-[implosion_1s_ease-in-out_forwards]' : ''}`} />
           
           {/* Líneas mágicas con efecto de teletransportación */}
-          <div className={`absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-fuchsia-400/50 rounded-tl-xl ${isClosing ? 'animate-[vortex_0.7s_ease-in-out_forwards]' : ''}`} />
-          <div className={`absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-fuchsia-400/50 rounded-tr-xl ${isClosing ? 'animate-[vortex_0.7s_ease-in-out_forwards]' : ''}`} />
-          <div className={`absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-fuchsia-400/50 rounded-bl-xl ${isClosing ? 'animate-[vortex_0.7s_ease-in-out_forwards]' : ''}`} />
-          <div className={`absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-fuchsia-400/50 rounded-br-xl ${isClosing ? 'animate-[vortex_0.7s_ease-in-out_forwards]' : ''}`} />
+          <div className={`absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-fuchsia-400/50 rounded-tl-xl ${isClosing ? 'animate-[vortex_1s_ease-in-out_forwards]' : ''}`} />
+          <div className={`absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-fuchsia-400/50 rounded-tr-xl ${isClosing ? 'animate-[vortex_1s_ease-in-out_forwards]' : ''}`} />
+          <div className={`absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-fuchsia-400/50 rounded-bl-xl ${isClosing ? 'animate-[vortex_1s_ease-in-out_forwards]' : ''}`} />
+          <div className={`absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-fuchsia-400/50 rounded-br-xl ${isClosing ? 'animate-[vortex_1s_ease-in-out_forwards]' : ''}`} />
         </div>
 
         {/* Estelas de energía durante la teletransportación */}
         {isClosing && (
           <>
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/30 to-transparent animate-[energyTrail_0.7s_ease-out_forwards] rounded-2xl" />
-            <div className="absolute inset-0 bg-gradient-to-l from-fuchsia-500/30 to-transparent animate-[energyTrail_0.7s_ease-out_0.1s_forwards] rounded-2xl" />
-            <div className="absolute inset-0 bg-gradient-to-t from-pink-500/30 to-transparent animate-[energyTrail_0.7s_ease-out_0.2s_forwards] rounded-2xl" />
-            <div className="absolute inset-0 bg-gradient-to-b from-blue-500/30 to-transparent animate-[energyTrail_0.7s_ease-out_0.3s_forwards] rounded-2xl" />
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/30 to-transparent animate-[energyTrail_1s_ease-out_forwards] rounded-2xl" />
+            <div className="absolute inset-0 bg-gradient-to-l from-fuchsia-500/30 to-transparent animate-[energyTrail_1s_ease-out_0.1s_forwards] rounded-2xl" />
+            <div className="absolute inset-0 bg-gradient-to-t from-pink-500/30 to-transparent animate-[energyTrail_1s_ease-out_0.2s_forwards] rounded-2xl" />
+            <div className="absolute inset-0 bg-gradient-to-b from-blue-500/30 to-transparent animate-[energyTrail_1s_ease-out_0.3s_forwards] rounded-2xl" />
           </>
         )}
 
@@ -160,7 +160,7 @@ const MagicCard = ({
               width: `${particle.size}px`,
               height: `${particle.size}px`,
               transform: `rotate(${particle.angle}deg)`,
-              animation: `spiralParticle 0.7s ease-out ${particle.delay}s forwards`,
+              animation: `spiralParticle 1s ease-out ${particle.delay}s forwards`,
             }}
           />
         ))}
@@ -182,7 +182,7 @@ const MagicCard = ({
         ))}
 
         {/* Contenido de la tarjeta con efecto de vórtice */}
-        <div className={`relative z-10 ${isClosing ? 'animate-[vortex_0.7s_ease-in-out_forwards]' : ''}`}>
+        <div className={`relative z-10 ${isClosing ? 'animate-[vortex_1s_ease-in-out_forwards]' : ''}`}>
           {/* Header con título y botón de cierre */}
           <div className="flex items-center justify-between mb-4">
             {title && (
@@ -203,7 +203,7 @@ const MagicCard = ({
                 transition-all duration-200
                 hover:shadow-lg hover:shadow-fuchsia-500/30
                 backdrop-blur-sm
-                ${isClosing ? 'animate-[apparition_0.7s_ease-in-out_forwards]' : ''}
+                ${isClosing ? 'animate-[apparition_1s_ease-in-out_forwards]' : ''}
               `}
               aria-label="Cerrar"
               disabled={isClosing}

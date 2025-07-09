@@ -73,7 +73,7 @@ export default function ContactForm() {
           actionText={t('contact.send')}
         />
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-10">
           <FormField
             label={t('contact.name')}
             name="name"
@@ -84,6 +84,7 @@ export default function ContactForm() {
             placeholder={t('contact.placeholder.name')}
             fieldProps={getFieldProps('name')}
             error={fieldErrors.name}
+            autoFocus={true}
           />
           
           <FormField

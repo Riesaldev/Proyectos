@@ -1,8 +1,4 @@
-/**
- * Utilidades para traducción de mensajes de validación
- */
 
-// Helper para obtener traducciones de validación
 export function getValidationMessage(key, params = {}, locale = 'es') {
   const messages = {
     es: {

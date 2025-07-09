@@ -174,3 +174,32 @@
     box-shadow: 0 0 20px rgba(251, 191, 36, 0.8), 0 0 30px rgba(251, 191, 36, 0.6);
   }
 }
+
+/* Animación de cierre con escalado negativo */
+@keyframes cardCloseWithScale {
+  0% {
+    transform: scale(1) rotate(0deg) translateY(0);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  25% {
+    transform: scale(0.8) rotate(90deg) translateY(-10px);
+    opacity: 0.9;
+    filter: blur(1px);
+  }
+  50% {
+    transform: scale(0.5) rotate(270deg) translateY(-20px);
+    opacity: 0.6;
+    filter: blur(3px);
+  }
+  75% {
+    transform: scale(0.3) rotate(450deg) translateY(-30px);
+    opacity: 0.3;
+    filter: blur(6px);
+  }
+  100% {
+    transform: scale(0) rotate(720deg) translateY(-40px);
+    opacity: 0;
+    filter: blur(10px);
+  }
+}

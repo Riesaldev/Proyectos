@@ -7,10 +7,10 @@ export default function SocialLinks() {
   const socialLinks = [
     {
       name: 'LinkedIn',
-      url: 'https://www.linkedin.com/in/tu-perfil-linkedin', // Cambia esto por tu URL de LinkedIn
+      url: 'https://www.linkedin.com/in/ricardo-estupi%C3%B1%C3%A1n-alonso-53bb19290/',
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-10 h-10"
           fill="currentColor"
           viewBox="0 0 24 24"
           aria-hidden="true"
@@ -21,10 +21,10 @@ export default function SocialLinks() {
     },
     {
       name: 'GitHub',
-      url: 'https://github.com/tu-usuario-github', // Cambia esto por tu URL de GitHub
+      url: 'https://github.com/Riesaldev/',
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-10 h-10"
           fill="currentColor"
           viewBox="0 0 24 24"
           aria-hidden="true"
@@ -41,7 +41,7 @@ export default function SocialLinks() {
 
   return (
     <div className="mt-6 p-4 bg-amber-50/20 rounded-lg border border-amber-800/15">
-      <h3 className="text-lg font-semibold text-amber-800 mb-4 text-center">
+      <h3 className="text-3xl font-bold text-amber-900 mb-4 text-center leading-tight">
         {t('contact.social.title')}
       </h3>
       <div className="flex justify-center space-x-6">
@@ -58,7 +58,7 @@ export default function SocialLinks() {
           </a>
         ))}
       </div>
-      <p className="text-center text-sm text-amber-700 mt-3">
+      <p className="text-center text-2xl font-bold text-amber-700 mt-3 leading-relaxed">
         {t('contact.social.description')}
       </p>
     </div>

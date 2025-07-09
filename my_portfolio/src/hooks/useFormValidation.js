@@ -96,8 +96,8 @@ export function useFormValidation(initialData = {}) {
     onChange: handleChange,
     onBlur: handleBlur,
     name: fieldName,
-    className: `w-full px-3 py-2 bg-amber-50/70 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 ${
-      fieldErrors[fieldName] ? 'border-red-500' : 'border-amber-700/30'
+    className: `w-full px-5 py-5 text-2xl placeholder:text-2xl bg-amber-50/70 border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 ${
+      fieldErrors[fieldName] ? 'border-red-500 bg-red-50/20' : 'border-amber-700/30 hover:border-amber-700/50'
     }`
   });
 
