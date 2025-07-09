@@ -11,7 +11,7 @@ export const AudioProvider = ({ children }) => {
     initialVolume: 0.15,   // Volumen inicial (15% para no molestar)
     autoPlay: true,       // Reproducir automáticamente
     loop: true,           // Repetir la lista cuando termine
-    shuffle: true,       // Orden secuencial por defecto
+    shuffle: false,       // Orden secuencial por defecto
     playbackRate: 1.0     // Velocidad normal (puedes cambiar a 0.8, 1.2, etc.)
   };
   
