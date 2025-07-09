@@ -91,12 +91,16 @@
       "title": "Portal del Bosque de las Hadas",
       "description": "¿Encontraremos la espada en el Bosque Encantado de las Hadas?",
       "subtitle": "(contacto)",
+      "portalText": "Portal al Bosque",
+      "portalSubtext": "(Contacto)",
       "href": "/contact"
     },
     "left": {
       "title": "Portal al Laboratorio",
       "description": "Investiguemos en el laboratorio alguna pista sobre la ubicacion de La Espada",
       "subtitle": "(about-me)",
+      "portalText": "Portal al Laboratorio",
+      "portalSubtext": "(Sobre mí)",
       "href": "/about"
     }
   },

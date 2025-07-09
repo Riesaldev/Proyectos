@@ -38,19 +38,23 @@ export const portalContent = {
     description: "Desde esta sala puedes acceder a diferentes portales y explorar nuevas dimensiones en busca de \"la Espada del Destino\" capaz de traer la paz al multiverso y felicidad a sus habitantes.",
     subtitle: "Pulsa en un portal para continuar tu aventura\nSigamosle la pista a La Espada del Destino hasta el Lago de La Dama",
     portalText: "Portal al Lago",
-    portalSubtext: "(Proyectos)",
+    portalSubtext: "(Portfolio)",
     href: "/portfolio"
   },
   Right: {
     title: "Portal del Bosque de las Hadas",
     description: "¿Encontraremos la espada en el Bosque Encantado de las Hadas?",
     subtitle: "(contacto)",
+    portalText: "Portal al Bosque",
+    portalSubtext: "(Contacto)",
     href: "/contact"
   },
   Left: {
     title: "Portal al Laboratorio",
     description: "Investiguemos en el laboratorio alguna pista sobre la ubicacion de La Espada",
     subtitle: "(about-me)",
+    portalText: "Portal al Laboratorio",
+    portalSubtext: "(Sobre mí)",
     href: "/about"
   }
 };
