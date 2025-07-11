@@ -6,7 +6,7 @@ export default function Home() {
           </div>
         <div className=" w-62 h-32 absolute top-1/3 left-2/5">
           <h1 className="text-white text-2xl font-bold">
-            La Velada del Año 2025
+            La Velada del Año 2025.
           </h1>
           <p className="text-white text-lg">
             La Velada del Año 2025 es un evento de boxeo benéfico organizado por Ibai Llanos, donde creadores de contenido se enfrentan en el ring para recaudar fondos para diversas causas.
