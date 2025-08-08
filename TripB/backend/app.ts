@@ -38,11 +38,11 @@ app.use((err: any, req: any, res: any, next: any) => {
     res.status(500).send('Error interno');
 });
 // eslint-disable-next-line no-unused-vars
-app.use((req, res, next) => {
+app.use((req, res: any, next) => {
     res.status(404).send('Ruta no encontrada');
 });
 // Middelware de ruta no encontrada.
-app.use((req, res) => {
+app.use((req, res: any) => {
     res.status(404).json({ message: 'Ruta no encontrada' });
 });
 // Indicamos al servidor que escuche peticiones en un puerto específico.

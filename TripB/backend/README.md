@@ -61,20 +61,20 @@ Se trata de una web donde los usuarios publican entradas sobre viajes. Cada entr
 
 ## Endpoints del usuario
 
-- **POST** - [`/api/users/register`] - Crea un nuevo usuario pendiente de activar. ✅
-- **PUT** - [`/api/users/validate/:regCode`] - Activa a un usuario mediante un código de registro. ✅
-- **POST** - [`/api/users/login`] - Logea a un usuario activo retornando un token. ✅
-- **GET** - [`/api/users`] - Retorna información privada del usuario con el id del token. ✅
-- **PUT** - [`/api/users/avatar`] - Permite actualizar el avatar del usuario. ✅
-- **PUT** - [`/users/password/reset`] - Permite enviar un email de recuperación de contraseña. ✅
-- **PUT** - [`/users/password/reset/:recoverPassCode`] - Permite crear una nueva contraseña a partir de un código. ✅
+- **POST** - [`/api/users/register`] - Crea un nuevo usuario pendiente de activar.
+- **PUT** - [`/api/users/validate/:regCode`] - Activa a un usuario mediante un código de registro.
+- **POST** - [`/api/users/login`] - Logea a un usuario activo retornando un token.
+- **GET** - [`/api/users`] - Retorna información privada del usuario con el id del token.
+- **PUT** - [`/api/users/avatar`] - Permite actualizar el avatar del usuario.
+- **PUT** - [`/users/password/reset`] - Permite enviar un email de recuperación de contraseña.
+- **PUT** - [`/users/password/reset/:recoverPassCode`] - Permite crear una nueva contraseña a partir de un código.
 
 ## Endpoints del diario
 
-- **POST** - [`/api/entries`] - Crea una entrada. ✅
-- **GET** - [`/api/entries`] - Retorna el listado de entradas. ✅
-- **GET** - [`/api/entries/:entryId`] - Retorna una entrada en concreto. ✅
-- **POST** - [`/api/entries/:entryId/photos`] - Agregar una foto a una entrada. ✅
-- **DELETE** - [`/api/entries/:entryId/photos/:photoId`] - Eliminar una foto de una entrada. ✅
-- **POST** - [`/api/entries/:entryId/votes`] - Vota una entrada (entre 1 y 5). ✅
-- **DELETE** - [`/api/entries/:entryId`] - Eliminar una entrada. ✅
+- **POST** - [`/api/entries`] - Crea una entrada.
+- **GET** - [`/api/entries`] - Retorna el listado de entradas.
+- **GET** - [`/api/entries/:entryId`] - Retorna una entrada en concreto.
+- **POST** - [`/api/entries/:entryId/photos`] - Agregar una foto a una entrada.
+- **DELETE** - [`/api/entries/:entryId/photos/:photoId`] - Eliminar una foto de una entrada.
+- **POST** - [`/api/entries/:entryId/votes`] - Vota una entrada (entre 1 y 5).
+- **DELETE** - [`/api/entries/:entryId`] - Eliminar una entrada.
