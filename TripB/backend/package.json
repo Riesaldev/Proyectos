@@ -5,8 +5,8 @@
     "description": "Se trata de una web donde los usuarios publican entradas sobre viajes. Cada entrada tiene título, descripción, lugar y hasta 3 fotos asignadas. Cada entrada puede ser votada con una puntuación entre 1 y 5.",
     "main": "app.js",
     "scripts": {
-        "initdb": "node ./src/db/initDb.js",
-        "dev": "nodemon ./app.js"
+        "initdb": "npx ts-node ./src/db/initDb.ts",
+        "dev": "nodemon --exec \"npx ts-node\" ./app.ts"
     },
     "keywords": [],
     "author": "",
@@ -25,6 +25,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.17.0",
+        "@types/bcrypt": "^6.0.0",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.3",
         "@types/express-fileupload": "^1.5.1",
