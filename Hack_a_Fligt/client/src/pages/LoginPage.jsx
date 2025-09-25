@@ -4,7 +4,6 @@ import { Navigate } from 'react-router-dom';
 import useAuthContext from '../hooks/useAuthContext.js';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header.jsx';
-import { Eye, EyeOff } from 'lucide-react';
 
 const { VITE_API_URL } = import.meta.env;
 
