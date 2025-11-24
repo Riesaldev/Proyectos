@@ -1,0 +1,18 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+div.boo {
+    position: absolute;
+    padding: 1rem;
+    font-size: 5rem;
+    left: 800px;
+    top: 100px;
+    transition: 1s;
+}
+
+body {
+    transition: 1s;
+}

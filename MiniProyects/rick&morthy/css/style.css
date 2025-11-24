@@ -1,0 +1,32 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h2 {
+    font-size: 1rem;
+}
+
+body {
+    padding: 1rem;
+    text-align: center;
+}
+
+ul.char-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style: none;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+ul.char-list > li {
+    max-width: 100px;
+    border: 2px solid rgb(25, 25, 25);
+}
+
+ul.char-list > li > img {
+    width: 100%;
+}
